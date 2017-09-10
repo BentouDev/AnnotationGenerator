@@ -17,5 +17,5 @@ endif(MSVC)
 find_package(LibClang REQUIRED)
 include_directories(AnnotationGenerator ${LIBCLANG_INCLUDE_DIRS})
 
-add_executable(AnnotationGenerator source/main.cpp)
+add_executable(AnnotationGenerator source/main.cpp source/Utils/ArgumentParser.cpp source/Utils/ArgumentParser.h source/Utils/Argument.cpp source/Utils/Argument.h source/Preprocessor/Preprocessor.cpp source/Preprocessor/Preprocessor.h source/Preprocessor/Options.cpp source/Preprocessor/Options.h)
 target_link_libraries(AnnotationGenerator ${LIBCLANG_LIBRARIES})
