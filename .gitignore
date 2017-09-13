@@ -33,4 +33,5 @@
 
 .directory
 .idea
+.vscode
 cmake-build-debug
