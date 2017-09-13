@@ -17,10 +17,5 @@ endif(MSVC)
 find_package(LibClang REQUIRED)
 include_directories(AnnotationGenerator ${LIBCLANG_INCLUDE_DIRS})
 
-add_library(AnnotationLibrary include/ReflectionInfo.h)
-set_target_properties(AnnotationLibrary PROPERTIES LINKER_LANGUAGE CXX)
-
-add_executable(AnnotationGenerator source/main.cpp source/Utils/ArgumentParser.cpp source/Utils/ArgumentParser.h source/Utils/Argument.cpp source/Utils/Argument.h source/Preprocessor/Preprocessor.cpp source/Preprocessor/Preprocessor.h source/Preprocessor/Options.cpp source/Preprocessor/Options.h)
-set_target_properties(AnnotationGenerator PROPERTIES LINKER_LANGUAGE CXX)
-
-target_link_libraries(AnnotationGenerator AnnotationLibrary ${LIBCLANG_LIBRARIES})
+add_subdirectory(Source/Reflection)
+add_subdirectory(Source/Preprocessor)

@@ -5,12 +5,14 @@
 #ifndef ANNOTATIONGENERATOR_PREPROCESSOR_H
 #define ANNOTATIONGENERATOR_PREPROCESSOR_H
 
-#include "Options.h"
+#include "Utils/Options.h"
 
 class Preprocessor
 {
+    const Options& CurrentOptions;
+
 public:
-    Preprocessor(const Options &options);
+    explicit Preprocessor(const Options &options);
 
     int run();
 };

@@ -6,13 +6,14 @@
 #define ANNOTATIONGENERATOR_ARGUMENTPARSER_H
 
 #include <vector>
-
-class Argument;
-class Options;
+#include "Argument.h"
+#include "Options.h"
 
 class ArgumentParser
 {
     std::vector<Argument> Arguments;
+
+    Options& Context;
 
 public:
     bool parse(int argc, char* argv[]);

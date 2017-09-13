@@ -3,8 +3,7 @@
 //
 
 #include "Utils/ArgumentParser.h"
-#include "Preprocessor/Preprocessor.h"
-#include "Preprocessor/Options.h"
+#include "Preprocessor.h"
 
 int main(int argc, char *argv[])
 {

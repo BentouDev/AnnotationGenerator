@@ -4,7 +4,12 @@
 
 #include "Preprocessor.h"
 
+Preprocessor::Preprocessor(const Options& options)
+: CurrentOptions(options)
+{ }
+
 int Preprocessor::run()
 {
+
     return 0;
 }
