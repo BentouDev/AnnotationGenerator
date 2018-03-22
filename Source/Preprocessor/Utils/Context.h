@@ -8,7 +8,7 @@
 #include <vector>
 #include <string>
 
-class Options
+class Context
 {
 public:
     std::vector<std::string> FilePaths;

@@ -7,18 +7,16 @@
 
 #include <vector>
 #include "Argument.h"
-#include "Options.h"
+#include "Context.h"
 
 class ArgumentParser
 {
-    std::vector<Argument> Arguments;
-
-    Options& Context;
+    Context& CurrentContext;
 
 public:
     bool parse(int argc, char* argv[]);
 
-    ArgumentParser(Options &options);
+    explicit ArgumentParser(Context &options);
 };
 
 #endif //ANNOTATIONGENERATOR_ARGUMENTPARSER_H

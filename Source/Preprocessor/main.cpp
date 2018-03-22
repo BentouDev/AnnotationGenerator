@@ -3,16 +3,16 @@
 //
 
 #include "Utils/ArgumentParser.h"
-#include "Preprocessor.h"
+#include "Core/Preprocessor.h"
 
 int main(int argc, char *argv[])
 {
-    Options        options;
-    ArgumentParser arg_parser(options);
+    Context        context;
+    ArgumentParser arg_parser(context);
 
     if (!arg_parser.parse(argc, argv))
         return 0;
 
-    Preprocessor preprocessor(options);
-    return preprocessor.run();
+    Preprocessor preprocessor(context);
+    return preprocessor.Run();
 }

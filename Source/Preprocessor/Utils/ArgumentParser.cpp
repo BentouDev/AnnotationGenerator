@@ -3,19 +3,18 @@
 //
 
 #include "ArgumentParser.h"
-#include "Options.h"
-#include <cstdint>
 
-ArgumentParser::ArgumentParser(Options& options)
-: Context(options)
+ArgumentParser::ArgumentParser(Context& context)
+: CurrentContext(context)
 { }
 
 bool ArgumentParser::parse(int argc, char **argv)
 {
-    for (std::uint32_t i = 0; i < argc; i++)
+    // todo: implement proper argument handling
+    for (auto i = 1; i < argc; i++)
     {
-        Context.FilePaths.emplace_back(argv[i]);
+        CurrentContext.FilePaths.emplace_back(argv[i]);
     }
 
-    return true; // ToDo
+    return true;
 }

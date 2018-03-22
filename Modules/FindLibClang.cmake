@@ -17,7 +17,7 @@
 # most recent versions come first
 # http://llvm.org/apt/
 set(LIBCLANG_KNOWN_LLVM_VERSIONS 6.0.0 6.0
-        5.0.0 5.0
+        5.0.1 5.0.0 5.0 5
         4.0.1 4.0.0 4.0 4
         3.9.1 3.9.0 3.9
         3.8.1 3.8.0 3.8
@@ -33,6 +33,7 @@ set(libclang_llvm_header_search_paths)
 set(libclang_llvm_lib_search_paths
         # LLVM Fedora
         /usr/lib/llvm
+        /usr/lib
         )
 
 foreach (version ${LIBCLANG_KNOWN_LLVM_VERSIONS})
