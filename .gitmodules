@@ -1,0 +1,6 @@
+[submodule "Dependencies/Mustache"]
+	path = Dependencies/Mustache
+	url = https://github.com/kainjow/Mustache
+[submodule "Dependencies/Json"]
+	path = Dependencies/Json
+	url = https://github.com/nlohmann/json.git

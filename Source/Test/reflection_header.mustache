@@ -1,0 +1,35 @@
+#include <Reflection/ClassInfo.h>
+
+namespace Metadata
+{
+    class {{class_name}}Meta : public ClassInfo
+    {
+        static {{class_name}}Meta Data;
+
+        // private constructor
+        {{class_name}}Meta();
+
+        const std::string Name = "{{class_name}}";
+
+    public:
+        ClassInfo& Get() { return Data; }
+    }
+
+
+    {{class_name}}Meta::Fields[] = {
+        {{#fields}}
+            { {{name}}, Meta::GetType< {{type}} >, {{access}}, {{offset}} },
+        {{/fields}}
+    };
+
+    {{class_name}}Meta::Methods[] = {
+        {{#methods}}
+            { {{name}}, {{offset}}, {{return_type}} },
+        {{/methods}}
+    };
+}
+
+ClassInfo* Meta::GetType<{{class_name}}>()
+{
+    return &Metadata::{{class_name}}Meta::Get();
+}

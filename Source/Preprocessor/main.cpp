@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     Context        context;
     ArgumentParser arg_parser(context);
 
-    if (!arg_parser.parse(argc, argv))
+    if (!arg_parser.Parse(argc, argv))
         return 0;
 
     Preprocessor preprocessor(context);

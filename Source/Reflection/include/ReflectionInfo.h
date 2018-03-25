@@ -81,11 +81,11 @@ public:
 class ClassInfo : public TypeInfo
 {
 public:
-    ClassInfo Super;
-    std::vector<ClassInfo> Interfaces;
+    ClassInfo* Super;
 
-    std::vector<FieldInfo>  Fields;
-    std::vector<MethodInfo> Methods;
+    const std::vector<ClassInfo>  Interfaces;
+    const std::vector<FieldInfo>  Fields;
+    const std::vector<MethodInfo> Methods;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

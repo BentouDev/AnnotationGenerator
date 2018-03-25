@@ -17,5 +17,13 @@ endif(MSVC)
 find_package(LibClang REQUIRED)
 include_directories(AnnotationGenerator ${LIBCLANG_INCLUDE_DIRS})
 
+# Add Mustache
+add_subdirectory(Dependencies/Mustache EXCLUDE_FROM_ALL)
+include_directories(Dependencies/Mustache)
+
+# Add Json
+add_subdirectory(Dependencies/Json EXCLUDE_FROM_ALL)
+include_directories(Dependencies/Json/include)
+
 add_subdirectory(Source/Reflection)
 add_subdirectory(Source/Preprocessor)

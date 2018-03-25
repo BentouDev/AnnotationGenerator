@@ -5,56 +5,78 @@
 #include "Preprocessor.h"
 #include "../Utils/Utils.h"
 #include <clang-c/Index.h>
+#include <mustache.hpp>
 #include <cstring>
-#include <experimental/filesystem>
 #include <fstream>
 
-namespace fs = std::experimental::filesystem;
-
 Preprocessor::Preprocessor(const Context& options)
-: CurrentContext(options)
+: CurrentContext(options), CurrentPattern(nullptr)
 { }
 
 int Preprocessor::Run()
 {
-    for (const std::string& filepath : CurrentContext.FilePaths)
+    for (auto& pattern : CurrentContext.Templates)
     {
-        ProcessFile(filepath);
+        ProcessPattern(*pattern);
     }
 
     return 0;
 }
 
-void Preprocessor::ProcessFile(const std::string& filename)
+void Preprocessor::ProcessPattern(SourcePattern& pattern)
 {
-    fs::path filepath;
-    filepath += filename;
+    CurrentPattern = &pattern;
 
-    char const * args[] =
+    for (auto& file : pattern.Sources)
+    {
+        ProcessFile(*file);
+    }
+}
+
+std::vector<cstring> Preprocessor::BuildArguments(const std::string& path_arg)
+{
+    std::vector<cstring> result =
     {
         "-std=c++11",
         "-Wmicrosoft",
         "-Wunknown-pragmas",
         "-D_DEBUG=1",
-        ("-I" + filepath.string()).c_str()
+        path_arg.c_str()
     };
 
-    fs::path outputPath = "gen_" + filepath.stem().string() + ".cpp";
+    return result;
+}
 
-    CXUnsavedFile dummyFile{};
-    dummyFile.Filename = outputPath.c_str();
-    dummyFile.Contents = ("#include \"" + filepath.string() + "\"").c_str();
-    dummyFile.Length = std::strlen( dummyFile.Contents );
+fs::path Preprocessor::BuildOutputPath(const fs::path& filepath)
+{
+    return "gen_" + filepath.stem().string() + ".cpp";
+}
+
+std::string Preprocessor::BuildFileContents(const fs::path& filepath)
+{
+    return "#include \"" + filepath.string() + "\"";
+}
+
+void Preprocessor::ProcessFile(SourceFile& file)
+{
+    std::string          path_arg    = "-I" + file.Path.string();
+    std::vector<cstring> arguments   = BuildArguments(path_arg);
+    fs::path             outputPath  = BuildOutputPath(file.Path);
+    std::string          fileContent = BuildFileContents(file.Path);
+
+    CXUnsavedFile generatedFile{};
+    generatedFile.Filename = outputPath.c_str();
+    generatedFile.Contents = fileContent.c_str();
+    generatedFile.Length   = fileContent.size();
 
     CXIndex CIdx = clang_createIndex(1, 1);
-    CXTranslationUnit unit = clang_parseTranslationUnit
+    CXTranslationUnit translationUnit = clang_parseTranslationUnit
     (
         CIdx, outputPath.c_str(),
-        args,
-        countof(args),
-        &dummyFile,
-        1,
-        CXTranslationUnit_None
+        arguments.data(),
+        (int) arguments.size(),
+        &generatedFile,
+        1, CXTranslationUnit_None
     );
 
     // output this new file into the same directory, so user can just #include "gen_header.h"

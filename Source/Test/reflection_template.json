@@ -1,0 +1,12 @@
+{
+  "patterns" : [
+    {
+      "template" : [
+        "reflection_header.mustache",
+        "reflection_unit.mustache"
+      ],
+      "file" : "(\\W|\\w)*\\.h\\b",
+      "annotation" : "Meta"
+    }
+  ]
+}
