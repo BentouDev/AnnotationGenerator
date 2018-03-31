@@ -10,21 +10,17 @@
 
 class SourceFile;
 
-class Preprocessor
+class Parser
 {
-    const Context& CurrentContext;
-    SourcePattern* CurrentPattern;
+    const Data::Context& Context;
 
-    void ProcessPattern(SourcePattern& pattern);
-    void ProcessFile(SourceFile& file);
     auto BuildArguments(const std::string& path_arg) -> std::vector<cstring>;
     auto BuildOutputPath(const fs::path& filepath) -> fs::path;
     auto BuildFileContents(const fs::path& filepath) -> std::string;
 
 public:
-    explicit Preprocessor(const Context &options);
-
-    int Run();
+    explicit Parser(const Data::Context& context);
+    void ProcessFile();
 };
 
 #endif //ANNOTATIONGENERATOR_PREPROCESSOR_H

@@ -2,38 +2,18 @@
 // Created by bentoo on 10.09.17.
 //
 
-#include "Preprocessor.h"
+#include "Parser.h"
 #include "../Utils/Utils.h"
 #include <clang-c/Index.h>
 #include <mustache.hpp>
 #include <cstring>
 #include <fstream>
 
-Preprocessor::Preprocessor(const Context& options)
-: CurrentContext(options), CurrentPattern(nullptr)
+Parser::Parser(const Data::Context& context)
+: Context(context)
 { }
 
-int Preprocessor::Run()
-{
-    for (auto& pattern : CurrentContext.Templates)
-    {
-        ProcessPattern(*pattern);
-    }
-
-    return 0;
-}
-
-void Preprocessor::ProcessPattern(SourcePattern& pattern)
-{
-    CurrentPattern = &pattern;
-
-    for (auto& file : pattern.Sources)
-    {
-        ProcessFile(*file);
-    }
-}
-
-std::vector<cstring> Preprocessor::BuildArguments(const std::string& path_arg)
+std::vector<cstring> Parser::BuildArguments(const std::string& path_arg)
 {
     std::vector<cstring> result =
     {
@@ -47,22 +27,22 @@ std::vector<cstring> Preprocessor::BuildArguments(const std::string& path_arg)
     return result;
 }
 
-fs::path Preprocessor::BuildOutputPath(const fs::path& filepath)
+fs::path Parser::BuildOutputPath(const fs::path& filepath)
 {
     return "gen_" + filepath.stem().string() + ".cpp";
 }
 
-std::string Preprocessor::BuildFileContents(const fs::path& filepath)
+std::string Parser::BuildFileContents(const fs::path& filepath)
 {
     return "#include \"" + filepath.string() + "\"";
 }
 
-void Preprocessor::ProcessFile(SourceFile& file)
+void Parser::ProcessFile()
 {
-    std::string          path_arg    = "-I" + file.Path.string();
+    std::string          path_arg    = "-I" + Context.Parser.CurrentSource->Path.string();
     std::vector<cstring> arguments   = BuildArguments(path_arg);
-    fs::path             outputPath  = BuildOutputPath(file.Path);
-    std::string          fileContent = BuildFileContents(file.Path);
+    fs::path             outputPath  = BuildOutputPath(Context.Parser.CurrentSource->Path);
+    std::string          fileContent = BuildFileContents(Context.Parser.CurrentSource->Path);
 
     CXUnsavedFile generatedFile{};
     generatedFile.Filename = outputPath.c_str();

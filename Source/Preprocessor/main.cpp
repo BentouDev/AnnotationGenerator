@@ -3,16 +3,16 @@
 //
 
 #include "Utils/ArgumentParser.h"
-#include "Core/Preprocessor.h"
+#include "Core/Runtime.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-    Context        context;
+    Data::Context  context;
     ArgumentParser arg_parser(context);
 
     if (!arg_parser.Parse(argc, argv))
         return 0;
 
-    Preprocessor preprocessor(context);
-    return preprocessor.Run();
+    Runtime runtime(context);
+    return runtime.Run();
 }

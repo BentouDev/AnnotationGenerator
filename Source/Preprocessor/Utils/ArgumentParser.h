@@ -13,7 +13,7 @@
 
 class ArgumentParser
 {
-    Context& CurrentContext;
+    Data::Context& Context;
 
     void ParseTemplates(const nlohmann::json& parser, const std::vector<std::string>& files);
     void BuildContext(const fs::path& template_file, const std::vector<std::string>& files);
@@ -21,7 +21,7 @@ class ArgumentParser
 public:
     bool Parse(int argc, char* argv[]);
 
-    explicit ArgumentParser(Context &options);
+    explicit ArgumentParser(Data::Context& context);
 };
 
 #endif //ANNOTATIONGENERATOR_ARGUMENTPARSER_H

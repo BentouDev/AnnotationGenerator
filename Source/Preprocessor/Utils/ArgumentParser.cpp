@@ -9,8 +9,8 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-ArgumentParser::ArgumentParser(Context& context)
-: CurrentContext(context)
+ArgumentParser::ArgumentParser(Data::Context& context)
+: Context(context)
 { }
 
 bool ArgumentParser::Parse(int argc, char** argv)
@@ -54,19 +54,19 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const std::vec
 {
     for (auto& element : parser["patterns"])
     {
-        auto& pattern = CurrentContext.Templates.emplace_back(std::make_unique<SourcePattern>());
+        auto& pattern = Context.Templates.emplace_back(std::make_unique<SourcePattern>());
 
         for (auto& tmpl : element["template"])
             pattern->Templates.push_back(tmpl.get<std::string>());
 
-        for (int i = 0; i < files.size(); i++)
+        for (auto& file_path : files)
         {
             auto regex_string = element["file"].get<std::string>();
             const std::regex regex(regex_string);
 
-            if (std::regex_match(files[i], regex))
+            if (std::regex_match(file_path, regex))
             {
-                pattern->Sources.emplace_back(std::make_unique<SourceFile>(files[i]));
+                pattern->Sources.emplace_back(std::make_unique<SourceFile>(file_path));
             }
         }
     }
@@ -85,7 +85,8 @@ void ArgumentParser::BuildContext(const fs::path& template_file, const std::vect
     try
     {
         std::ifstream file(template_file);
-        json parser = json::parse(file);
+        json          parser = json::parse(file);
+
         ParseTemplates(parser, files);
     }
     catch (std::exception& e)

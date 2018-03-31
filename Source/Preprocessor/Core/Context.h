@@ -8,11 +8,30 @@
 #include <vector>
 #include <memory>
 #include "SourcePattern.h"
+#include "ReflectionInfo.h"
 
-class Context
+namespace Data
 {
-public:
-    std::vector<std::unique_ptr<SourcePattern>> Templates;
-};
+    class Context
+    {
+    public:
+        std::vector<std::unique_ptr<SourcePattern>> Templates;
+
+        struct {
+            SourceFile* CurrentSource;
+            std::vector<std::unique_ptr<ClassInfo>> Classes;
+        } Parser;
+
+        struct {
+            SourceFile* CurrentSource;
+            SourcePattern* CurrentPattern;
+        } Generator;
+
+        Context()
+            : Parser { nullptr }
+            , Generator { nullptr, nullptr }
+        { }
+    };
+}
 
 #endif //ANNOTATIONGENERATOR_OPTIONS_H
