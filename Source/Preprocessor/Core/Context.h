@@ -18,12 +18,14 @@ namespace Data
         std::vector<std::unique_ptr<SourcePattern>> Templates;
 
         struct {
-            SourceFile* CurrentSource;
+            SourceFile*                             CurrentSource;
             std::vector<std::unique_ptr<ClassInfo>> Classes;
+            std::vector<std::string>                Includes;
+            unsigned int                            CurrentLevel;
         } Parser;
 
         struct {
-            SourceFile* CurrentSource;
+            SourceFile*    CurrentSource;
             SourcePattern* CurrentPattern;
         } Generator;
 

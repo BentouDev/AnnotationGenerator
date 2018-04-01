@@ -5,6 +5,7 @@
 #ifndef ANNOTATIONGENERATOR_PREPROCESSOR_H
 #define ANNOTATIONGENERATOR_PREPROCESSOR_H
 
+#include <clang-c/Index.h>
 #include "Context.h"
 #include "../Utils/Filesystem.h"
 
@@ -12,14 +13,14 @@ class SourceFile;
 
 class Parser
 {
-    const Data::Context& Context;
+    Data::Context& Context;
 
-    auto BuildArguments(const std::string& path_arg) -> std::vector<cstring>;
-    auto BuildOutputPath(const fs::path& filepath) -> fs::path;
-    auto BuildFileContents(const fs::path& filepath) -> std::string;
+    auto BuildArguments() -> std::vector<cstring>;
+    auto BuildWorkerFileContent(const fs::path& filepath) -> std::string;
+    auto BuildWorkerFile(const std::string& content) -> CXUnsavedFile;
 
 public:
-    explicit Parser(const Data::Context& context);
+    explicit Parser(Data::Context& context);
     void ProcessFile();
 };
 

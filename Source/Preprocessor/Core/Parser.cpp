@@ -4,65 +4,180 @@
 
 #include "Parser.h"
 #include "../Utils/Utils.h"
+#include "Context.h"
 #include <clang-c/Index.h>
 #include <mustache.hpp>
 #include <cstring>
 #include <fstream>
+#include <clang-c/CXString.h>
 
-Parser::Parser(const Data::Context& context)
+Parser::Parser(Data::Context& context)
 : Context(context)
 { }
 
-std::vector<cstring> Parser::BuildArguments(const std::string& path_arg)
+std::vector<cstring> Parser::BuildArguments()
 {
     std::vector<cstring> result =
     {
-        "-std=c++11",
+        "-std=c++17",
+        "-nostdinc",
+        "-nostdinc++",
         "-Wmicrosoft",
         "-Wunknown-pragmas",
-        "-D_DEBUG=1",
-        path_arg.c_str()
+        "-D_DEBUG=1"
     };
+
+    for (auto& include : Context.Parser.Includes)
+    {
+        result.push_back(include.c_str());
+    }
 
     return result;
 }
 
-fs::path Parser::BuildOutputPath(const fs::path& filepath)
-{
-    return "gen_" + filepath.stem().string() + ".cpp";
-}
-
-std::string Parser::BuildFileContents(const fs::path& filepath)
+std::string Parser::BuildWorkerFileContent(const fs::path& filepath)
 {
     return "#include \"" + filepath.string() + "\"";
 }
 
+CXUnsavedFile Parser::BuildWorkerFile(const std::string& content)
+{
+    CXUnsavedFile worker_file{};
+    worker_file.Filename = "__temp.cpp";
+    worker_file.Contents = content.c_str();
+    worker_file.Length   = content.size();
+
+    return worker_file;
+}
+
+namespace runtime
+{
+    std::string getCursorKindName(CXCursorKind cursorKind)
+    {
+        CXString kindName  = clang_getCursorKindSpelling(cursorKind);
+        std::string result = clang_getCString(kindName);
+
+        clang_disposeString(kindName);
+        return result;
+    }
+
+    std::string getCursorSpelling(CXCursor cursor)
+    {
+        CXString cursorSpelling = clang_getCursorSpelling(cursor);
+        std::string result      = clang_getCString(cursorSpelling);
+
+        clang_disposeString(cursorSpelling);
+        return result;
+    }
+
+    fs::path GetCursorSourcePath(CXCursor cursor)
+    {
+        CXSourceLocation location = clang_getCursorLocation(cursor);
+        CXFile           source{};
+        fs::path         source_path;
+
+        clang_getExpansionLocation(location, &source, nullptr, nullptr, nullptr);
+
+        source_path += reinterpret_cast<const char*>(clang_getFileName(source).data);
+
+        return source_path;
+    }
+
+    CXChildVisitResult visitor_routine(CXCursor cursor, CXCursor /* parent */, CXClientData data)
+    {
+        auto* context = reinterpret_cast<Data::Context*>(data);
+        auto  result  = CXChildVisit_Continue;
+        auto  source  = GetCursorSourcePath(cursor);
+
+        if (source.compare(context->Parser.CurrentSource->Path) == 0)
+        {
+            return result;
+        }
+
+        CXCursorKind cursorKind = clang_getCursorKind(cursor);
+
+        unsigned int curLevel = context->Parser.CurrentLevel;
+
+        std::cout << std::string(curLevel, '-') << " "
+                  << getCursorKindName(cursorKind)
+                  << " (" << getCursorSpelling(cursor)
+                  << ")" << std::endl;
+
+//        switch (cursorKind)
+//        {
+//            case CXCursor_MacroDefinition:
+//                break;
+//
+//            case CXCursor_EnumConstantDecl:
+//                //typeTrav->AddEnumCursor( cursor );
+//                break;
+//
+//            case CXCursor_StructDecl:
+//            case CXCursor_ClassDecl:
+//                //typeTrav->AddNewTypeCursor( cursor );
+//                result = CXChildVisit_Recurse;
+//                break;
+//
+//            case CXCursor_TypedefDecl:
+//            case CXCursor_Namespace:
+//                result = CXChildVisit_Recurse;
+//                break;
+//        }
+
+        clang_visitChildren(cursor, visitor_routine, data);
+
+        context->Parser.CurrentLevel++;
+
+        return result;
+    }
+}
+
 void Parser::ProcessFile()
 {
-    std::string          path_arg    = "-I" + Context.Parser.CurrentSource->Path.string();
-    std::vector<cstring> arguments   = BuildArguments(path_arg);
-    fs::path             outputPath  = BuildOutputPath(Context.Parser.CurrentSource->Path);
-    std::string          fileContent = BuildFileContents(Context.Parser.CurrentSource->Path);
+    if (!fs::exists(Context.Parser.CurrentSource->Path))
+    {
+        std::cerr << "Unable to open source file "
+                  << Context.Parser.CurrentSource->Path << "."
+                  << std::endl;
+        return;
+    }
 
-    CXUnsavedFile generatedFile{};
-    generatedFile.Filename = outputPath.c_str();
-    generatedFile.Contents = fileContent.c_str();
-    generatedFile.Length   = fileContent.size();
-
-    CXIndex CIdx = clang_createIndex(1, 1);
-    CXTranslationUnit translationUnit = clang_parseTranslationUnit
+    fs::path             directory   = Context.Parser.CurrentSource->Path.parent_path();
+    std::string          path_arg    = "-I" + directory.string();
+    std::vector<cstring> arguments   = BuildArguments();
+    std::string          fileContent = BuildWorkerFileContent(Context.Parser.CurrentSource->Path);
+    CXUnsavedFile        worker_file = BuildWorkerFile(fileContent);
+    CXIndex              main_index  = clang_createIndex(0, 1);
+    CXTranslationUnit    worker_unit = clang_parseTranslationUnit
     (
-        CIdx, outputPath.c_str(),
+        main_index,
+        worker_file.Filename,
         arguments.data(),
         (int) arguments.size(),
-        &generatedFile,
+        &worker_file,
         1, CXTranslationUnit_None
     );
 
-    // output this new file into the same directory, so user can just #include "gen_header.h"
-    // Or... do we actually need this?
-    // No!
-    // We can output to cpp and generate func that will load whole reflection at once!
-    // And then just #include "reflection.h" and Meta::LoadReflectionData();
-    // We should call getOutputPath(path) so we can have a different folder for generated cpp's
+    if (!worker_unit)
+    {
+        std::cerr << "Unable to create translation unit from file "
+                  << Context.Parser.CurrentSource->Path << "."
+                  << std::endl;
+        return;
+    }
+
+    CXCursor root = clang_getTranslationUnitCursor(worker_unit);
+
+    clang_visitChildren(root, runtime::visitor_routine, &Context);
+
+    clang_disposeTranslationUnit(worker_unit);
+    clang_disposeIndex(main_index);
 }
+//    CXTranslationUnit    worker_unit = clang_createTranslationUnitFromSourceFile
+//    (
+//        main_index,
+//        Context.Parser.CurrentSource->Path.c_str(),
+//        (int) arguments.size(),
+//        arguments.data(),
+//        0, nullptr
+//    );

@@ -1,21 +1,36 @@
 
-#   define Meta(...) __attribute__((annotate(#__VA_ARGS__)))
+#define Meta(...) __attribute__((annotate(#__VA_ARGS__)));
 
 #include <string>
 
-class Serialize
+namespace koza::kwas
 {
-public:
-    std::string Name;
-}
+    class Serialize
+    {
+        using test = Core::Utils::sth<Core::dunno>;
 
-Meta(Serialize)
-class MyGreatClass
-{
-public:
-     MyGreatClass();
-    ~MyGreatClass();
-    
-    float Float;
-    int* pInt;
-};
+        test FunIsFun;
+
+    public:
+        std::string Name;
+    }
+
+    Meta(Serialize)
+    class MyGreatClass
+    {
+        [[nodiscard]]
+        auto sth() -> bool;
+
+    public:
+         MyGreatClass();
+        ~MyGreatClass();
+
+        operator==(const MyGreatClass&) = delete;
+        operator==(MyGreatClass&&) = default;
+
+        float Float;
+        int* pInt;
+    };
+
+    static_assert(true);
+}
