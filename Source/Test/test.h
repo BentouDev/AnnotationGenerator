@@ -1,10 +1,30 @@
 
-#define Meta(...) __attribute__((annotate(#__VA_ARGS__)));
+#define Meta(...) __attribute__((annotate(#__VA_ARGS__)))
 
 #include <string>
 
+namespace Core
+{
+    struct dunno {};
+    namespace Utils {
+        template <typename T>
+        class sth
+        {
+            int theField;
+        };
+    }
+}
+
 namespace koza::kwas
 {
+    enum Meta(Serialize) MyEnum
+    {
+        None = 0,
+        Sth = 1,
+        Koza = 2,
+        Default = Koza | Sth
+    };
+
     class Serialize
     {
         using test = Core::Utils::sth<Core::dunno>;
@@ -13,10 +33,9 @@ namespace koza::kwas
 
     public:
         std::string Name;
-    }
+    };
 
-    Meta(Serialize)
-    class MyGreatClass
+    class Meta(Serialize) MyGreatClass
     {
         [[nodiscard]]
         auto sth() -> bool;
@@ -25,11 +44,14 @@ namespace koza::kwas
          MyGreatClass();
         ~MyGreatClass();
 
-        operator==(const MyGreatClass&) = delete;
-        operator==(MyGreatClass&&) = default;
+        MyGreatClass& operator==(const MyGreatClass&) = delete;
+        MyGreatClass& operator==(MyGreatClass&&) = default;
 
         float Float;
-        int* pInt;
+        int*  pInt;
+
+        Meta(Serialize)
+        void ThePublic();
     };
 
     static_assert(true);

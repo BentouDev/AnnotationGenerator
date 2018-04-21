@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include "ReflectionUtils.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -38,6 +39,8 @@ namespace AccessType
 class MetaInfo
 {
 public:
+    virtual ~MetaInfo() = default;
+
     std::string Name;
 };
 
@@ -48,6 +51,8 @@ using TypeId = int;
 class TypeInfo : public MetaInfo
 {
 public:
+    virtual ~TypeInfo() = default;
+
     TypeId Id;
 };
 
@@ -69,7 +74,7 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-class MethodInfo
+class MethodInfo : public MetaInfo
 {
 public:
     TypeInfo ReturnType;
@@ -83,9 +88,9 @@ class ClassInfo : public TypeInfo
 public:
     ClassInfo* Super;
 
-    const std::vector<ClassInfo>  Interfaces;
-    const std::vector<FieldInfo>  Fields;
-    const std::vector<MethodInfo> Methods;
+    TReflectionVector<ClassInfo>  Interfaces;
+    TReflectionVector<FieldInfo>  Fields;
+    TReflectionVector<MethodInfo> Methods;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +106,7 @@ class EnumInfo : public TypeInfo
 {
 public:
     TypeInfo Super;
-    std::vector<EnumValueInfo> Values;
+    TReflectionVector<EnumValueInfo> Values;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

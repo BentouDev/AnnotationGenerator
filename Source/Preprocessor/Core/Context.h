@@ -19,9 +19,8 @@ namespace Data
 
         struct {
             SourceFile*                             CurrentSource;
-            std::vector<std::unique_ptr<ClassInfo>> Classes;
+            std::vector<std::shared_ptr<ClassInfo>> Classes;
             std::vector<std::string>                Includes;
-            unsigned int                            CurrentLevel;
         } Parser;
 
         struct {

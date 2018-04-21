@@ -11,10 +11,16 @@
 #define countof( X ) \
     std::extent<decltype(X)>::value
 
+#define CONCATENATE_DETAIL(x, y) x##y
+#define CONCATENATE(x, y) CONCATENATE_DETAIL(x, y)
+#define MAKE_UNIQUE(x) CONCATENATE(x, __COUNTER__)
+
+#define DISPOSE auto MAKE_UNIQUE(scope_exit_) = [&]()
+
 namespace Utils
 {
     template <typename T>
-    bool MatchesAny(const std::string& text, T collection)
+    bool MatchesAny(const std::string& text, const T& collection)
     {
         return std::any_of(std::begin(collection), std::end(collection), [&](const char* first){
             return std::strcmp(first, text.c_str()) == 0;
