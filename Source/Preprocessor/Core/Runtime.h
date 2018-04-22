@@ -5,15 +5,15 @@
 #ifndef ANNOTATIONGENERATOR_RUNTIME_H
 #define ANNOTATIONGENERATOR_RUNTIME_H
 
-
 #include "Context.h"
 
 class Runtime
 {
     Data::Context& Context;
 
-    void ProcessPattern(SourcePattern& pattern);
+    void ProcessPattern (SourcePattern& pattern);
     void ParseSourceFile(SourceFile& file);
+    void GenerateOutput (SourceFile& file);
 
 public:
     explicit Runtime(Data::Context& context);

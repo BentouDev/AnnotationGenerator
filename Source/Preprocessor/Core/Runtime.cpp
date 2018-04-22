@@ -4,8 +4,10 @@
 
 #include "Runtime.h"
 #include <memory>
-#include "Parsing/Parser.h"
+
 #include "Parsing/CursorHandlerFactory.h"
+#include "Parsing/Parser.h"
+#include "Generator.h"
 #include "Context.h"
 
 Runtime::Runtime(Data::Context& context)
@@ -44,9 +46,14 @@ int Runtime::Run()
 
 void Runtime::ProcessPattern(SourcePattern& pattern)
 {
+    pattern.LoadTemplate();
+
+    Context.Generator.CurrentPattern = &pattern;
+
     for (auto& file : pattern.Sources)
     {
         ParseSourceFile(*file);
+        GenerateOutput (*file);
     }
 }
 
@@ -56,4 +63,12 @@ void Runtime::ParseSourceFile(SourceFile& file)
 
     Parser parser(Context);
     parser.ProcessFile();
+}
+
+void Runtime::GenerateOutput(SourceFile& file)
+{
+    Context.Generator.CurrentSource = &file;
+
+    Generator generator(Context);
+    generator.GenerateFiles();
 }

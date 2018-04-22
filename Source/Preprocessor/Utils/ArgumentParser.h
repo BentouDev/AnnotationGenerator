@@ -15,7 +15,7 @@ class ArgumentParser
 {
     Data::Context& Context;
 
-    void ParseTemplates(const nlohmann::json& parser, const std::vector<std::string>& files);
+    void ParseTemplates(const nlohmann::json& parser, const fs::path& directory, const std::vector<std::string>& files);
     void BuildContext(const fs::path& template_file, const std::vector<std::string>& files);
 
 public:

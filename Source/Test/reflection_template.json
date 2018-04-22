@@ -1,9 +1,8 @@
 {
   "patterns" : [
     {
-      "template" : [
-        "reflection_header.mustache",
-        "reflection_unit.mustache"
+      "template" :[
+        "reflection_header.mustache"
       ],
       "file" : "(\\W|\\w)*\\.h\\b",
       "annotation" : "Meta"

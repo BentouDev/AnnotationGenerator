@@ -50,14 +50,19 @@ bool ArgumentParser::Parse(int argc, char** argv)
     return true;
 }
 
-void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const std::vector<std::string>& files)
+void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path& directory, const std::vector<std::string>& files)
 {
     for (auto& element : parser["patterns"])
     {
         auto& pattern = Context.Templates.emplace_back(std::make_unique<SourcePattern>());
 
         for (auto& tmpl : element["template"])
-            pattern->Templates.push_back(tmpl.get<std::string>());
+        {
+            fs::path path = directory;
+                     path.append(tmpl.get<std::string>());
+
+            pattern->Templates.emplace_back(std::make_unique<MustacheTemplate>(path));
+        }
 
         for (auto& file_path : files)
         {
@@ -87,7 +92,7 @@ void ArgumentParser::BuildContext(const fs::path& template_file, const std::vect
         std::ifstream file(template_file);
         json          parser = json::parse(file);
 
-        ParseTemplates(parser, files);
+        ParseTemplates(parser, template_file.parent_path(), files);
     }
     catch (std::exception& e)
     {

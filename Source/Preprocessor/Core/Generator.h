@@ -5,7 +5,6 @@
 #ifndef ANNOTATIONGENERATOR_GENERATOR_H
 #define ANNOTATIONGENERATOR_GENERATOR_H
 
-
 #include "Context.h"
 
 class Generator
