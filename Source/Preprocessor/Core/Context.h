@@ -9,6 +9,7 @@
 #include <memory>
 #include "SourcePattern.h"
 #include "ReflectionInfo.h"
+#include "Parsing/ParseContext.h"
 
 namespace Data
 {
@@ -17,11 +18,7 @@ namespace Data
     public:
         std::vector<std::unique_ptr<SourcePattern>> Templates;
 
-        struct {
-            SourceFile*                             CurrentSource;
-            std::vector<std::shared_ptr<ClassInfo>> Classes;
-            std::vector<std::string>                Includes;
-        } Parser;
+        ParseContext Parser;
 
         struct {
             SourceFile*    CurrentSource;

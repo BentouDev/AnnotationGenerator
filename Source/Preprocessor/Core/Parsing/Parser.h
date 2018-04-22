@@ -6,8 +6,8 @@
 #define ANNOTATIONGENERATOR_PREPROCESSOR_H
 
 #include <clang-c/Index.h>
-#include "Context.h"
-#include "../Utils/Filesystem.h"
+#include "../Context.h"
+#include "../../Utils/Filesystem.h"
 
 class SourceFile;
 

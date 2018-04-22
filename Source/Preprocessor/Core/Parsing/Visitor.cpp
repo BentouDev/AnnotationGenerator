@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "Visitor.h"
-#include "Context.h"
+#include "../Context.h"
 
 Visitor::ScopeInfo::ScopeInfo(std::shared_ptr<MetaInfo> obj, const std::string& name, CXCursor cursor)
 : ReflectionObj(obj), Name(name), Cursor(cursor)
@@ -21,68 +21,14 @@ std::shared_ptr<ClassInfo> Visitor::ScopeInfo::asType() const
 
 Visitor::Visitor(Data::Context& context)
 : Context(context)
-{
-    // Move this to factory
-    auto register_type = [this](CXCursor cursor) { return TryRegisterType(cursor); };
-    auto register_enum = [this](CXCursor cursor) { return TryRegisterEnum(cursor); };
-
-    GlobalScopeHandler[CXCursor_EnumDecl]   = register_enum;
-    GlobalScopeHandler[CXCursor_ClassDecl]  = register_type;
-    GlobalScopeHandler[CXCursor_StructDecl] = register_type;
-    GlobalScopeHandler[CXCursor_Namespace]  = [this](CXCursor) -> TCursorResolveResult { return {true, nullptr}; };
-
-    TypeScopeHandler[CXCursor_EnumDecl]     = register_enum;
-    TypeScopeHandler[CXCursor_ClassDecl]    = register_type;
-    TypeScopeHandler[CXCursor_StructDecl]   = register_type;
-    TypeScopeHandler[CXCursor_FieldDecl]    = [this](CXCursor cursor) { return TryRegisterField(cursor); };
-    TypeScopeHandler[CXCursor_FunctionDecl] = [this](CXCursor cursor) { return TryRegisterMethod(cursor); };
-}
-
-auto Visitor::TryRegisterEnum(CXCursor cursor) -> TCursorResolveResult
-{
-    return {false, nullptr};
-}
-
-auto Visitor::TryRegisterType(CXCursor cursor) -> TCursorResolveResult
-{
-    auto& clazz = Context.Parser.Classes.emplace_back(std::make_shared<ClassInfo>());
-    clazz->Name = GetCursorSpelling(cursor);
-
-    return {true, clazz};
-}
-
-auto Visitor::TryRegisterField(CXCursor cursor) -> TCursorResolveResult
-{
-    auto field = Scope.top()->asType()->Fields.emplace_back(std::make_shared<FieldInfo>());
-    field->Name = GetCursorSpelling(cursor);
-
-    return {false, field};
-}
-
-auto Visitor::TryRegisterMethod(CXCursor cursor) -> TCursorResolveResult
-{
-    auto method = Context.Parser.Classes.back()->Methods.emplace_back(std::make_shared<MethodInfo>());
-    method->Name = GetCursorSpelling(cursor);
-
-    return {false, method};
-}
-
-auto Visitor::TryAssignAnnotation(CXCursor cursor) -> TCursorResolveResult
-{
-    return {false, nullptr};
-}
+{ }
 
 auto Visitor::ResolveCursor(CXCursor cursor, CXCursorKind cursorKind) -> TCursorResolveResult
 {
     bool  is_in_type_scope = !Scope.empty() && Scope.top()->isType;
-    auto& scope_dictionary = is_in_type_scope ? TypeScopeHandler : GlobalScopeHandler;
+    auto& scope_handler = is_in_type_scope ? Context.Parser.TypeFactory : Context.Parser.GlobalFactory;
 
-    if (auto itr = scope_dictionary.find(cursorKind); itr != scope_dictionary.end())
-    {
-        return (itr->second)(cursor);
-    }
-
-    return {false, nullptr};
+    return scope_handler->Handle(Context.Parser, cursor, cursorKind, *this);
 }
 
 std::string Visitor::GetCursorKindName(CXCursorKind cursorKind)

@@ -3,9 +3,9 @@
 //
 
 #include "Parser.h"
-#include "Context.h"
+#include "../Context.h"
 #include "Visitor.h"
-#include "../Utils/Utils.h"
+#include "../../Utils/Utils.h"
 
 #include <clang-c/Index.h>
 #include <iostream>

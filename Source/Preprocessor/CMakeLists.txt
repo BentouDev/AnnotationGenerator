@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 project(Preprocessor VERSION 0.1 LANGUAGES CXX C)
 
-add_executable(Preprocessor main.cpp Utils/ArgumentParser.cpp Utils/ArgumentParser.h Utils/Argument.cpp Utils/Argument.h Core/Parser.cpp Core/Parser.h Core/Context.cpp Core/Context.h Utils/Utils.h Core/SourceFile.cpp Core/SourceFile.h Utils/Filesystem.h Core/SourcePattern.cpp Core/SourcePattern.h Core/Runtime.cpp Core/Runtime.h Core/Generator.cpp Core/Generator.h Core/Visitor.cpp Core/Visitor.h)
+add_executable(Preprocessor main.cpp Utils/ArgumentParser.cpp Utils/ArgumentParser.h Utils/Argument.cpp Utils/Argument.h Core/Parsing/Parser.cpp Core/Parsing/Parser.h Core/Context.cpp Core/Context.h Utils/Utils.h Core/SourceFile.cpp Core/SourceFile.h Utils/Filesystem.h Core/SourcePattern.cpp Core/SourcePattern.h Core/Runtime.cpp Core/Runtime.h Core/Generator.cpp Core/Generator.h Core/Parsing/Visitor.cpp Core/Parsing/Visitor.h Core/Parsing/CursorHandlerFactory.cpp Core/Parsing/CursorHandlerFactory.h Core/Parsing/ParseContext.cpp Core/Parsing/ParseContext.h Core/Parsing/Typedefs.h)
 set_target_properties(Preprocessor PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 17)
 
 target_compile_definitions(Preprocessor PRIVATE -DANNOTATION_GENERATOR)

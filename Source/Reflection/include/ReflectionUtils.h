@@ -5,6 +5,9 @@
 #ifndef ANNOTATIONGENERATOR_REFLECTIONUTILS_H
 #define ANNOTATIONGENERATOR_REFLECTIONUTILS_H
 
+#include <vector>
+#include <memory>
+
 #ifndef ANNOTATION_GENERATOR
 template <typename T>
 using TReflectionVector = const std::vector<T>;

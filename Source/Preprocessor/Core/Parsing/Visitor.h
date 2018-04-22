@@ -9,13 +9,13 @@
 #include <map>
 #include <stack>
 #include <functional>
-#include "Context.h"
+
+#include "Typedefs.h"
+#include "../Context.h"
 
 class Visitor
 {
     static CXChildVisitResult routine_wrapper(CXCursor cursor, CXCursor /* parent */, CXClientData data);
-    using TCursorResolveResult = std::pair<bool, std::shared_ptr<MetaInfo>>;
-    using TCursorTypeHandler   = std::function<TCursorResolveResult(CXCursor)>;
 
     struct ScopeInfo
     {
@@ -29,29 +29,25 @@ class Visitor
 
     };
 
+    using TScope = std::stack<std::unique_ptr<ScopeInfo>>;
+
     fs::path    GetCursorSourcePath(CXCursor param);
     std::string GetCursorKindName(CXCursorKind cursorKind);
-    std::string GetCursorSpelling(CXCursor cursor);
-
-    auto TryRegisterType(CXCursor cursor) -> TCursorResolveResult;
-    auto TryRegisterEnum(CXCursor cursor) -> TCursorResolveResult;
-    auto TryRegisterField(CXCursor cursor) -> TCursorResolveResult;
-    auto TryRegisterMethod(CXCursor cursor) -> TCursorResolveResult;
-    auto TryAssignAnnotation(CXCursor cursor) -> TCursorResolveResult;
 
     TCursorResolveResult ResolveCursor(CXCursor cursor, CXCursorKind kind);
     CXChildVisitResult   RoutineStep(CXCursor cursor, CXCursor parent);
 
     Data::Context& Context;
 
-    std::stack<std::unique_ptr<ScopeInfo>> Scope;
-    std::map<CXCursorKind, TCursorTypeHandler> TypeScopeHandler;
-    std::map<CXCursorKind, TCursorTypeHandler> GlobalScopeHandler;
+    TScope Scope;
 
 public:
     explicit Visitor(Data::Context& context);
 
     void VisitChildren(CXCursor param);
+
+    std::string GetCursorSpelling(CXCursor cursor);
+    TScope&     GetScope() { return Scope; }
 };
 
 
