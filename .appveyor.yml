@@ -3,10 +3,8 @@ version: 1.0.{build}
 image:
   - Visual Studio 2017
 
-matrix:
-  platform: x64
-  configuration:
-    - Release
+platform: x64
+configuration: Release
 
 install:
   - git submodule update --init --recursive
