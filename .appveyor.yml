@@ -1,0 +1,18 @@
+version: 1.0.{build}
+
+configuration:
+  - Release
+
+install:
+  - cinst llvm
+  - git submodule update --init --recursive
+
+before_build:
+  - msbuild /version
+  - mkdir Build && cd Build
+  - cmake ..
+
+build:
+  project: C:\projects\AnnotationGenerator\Build\ALL_BUILD.vcxproj
+  verbosity: minimal
+  parallel: true
