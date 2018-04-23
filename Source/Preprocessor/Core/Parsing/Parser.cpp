@@ -19,8 +19,6 @@ std::vector<cstring> Parser::BuildArguments()
     std::vector<cstring> result =
     {
         "-std=c++17",
-//        "-nostdinc",
-//        "-nostdinc++",
         "-Wmicrosoft",
         "-Wunknown-pragmas",
         "-D_DEBUG=1"
@@ -44,7 +42,7 @@ CXUnsavedFile Parser::BuildWorkerFile(const std::string& content)
     CXUnsavedFile worker_file{};
     worker_file.Filename = "__temp.cpp";
     worker_file.Contents = content.c_str();
-    worker_file.Length   = content.size();
+    worker_file.Length   = (unsigned long) content.size();
 
     return worker_file;
 }

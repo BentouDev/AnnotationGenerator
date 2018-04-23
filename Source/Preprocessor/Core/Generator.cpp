@@ -75,11 +75,14 @@ void Generator::GenerateFiles()
     {
         for (auto& type : Context.Parser.Classes)
         {
-            fs::path     path = BuildOutputPath(templ, type);
-            std::fstream file(path, std::ios_base::out);
+            if (templ->View)
+            {
+                fs::path     path = BuildOutputPath(templ, type);
+                std::fstream file(path, std::ios_base::out);
 
-            file << templ->View->render(BuildTypeData(type));
-            file.close();
+                file << templ->View->render(BuildTypeData(type));
+                file.close();
+            }
         }
     }
 }
