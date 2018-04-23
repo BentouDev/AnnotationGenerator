@@ -1,2 +1,4 @@
 # AnnotationGenerator
-Clang based C++ preprocessor adding annotation based code generation
+[![Build Status](https://travis-ci.org/BentouDev/AnnotationGenerator.svg?branch=master)](https://travis-ci.org/BentouDev/AnnotationGenerator)
+
+Clang based C++ preprocessor for annotation based reflection generation

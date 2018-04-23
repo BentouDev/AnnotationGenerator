@@ -9,7 +9,8 @@ dist: trusty
 addons:
   apt:
     packages:
-      - libclang-dev
+      - clang-5.0
+      - libclang-dev-5.0
 
 matrix:
   include:
