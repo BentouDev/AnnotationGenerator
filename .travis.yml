@@ -12,7 +12,7 @@ addons:
       - llvm-toolchain-trusty-5.0
     packages:
       - clang-5.0
-      - libclang-dev-5.0
+      - libclang-5.0-dev
 
 matrix:
   include:
