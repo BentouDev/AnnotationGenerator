@@ -1,0 +1,29 @@
+language: cpp
+
+notifications:
+  email: false
+
+sudo: false
+dist: trusty
+
+addons:
+  apt:
+    packages:
+      - libclang-dev
+
+matrix:
+  include:
+    - os: linux
+      compiler: clang-5
+      before_script:
+        - cmake --target all .
+
+before-install:
+  - git submodule update --init --recursive
+
+install:
+  - clang++ --version
+  - cmake --version
+
+script:
+  - make
