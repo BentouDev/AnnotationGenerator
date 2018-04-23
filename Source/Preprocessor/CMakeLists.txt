@@ -12,4 +12,10 @@ target_include_directories(Preprocessor PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include> )
 
-target_link_libraries(Preprocessor Reflection ${LIBCLANG_LIBRARIES} stdc++fs)
+if (WIN32)
+        set(OS_LIBRARIES )
+else()
+        set(OS_LIBRARIES stdc++fs)
+endif()
+
+target_link_libraries(Preprocessor Reflection ${LIBCLANG_LIBRARIES} ${OS_LIBRARIES})

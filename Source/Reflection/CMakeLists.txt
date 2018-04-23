@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 project(Reflection VERSION 0.1 LANGUAGES CXX C)
 
-add_library(Reflection include/ReflectionInfo.h include/ReflectionUtils.h)
+add_library(Reflection STATIC src/ReflectionInfo.cpp include/ReflectionInfo.h include/ReflectionUtils.h)
 
 install(TARGETS Reflection
         ARCHIVE  DESTINATION lib
@@ -12,7 +12,8 @@ install(DIRECTORY include/ DESTINATION include)
 
 target_include_directories(Reflection PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include> )
+        $<INSTALL_INTERFACE:include> 
+        PRIVATE src)
 
 set_target_properties(Reflection PROPERTIES LINKER_LANGUAGE CXX)
 export(TARGETS Reflection FILE ReflectionConfig.cmake)
