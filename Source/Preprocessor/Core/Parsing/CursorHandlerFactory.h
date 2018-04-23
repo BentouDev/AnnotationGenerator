@@ -18,8 +18,6 @@ class CursorHandlerFactory
     std::map<CXCursorKind, TCursorTypeHandler> Data;
 
 public:
-    CursorHandlerFactory();
-
     void RegisterHandlers(const std::vector<std::pair<CXCursorKind, TCursorTypeHandler>>& handlers);
     void RegisterHandler(CXCursorKind cursorKind, const TCursorTypeHandler& handler);
     auto Handle(ParseContext& context, CXCursor cursor, CXCursorKind kind, Visitor& visitor) -> TCursorResolveResult;

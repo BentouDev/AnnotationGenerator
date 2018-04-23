@@ -5,9 +5,7 @@
 #include "CursorHandlerFactory.h"
 #include "ParseContext.h"
 #include "Visitor.h"
-
-CursorHandlerFactory::CursorHandlerFactory()
-{ }
+#include "../../Utils/Utils.h"
 
 void CursorHandlerFactory::RegisterHandlers(const std::vector<std::pair<CXCursorKind, TCursorTypeHandler>>& handlers)
 {
@@ -36,11 +34,19 @@ namespace Handlers
 {
     auto HandleNamespace(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
+        UNUSED(context);
+        UNUSED(cursor);
+        UNUSED(visitor);
+
         return { true, nullptr };
     }
 
     auto HandleEnum(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
+        UNUSED(context);
+        UNUSED(cursor);
+        UNUSED(visitor);
+
         return { false, nullptr };
     }
 
@@ -54,6 +60,8 @@ namespace Handlers
 
     auto HandleField(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
+        UNUSED(context);
+
         auto field  = visitor.GetScope().top()->asType()->Fields.emplace_back(std::make_shared<FieldInfo>());
         field->Name = visitor.GetCursorSpelling(cursor);
 
@@ -70,6 +78,10 @@ namespace Handlers
 
     auto HandleAnnotation(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
+        UNUSED(context);
+        UNUSED(cursor);
+        UNUSED(visitor);
+
         return { false, nullptr };
     }
 }

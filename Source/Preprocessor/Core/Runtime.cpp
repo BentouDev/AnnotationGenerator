@@ -17,11 +17,11 @@ Runtime::Runtime(Data::Context& context)
     Context.Parser.TypeFactory   = std::make_unique<CursorHandlerFactory>();
 
     Context.Parser.GlobalFactory->RegisterHandlers({
-       { CXCursor_EnumDecl,      Handlers::HandleEnum },
-       { CXCursor_ClassDecl,     Handlers::HandleType },
-       { CXCursor_StructDecl,    Handlers::HandleType },
-       { CXCursor_ClassTemplate, Handlers::HandleType },
-       { CXCursor_Namespace,     Handlers::HandleNamespace }
+        { CXCursor_EnumDecl,      Handlers::HandleEnum },
+        { CXCursor_ClassDecl,     Handlers::HandleType },
+        { CXCursor_StructDecl,    Handlers::HandleType },
+        { CXCursor_ClassTemplate, Handlers::HandleType },
+        { CXCursor_Namespace,     Handlers::HandleNamespace }
     });
 
     Context.Parser.TypeFactory->RegisterHandlers({
@@ -31,7 +31,8 @@ Runtime::Runtime(Data::Context& context)
         { CXCursor_ClassTemplate, Handlers::HandleType },
         { CXCursor_FieldDecl,     Handlers::HandleField },
         { CXCursor_FunctionDecl,  Handlers::HandleMethod },
-        { CXCursor_CXXMethod,     Handlers::HandleMethod }
+        { CXCursor_CXXMethod,     Handlers::HandleMethod },
+        { CXCursor_AnnotateAttr,  Handlers::HandleAnnotation },
     });
 }
 
