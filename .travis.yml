@@ -14,6 +14,7 @@ addons:
       - clang-5.0
       - libc++-dev
       - libclang-5.0-dev
+      - llvm-5.0-dev
 
 matrix:
   include:
