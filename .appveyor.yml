@@ -1,7 +1,15 @@
 version: 1.0.{build}
 
+image:
+  - Visual Studio 2017
+
 configuration:
   - Release
+
+cache:
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
+  - C:\Program Files\LLVM -> appveyor.yml
 
 install:
   - cinst llvm
