@@ -1,4 +1,4 @@
-# Clang based C++ preprocessor adding annotation based code generation
+# Clang based C++ preprocessor for annotation based reflection generation 
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 project(Reflection VERSION 0.1 LANGUAGES CXX C)
 
