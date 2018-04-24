@@ -27,6 +27,7 @@ namespace Handlers
 {
     auto HandleNamespace (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
     auto HandleType      (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
+    auto HandleTypeAlias (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
     auto HandleEnum      (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
     auto HandleField     (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
     auto HandleMethod    (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;

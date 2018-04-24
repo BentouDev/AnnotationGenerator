@@ -50,12 +50,61 @@ namespace Handlers
         return { false, nullptr };
     }
 
+    auto HandleTypeAlias(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
+    {
+        std::string name       = visitor.GetCursorSpelling(cursor);
+        auto        type       = clang_getCursorType(cursor);
+        auto        canon      = clang_getCanonicalType(type);
+        auto        canon_ref  = clang_getTypeSpelling(canon);
+        std::string canon_name = clang_getCString(canon_ref);
+
+        if (canon_name.empty())
+        {
+            canon_name = name;
+            std::cerr << "Warning: unable to get canon name for type '" << name << "'!"
+                      << std::endl << "\t" << context.CurrentSource->Path << std::endl;
+        }
+
+        if (auto itr = context.Classes.find(canon_name); itr == context.Classes.end())
+        {
+            auto clazz            = std::make_shared<ClassInfo>();
+                 clazz->Name      = name;
+                 clazz->CanonName = canon_name;
+
+            context.Classes.insert(std::make_pair(canon_name, clazz));
+
+            return { true, clazz };
+        }
+
+        return { false, nullptr };
+    }
+
     auto HandleType(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
-        auto& clazz = context.Classes.emplace_back(std::make_shared<ClassInfo>());
-        clazz->Name = visitor.GetCursorSpelling(cursor);
+        std::string name       = visitor.GetCursorSpelling(cursor);
+        auto        type       = clang_getCursorType(cursor);
+        auto        canon_ref  = clang_getTypeSpelling(type);
+        std::string canon_name = clang_getCString(canon_ref);
 
-        return { true, clazz };
+        if (canon_name.empty())
+        {
+            canon_name = name;
+            std::cerr << "Warning: unable to get canon name for type '" << name << "'!"
+                      << std::endl << "\t" << context.CurrentSource->Path << std::endl;
+        }
+
+        if (auto itr = context.Classes.find(canon_name); itr == context.Classes.end())
+        {
+            auto clazz       = std::make_shared<ClassInfo>();
+            clazz->Name      = name;
+            clazz->CanonName = canon_name;
+
+            context.Classes.insert(std::make_pair(canon_name, clazz));
+
+            return { true, clazz };
+        }
+
+        return { false, nullptr };
     }
 
     auto HandleField(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
@@ -70,7 +119,7 @@ namespace Handlers
 
     auto HandleMethod(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
-        auto method  = context.Classes.back()->Methods.emplace_back(std::make_shared<MethodInfo>());
+        auto method  = visitor.GetScope().top()->asType()->Methods.emplace_back(std::make_shared<MethodInfo>());
         method->Name = visitor.GetCursorSpelling(cursor);
 
         return { false, method };

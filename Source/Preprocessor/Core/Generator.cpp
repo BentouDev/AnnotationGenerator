@@ -24,7 +24,7 @@ TMustacheData Generator::BuildTypeData(std::shared_ptr<ClassInfo>& type)
 
 TMustacheData Generator::BuildFieldData(std::shared_ptr<ClassInfo>& type)
 {
-    TMustacheData fields {TMustacheData::type::list};
+    TMustacheData fields { TMustacheData::type::list };
 
     for (auto& field : type->Fields)
     {
@@ -42,7 +42,7 @@ TMustacheData Generator::BuildFieldData(std::shared_ptr<ClassInfo>& type)
 
 TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
 {
-    TMustacheData methods{TMustacheData::type::list};
+    TMustacheData methods { TMustacheData::type::list };
 
     for (auto& method : type->Methods)
     {
@@ -73,7 +73,7 @@ void Generator::GenerateFiles()
 {
     for (auto& templ : Context.Generator.CurrentPattern->Templates)
     {
-        for (auto& type : Context.Parser.Classes)
+        for (auto& [_, type] : Context.Parser.Classes)
         {
             if (templ->View)
             {

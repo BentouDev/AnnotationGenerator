@@ -86,7 +86,8 @@ public:
 class ClassInfo : public TypeInfo
 {
 public:
-    ClassInfo* Super;
+    ClassInfo*  Super;
+    std::string CanonName;
 
     TReflectionVector<ClassInfo>  Interfaces;
     TReflectionVector<FieldInfo>  Fields;

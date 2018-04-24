@@ -35,6 +35,10 @@ namespace koza::kwas
         std::string Name;
     };
 
+    using AliasSerialize = Serialize;
+
+    typedef Serialize TypedefSerialize;
+
     class Meta(Serialize) MyGreatClass
     {
         [[nodiscard]]

@@ -9,11 +9,13 @@
 #include "CursorHandlerFactory.h"
 #include "../SourceFile.h"
 
+using TClassMap = std::map<std::string, std::shared_ptr<ClassInfo>>;
+
 class ParseContext
 {
 public:
     SourceFile*                             CurrentSource;
-    std::vector<std::shared_ptr<ClassInfo>> Classes;
+    TClassMap                               Classes;
     std::vector<std::string>                Includes;
 
     std::unique_ptr<CursorHandlerFactory>   GlobalFactory;

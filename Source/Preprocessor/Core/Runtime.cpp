@@ -21,7 +21,9 @@ Runtime::Runtime(Data::Context& context)
         { CXCursor_ClassDecl,     Handlers::HandleType },
         { CXCursor_StructDecl,    Handlers::HandleType },
         { CXCursor_ClassTemplate, Handlers::HandleType },
-        { CXCursor_Namespace,     Handlers::HandleNamespace }
+        { CXCursor_TypedefDecl,   Handlers::HandleTypeAlias },
+        { CXCursor_TypeAliasDecl, Handlers::HandleTypeAlias },
+        { CXCursor_Namespace,     Handlers::HandleNamespace },
     });
 
     Context.Parser.TypeFactory->RegisterHandlers({
@@ -29,6 +31,8 @@ Runtime::Runtime(Data::Context& context)
         { CXCursor_ClassDecl,     Handlers::HandleType },
         { CXCursor_StructDecl,    Handlers::HandleType },
         { CXCursor_ClassTemplate, Handlers::HandleType },
+        { CXCursor_TypedefDecl,   Handlers::HandleTypeAlias },
+        { CXCursor_TypeAliasDecl, Handlers::HandleTypeAlias },
         { CXCursor_FieldDecl,     Handlers::HandleField },
         { CXCursor_FunctionDecl,  Handlers::HandleMethod },
         { CXCursor_CXXMethod,     Handlers::HandleMethod },
