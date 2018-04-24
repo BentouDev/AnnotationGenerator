@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cstring>
 #include <string>
+#include <stack>
 
 #define countof( X ) \
     std::extent<decltype(X)>::value
@@ -28,6 +29,22 @@ namespace Utils
             return std::strcmp(first, text.c_str()) == 0;
         });
     }
+
+    template<typename T, typename Container = std::deque<T>>
+    class IterableStack
+            : public std::stack<T, Container>
+    {
+        using std::stack<T, Container>::c;
+
+    public:
+
+        // expose just the iterators of the underlying container
+        auto begin() { return std::begin(c); }
+        auto end() { return std::end(c); }
+
+        auto begin() const { return std::begin(c); }
+        auto end() const { return std::end(c); }
+    };
 }
 
 #endif //ANNOTATIONGENERATOR_UTILS_H

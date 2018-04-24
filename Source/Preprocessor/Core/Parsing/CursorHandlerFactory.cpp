@@ -60,9 +60,10 @@ namespace Handlers
 
         if (canon_name.empty())
         {
-            canon_name = name;
-            std::cerr << "Warning: unable to get canon name for type '" << name << "'!"
-                      << std::endl << "\t" << context.CurrentSource->Path << std::endl;
+            std::stringstream ss;
+            ss << visitor.BuildScopeNamePrefix() << name;
+
+            canon_name = ss.str();
         }
 
         if (auto itr = context.Classes.find(canon_name); itr == context.Classes.end())
@@ -88,9 +89,10 @@ namespace Handlers
 
         if (canon_name.empty())
         {
-            canon_name = name;
-            std::cerr << "Warning: unable to get canon name for type '" << name << "'!"
-                      << std::endl << "\t" << context.CurrentSource->Path << std::endl;
+            std::stringstream ss;
+            ss << visitor.BuildScopeNamePrefix() << name;
+
+            canon_name = ss.str();
         }
 
         if (auto itr = context.Classes.find(canon_name); itr == context.Classes.end())

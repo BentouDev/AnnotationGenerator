@@ -12,6 +12,7 @@
 
 #include "Typedefs.h"
 #include "../Context.h"
+#include "../../Utils/Utils.h"
 
 class Visitor
 {
@@ -29,7 +30,7 @@ class Visitor
 
     };
 
-    using TScope = std::stack<std::unique_ptr<ScopeInfo>>;
+    using TScope = Utils::IterableStack<std::unique_ptr<ScopeInfo>>;
 
     fs::path    GetCursorSourcePath(CXCursor param);
     std::string GetCursorKindName(CXCursorKind cursorKind);
@@ -47,6 +48,7 @@ public:
     void VisitChildren(CXCursor param);
 
     std::string GetCursorSpelling(CXCursor cursor);
+    std::string BuildScopeNamePrefix() const;
     TScope&     GetScope() { return Scope; }
 };
 

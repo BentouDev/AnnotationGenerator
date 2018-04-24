@@ -23,6 +23,20 @@ Visitor::Visitor(Data::Context& context)
 : Context(context)
 { }
 
+std::string Visitor::BuildScopeNamePrefix() const
+{
+    if (Scope.empty())
+        return std::string();
+
+    std::stringstream ss;
+    for (auto& scope : Scope)
+    {
+        ss << scope->Name << "::";
+    }
+
+    return ss.str();
+}
+
 auto Visitor::ResolveCursor(CXCursor cursor, CXCursorKind cursorKind) -> TCursorResolveResult
 {
     bool  is_in_type_scope = !Scope.empty() && Scope.top()->isType;
