@@ -61,7 +61,7 @@ public:
 class FieldInfo : public MetaInfo
 {
 public:
-    TypeInfo          BaseType;
+    TRef<TypeInfo>    BaseType;
     AccessType::TYPE  AccessType;
     ValueType::TYPE   ValueType;
 
@@ -77,8 +77,8 @@ public:
 class MethodInfo : public MetaInfo
 {
 public:
-    TypeInfo ReturnType;
-    std::vector<TypeInfo> Parameters;
+    TRef<TypeInfo>              ReturnType;
+    TReflectionVector<TypeInfo> Parameters;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ public:
 class EnumInfo : public TypeInfo
 {
 public:
-    TypeInfo Super;
+    TRef<TypeInfo>                   Super;
     TReflectionVector<EnumValueInfo> Values;
 };
 

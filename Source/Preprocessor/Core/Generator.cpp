@@ -31,7 +31,7 @@ TMustacheData Generator::BuildFieldData(std::shared_ptr<ClassInfo>& type)
     {
         TMustacheData field_data;
         field_data.set("name", field->Name);
-        field_data.set("type", field->BaseType.Name);
+        field_data.set("type", field->BaseType->Name);
         field_data.set("access", field->AccessType);
         field_data.set("offset", "0");
 
@@ -49,7 +49,7 @@ TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
     {
         TMustacheData method_data;
         method_data.set("name", method->Name);
-        method_data.set("return_type", method->ReturnType.Name);
+        method_data.set("return_type", method->ReturnType->Name);
         method_data.set("offset", "0");
 
         methods << method_data;

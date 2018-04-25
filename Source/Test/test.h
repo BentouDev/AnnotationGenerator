@@ -56,7 +56,25 @@ namespace koza::kwas
 
         Meta(Serialize)
         void ThePublic();
+
+        int normalMethod(float f, bool* b);
+
+        Core::dunno  byValue();
+        Core::dunno* byPtr();
+        Core::dunno& byRef();
+
+        Core::Utils::sth<Core::dunno> getTemplate();
+        void setTemplate(Core::Utils::sth<Core::dunno>& sth);
+
+        template <typename T>
+        void theTemplatedMethod(T* something);
     };
+
+    // Surprise!
+    int MyGreatClass::normalMethod(float f, bool* b)
+    {
+
+    }
 
     static_assert(true);
 }

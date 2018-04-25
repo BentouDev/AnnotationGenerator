@@ -1,13 +1,13 @@
 #include <Reflection/ReflectionInfo.h>
 
-namespace Metadata
+namespace Meta::ReflectionData
 {
-    class {{class_name}}Meta : public ClassInfo
+    class meta_{{class_name}} : public ClassInfo
     {
-        static {{class_name}}Meta Data;
+        static meta_{{class_name}} Data;
 
         // private constructor
-        {{class_name}}Meta();
+        meta_{{class_name}}();
 
         const std::string Name = "{{class_name}}";
         const std::string CanonicalName = "{{{canonical_name}}}";
@@ -18,18 +18,18 @@ namespace Metadata
 
     TReflectionVector<FieldInfo> {{class_name}}Meta::Fields = {
         {{#fields}}
-            { {{name}}, Meta::GetType< {{{type}}} >, {{access}}, {{offset}} },
+            { {{name}}, &{{{canonical_name}}}::{{name}}, {{access}}, Meta::GetType<{{{type}}}> },
         {{/fields}}
     };
 
     TReflectionVector<MethodInfo> {{class_name}}Meta::Methods = {
         {{#methods}}
-            { {{name}}, {{offset}}, {{{return_type}}} },
+            { {{name}}, &{{{canonical_name}}}::{{name}}, Meta::GetType<{{{return_type}}}> },
         {{/methods}}
     };
 }
 
 template <> ClassInfo* Meta::GetType<typename {{{canonical_name}}}>()
 {
-    return &Metadata::{{class_name}}Meta::Get();
+    return &Meta::ReflectionData::meta_{{class_name}}::Get();
 }

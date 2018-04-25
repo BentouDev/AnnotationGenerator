@@ -54,6 +54,15 @@ std::string Visitor::GetCursorKindName(CXCursorKind cursorKind)
     return result;
 }
 
+std::string Visitor::GetTypeSpelling(CXType type)
+{
+    CXString cursorSpelling = clang_getTypeSpelling(type);
+    std::string result      = clang_getCString(cursorSpelling);
+
+    clang_disposeString(cursorSpelling);
+    return result;
+}
+
 std::string Visitor::GetCursorSpelling(CXCursor cursor)
 {
     CXString cursorSpelling = clang_getCursorSpelling(cursor);
@@ -100,7 +109,7 @@ CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */)
               << ")" << std::endl;
 
     auto [is_scope, info] = ResolveCursor(cursor, cursorKind);
-    if (is_scope)
+    // if (is_scope)
     {
         Scope.emplace(std::make_unique<ScopeInfo>(info, cursorName, cursor));
         {

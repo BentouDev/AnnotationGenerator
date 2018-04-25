@@ -20,6 +20,8 @@ public:
 
     std::unique_ptr<CursorHandlerFactory>   GlobalFactory;
     std::unique_ptr<CursorHandlerFactory>   TypeFactory;
+
+    std::shared_ptr<TypeInfo> GetTypeInfo(const std::string& type_name);
 };
 
 #endif //ANNOTATIONGENERATOR_PARSECONTEXT_H

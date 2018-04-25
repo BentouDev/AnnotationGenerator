@@ -113,16 +113,31 @@ namespace Handlers
     {
         UNUSED(context);
 
-        auto field  = visitor.GetScope().top()->asType()->Fields.emplace_back(std::make_shared<FieldInfo>());
-        field->Name = visitor.GetCursorSpelling(cursor);
+        auto type       = clang_getCursorType(cursor);
+        auto field      = visitor.GetScope().top()->asType()->Fields.emplace_back(std::make_shared<FieldInfo>());
+        field->Name     = visitor.GetCursorSpelling(cursor);
+        field->BaseType = context.GetTypeInfo(visitor.GetTypeSpelling(type));
 
         return { false, field };
     }
 
     auto HandleMethod(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
-        auto method  = visitor.GetScope().top()->asType()->Methods.emplace_back(std::make_shared<MethodInfo>());
-        method->Name = visitor.GetCursorSpelling(cursor);
+        auto type        = clang_getCursorType(cursor);
+        auto return_type = clang_getResultType(type);
+        int  arg_count   = clang_Cursor_getNumArguments(cursor);
+
+        auto method             = visitor.GetScope().top()->asType()->Methods.emplace_back(std::make_shared<MethodInfo>());
+             method->Name       = visitor.GetCursorSpelling(cursor);
+             method->ReturnType = context.GetTypeInfo(visitor.GetTypeSpelling(return_type));
+
+        for (int i = 0; i < arg_count; i++)
+        {
+            auto arg_cursor = clang_Cursor_getArgument(cursor, i);
+            auto type       = clang_getCursorType(arg_cursor);
+
+            method->Parameters.emplace_back(context.GetTypeInfo(visitor.GetTypeSpelling(type)));
+        }
 
         return { false, method };
     }

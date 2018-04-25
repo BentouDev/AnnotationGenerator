@@ -48,6 +48,7 @@ public:
     void VisitChildren(CXCursor param);
 
     std::string GetCursorSpelling(CXCursor cursor);
+    std::string GetTypeSpelling(CXType cursor);
     std::string BuildScopeNamePrefix() const;
     TScope&     GetScope() { return Scope; }
 };

@@ -11,9 +11,14 @@
 #ifndef ANNOTATION_GENERATOR
 template <typename T>
 using TReflectionVector = const std::vector<T>;
+
+template <typename T>
+using TRef = const T;
 #else
 template <typename T>
 using TReflectionVector = std::vector<std::shared_ptr<T>>;
+template <typename T>
+using TRef = std::shared_ptr<T>;
 #endif
 
 #endif //ANNOTATIONGENERATOR_REFLECTIONUTILS_H
