@@ -15,10 +15,10 @@ Generator::Generator(Data::Context& context)
 TMustacheData Generator::BuildTypeData(std::shared_ptr<ClassInfo>& type)
 {
     TMustacheData data;
-    data.set("class_name", type->Name);
-    data.set("canonical_name", type->CanonName);
     data.set("fields", BuildFieldData (type));
     data.set("methods", BuildMethodData(type));
+    data.set("class_name", type->Name);
+    data.set("canonical_name", type->CanonName);
 
     return data;
 }
@@ -33,7 +33,6 @@ TMustacheData Generator::BuildFieldData(std::shared_ptr<ClassInfo>& type)
         field_data.set("name", field->Name);
         field_data.set("type", field->BaseType->Name);
         field_data.set("access", field->AccessType);
-        field_data.set("offset", "0");
 
         fields << field_data;
     }
@@ -50,7 +49,6 @@ TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
         TMustacheData method_data;
         method_data.set("name", method->Name);
         method_data.set("return_type", method->ReturnType->Name);
-        method_data.set("offset", "0");
 
         methods << method_data;
     }
@@ -60,11 +58,10 @@ TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
 
 fs::path Generator::BuildOutputPath(std::unique_ptr<MustacheTemplate>& templ, std::shared_ptr<ClassInfo>& type)
 {
-    fs::path    path      = templ->Path.parent_path();
-    std::string filename  = "gen_";
-    filename += type->Name;
-    filename += ".h";
+    TMustacheView out_name_view(Context.Generator.CurrentPattern->OutName);
 
+    fs::path    path      = templ->Path.parent_path();
+    std::string filename  = out_name_view.render({"class_name", type->Name});
     path.append(filename);
 
     return path;

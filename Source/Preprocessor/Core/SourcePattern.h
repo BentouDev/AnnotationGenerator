@@ -30,6 +30,9 @@ public:
     std::vector<std::unique_ptr<MustacheTemplate>> Templates;
     std::vector<std::unique_ptr<SourceFile>>       Sources;
 
+    std::string Annotation;
+    std::string OutName;
+
     void LoadTemplate();
 };
 

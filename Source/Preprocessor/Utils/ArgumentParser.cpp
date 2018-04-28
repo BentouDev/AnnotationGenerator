@@ -56,6 +56,9 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
     {
         auto& pattern = Context.Templates.emplace_back(std::make_unique<SourcePattern>());
 
+        pattern->Annotation = element["annotation"].get<std::string>();
+        pattern->OutName    = element["out name"]  .get<std::string>();
+
         for (auto& tmpl : element["template"])
         {
             fs::path path = directory;
