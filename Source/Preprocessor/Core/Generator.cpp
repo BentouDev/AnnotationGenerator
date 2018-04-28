@@ -5,6 +5,7 @@
 #include <fstream>
 #include "Generator.h"
 #include "Context.h"
+#include "../Utils/Utils.h"
 
 Generator::Generator(Data::Context& context)
     : Context(context)
@@ -71,15 +72,19 @@ void Generator::GenerateFiles()
 {
     for (auto& templ : Context.Generator.CurrentPattern->Templates)
     {
-        for (auto& [_, type] : Context.Parser.Classes)
+        if (templ->View)
         {
-            if (templ->View)
+            for (auto& [_, type] : Context.Parser.Classes)
             {
-                fs::path     path = BuildOutputPath(templ, type);
-                std::fstream file(path, std::ios_base::out);
+                if (std::string& ann_name = Context.Generator.CurrentPattern->Annotation;
+                    ann_name.empty() || Utils::MatchesAny(ann_name, type->Annotations))
+                {
+                    fs::path     path = BuildOutputPath(templ, type);
+                    std::fstream file(path, std::ios_base::out);
 
-                file << templ->View->render(BuildTypeData(type));
-                file.close();
+                    file << templ->View->render(BuildTypeData(type));
+                    file.close();
+                }
             }
         }
     }

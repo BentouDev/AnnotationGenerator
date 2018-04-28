@@ -33,7 +33,6 @@ class Visitor
     using TScope = Utils::IterableStack<std::unique_ptr<ScopeInfo>>;
 
     fs::path    GetCursorSourcePath(CXCursor param);
-    std::string GetCursorKindName(CXCursorKind cursorKind);
 
     TCursorResolveResult ResolveCursor(CXCursor cursor, CXCursorKind kind);
     CXChildVisitResult   RoutineStep(CXCursor cursor, CXCursor parent);
@@ -47,6 +46,7 @@ public:
 
     void VisitChildren(CXCursor param);
 
+    std::string GetCursorKindName(CXCursorKind cursorKind);
     std::string GetCursorSpelling(CXCursor cursor);
     std::string GetTypeSpelling(CXType cursor);
     std::string BuildScopeNamePrefix() const;

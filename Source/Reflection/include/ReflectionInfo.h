@@ -89,9 +89,10 @@ public:
     ClassInfo*  Super;
     std::string CanonName;
 
-    TReflectionVector<ClassInfo>  Interfaces;
-    TReflectionVector<FieldInfo>  Fields;
-    TReflectionVector<MethodInfo> Methods;
+    REF_CONST std::vector<std::string> Annotations;
+    TReflectionVector<ClassInfo>       Interfaces;
+    TReflectionVector<FieldInfo>       Fields;
+    TReflectionVector<MethodInfo>      Methods;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////

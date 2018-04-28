@@ -25,8 +25,8 @@ namespace Utils
     template <typename T>
     bool MatchesAny(const std::string& text, const T& collection)
     {
-        return std::any_of(std::begin(collection), std::end(collection), [&](const char* first){
-            return std::strcmp(first, text.c_str()) == 0;
+        return std::any_of(std::begin(collection), std::end(collection), [&](const auto& first){
+            return text == first;
         });
     }
 

@@ -145,8 +145,10 @@ namespace Handlers
     auto HandleAnnotation(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
         UNUSED(context);
-        UNUSED(cursor);
-        UNUSED(visitor);
+
+        std::string name = visitor.GetCursorSpelling(cursor);
+
+        visitor.GetScope().top()->asType()->Annotations.emplace_back(std::move(name));
 
         return { false, nullptr };
     }

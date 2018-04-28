@@ -4,7 +4,7 @@
       "template" : ["reflection_header.mustache"],
       "out name" : "meta_{{class_name}}.h",
       "file" : "(\\W|\\w)*\\.h\\b",
-      "annotation" : "Meta"
+      "annotation" : "Serialize"
     }
   ]
 }
