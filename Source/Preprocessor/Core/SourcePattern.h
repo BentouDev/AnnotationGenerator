@@ -26,14 +26,19 @@ struct MustacheTemplate
 
 class SourcePattern
 {
+private:
+    void LoadTemplate(std::unique_ptr<MustacheTemplate>& tmpl);
+
 public:
+    std::unique_ptr<MustacheTemplate>              MainTemplate;
     std::vector<std::unique_ptr<MustacheTemplate>> Templates;
     std::vector<std::unique_ptr<SourceFile>>       Sources;
 
     std::string Annotation;
-    std::string OutName;
+    std::string ClassOutName;
+    std::string MainOutName;
 
-    void LoadTemplate();
+    void LoadTemplates();
 };
 
 #endif //ANNOTATIONGENERATOR_CODETEMPLATE_H

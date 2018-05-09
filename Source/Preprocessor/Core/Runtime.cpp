@@ -52,7 +52,7 @@ int Runtime::Run()
 
 void Runtime::ProcessPattern(SourcePattern& pattern)
 {
-    pattern.LoadTemplate();
+    pattern.LoadTemplates();
 
     Context.Generator.CurrentPattern = &pattern;
 

@@ -6,24 +6,31 @@
 #include <iostream>
 #include "SourcePattern.h"
 
-void SourcePattern::LoadTemplate()
+void SourcePattern::LoadTemplates()
 {
     for (auto& templ : Templates)
     {
-        if (fs::exists(templ->Path))
-        {
-            std::fstream file(templ->Path);
-            std::string  mustache_view;
+        LoadTemplate(templ);
+    }
 
-            mustache_view.reserve(fs::file_size(templ->Path));
-            mustache_view.assign((std::istreambuf_iterator<char>(file)),
-                                  std::istreambuf_iterator<char>());
+    LoadTemplate(MainTemplate);
+}
 
-            templ->View = std::make_unique<TMustacheView>(mustache_view);
-        }
-        else
-        {
-            std::cerr << "Unable to open mustache file " << templ->Path << "." << std::endl;
-        }
+void SourcePattern::LoadTemplate(std::unique_ptr<MustacheTemplate>& templ)
+{
+    if (fs::exists(templ->Path))
+    {
+        std::fstream file(templ->Path);
+        std::string  mustache_view;
+
+        mustache_view.reserve(fs::file_size(templ->Path));
+        mustache_view.assign((std::istreambuf_iterator<char>(file)),
+            std::istreambuf_iterator<char>());
+
+        templ->View = std::make_unique<TMustacheView>(mustache_view);
+    }
+    else
+    {
+        std::cerr << "Unable to open mustache file " << templ->Path << "." << std::endl;
     }
 }

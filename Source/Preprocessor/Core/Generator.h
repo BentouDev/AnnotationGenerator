@@ -9,8 +9,12 @@
 
 class Generator
 {
-    Data::Context& Context;
+    using TTypeCache = std::map<std::string, TMustacheData>;
 
+    Data::Context& Context;
+    TTypeCache     Cache;
+
+    TMustacheData BuildAllData   ();
     TMustacheData BuildTypeData  (std::shared_ptr<ClassInfo>& type);
     TMustacheData BuildFieldData (std::shared_ptr<ClassInfo>& type);
     TMustacheData BuildMethodData(std::shared_ptr<ClassInfo>& type);

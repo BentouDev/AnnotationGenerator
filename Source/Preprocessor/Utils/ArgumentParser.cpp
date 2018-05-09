@@ -50,21 +50,28 @@ bool ArgumentParser::Parse(int argc, char** argv)
     return true;
 }
 
+std::unique_ptr<MustacheTemplate> ArgumentParser::CreateTemplate(const fs::path& directory, const std::string& name) const
+{
+    fs::path path = directory;
+             path.append(name);
+
+    return std::make_unique<MustacheTemplate>(path);
+}
+
 void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path& directory, const std::vector<std::string>& files)
 {
     for (auto& element : parser["patterns"])
     {
         auto& pattern = Context.Templates.emplace_back(std::make_unique<SourcePattern>());
 
-        pattern->Annotation = element["annotation"].get<std::string>();
-        pattern->OutName    = element["out name"]  .get<std::string>();
+        pattern->Annotation   = element["annotation"].get<std::string>();
+        pattern->ClassOutName = element["class_out"] .get<std::string>();
+        pattern->MainOutName  = element["main_out"]  .get<std::string>();
+        pattern->MainTemplate = CreateTemplate(directory, element["main_template"].get<std::string>());
 
-        for (auto& tmpl : element["template"])
+        for (auto& tmpl : element["class_template"])
         {
-            fs::path path = directory;
-                     path.append(tmpl.get<std::string>());
-
-            pattern->Templates.emplace_back(std::make_unique<MustacheTemplate>(path));
+            pattern->Templates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
         }
 
         for (auto& file_path : files)

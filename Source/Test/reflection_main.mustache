@@ -1,0 +1,13 @@
+{{#classes}}
+#include "meta_{{class_name}}.h"
+{{/classes}}
+
+namespace Meta
+{
+    void RegisterReflection()
+    {
+        {{#classes}}
+        Meta::GetType<typename {{{canonical_name}}}>();
+        {{/classes}}
+    }
+}

@@ -13,6 +13,28 @@ Generator::Generator(Data::Context& context)
 
 }
 
+TMustacheData Generator::BuildAllData()
+{
+    TMustacheData types { TMustacheData::type::list };
+
+    std::string& ann_name = Context.Generator.CurrentPattern->Annotation;
+    for (auto& [_, type] : Context.Parser.Classes)
+    {
+        UNUSED(_);
+
+        if (ann_name.empty() || Utils::MatchesAny(ann_name, type->Annotations))
+        {
+            TMustacheData data = BuildTypeData(type);
+
+            Cache.insert(std::make_pair(type->CanonName, data));
+
+            types << data;
+        }
+    }
+
+    return types;
+}
+
 TMustacheData Generator::BuildTypeData(std::shared_ptr<ClassInfo>& type)
 {
     TMustacheData data;
@@ -59,7 +81,7 @@ TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
 
 fs::path Generator::BuildOutputPath(std::unique_ptr<MustacheTemplate>& templ, std::shared_ptr<ClassInfo>& type)
 {
-    TMustacheView out_name_view(Context.Generator.CurrentPattern->OutName);
+    TMustacheView out_name_view(Context.Generator.CurrentPattern->ClassOutName);
 
     fs::path    path      = templ->Path.parent_path();
     std::string filename  = out_name_view.render({"class_name", type->Name});
@@ -70,22 +92,37 @@ fs::path Generator::BuildOutputPath(std::unique_ptr<MustacheTemplate>& templ, st
 
 void Generator::GenerateFiles()
 {
+    TMustacheData all_data;
+    all_data.set("classes", BuildAllData());
+
     for (auto& templ : Context.Generator.CurrentPattern->Templates)
     {
         if (templ->View)
         {
             for (auto& [_, type] : Context.Parser.Classes)
             {
-                if (std::string& ann_name = Context.Generator.CurrentPattern->Annotation;
-                    ann_name.empty() || Utils::MatchesAny(ann_name, type->Annotations))
+                UNUSED(_);
+
+                if (auto itr = Cache.find(type->CanonName); itr != Cache.end())
                 {
                     fs::path     path = BuildOutputPath(templ, type);
                     std::fstream file(path, std::ios_base::out);
 
-                    file << templ->View->render(BuildTypeData(type));
+                    file << templ->View->render(itr->second);
                     file.close();
                 }
             }
         }
+    }
+
+    auto& main_tmpl = Context.Generator.CurrentPattern->MainTemplate;
+    if (main_tmpl->View)
+    {
+        fs::path main_path = main_tmpl->Path.parent_path();
+        main_path.append(Context.Generator.CurrentPattern->MainOutName);
+
+        std::fstream file(main_path, std::ios_base::out);
+        file << main_tmpl->View->render(all_data);
+        file.close();
     }
 }

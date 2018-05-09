@@ -1,8 +1,10 @@
 {
   "patterns" : [
     {
-      "template" : ["reflection_header.mustache"],
-      "out name" : "meta_{{class_name}}.h",
+      "class_template" : ["reflection_header.mustache"],
+      "class_out" : "meta_{{class_name}}.h",
+      "main_template" : "reflection_main.mustache",
+      "main_out" : "reflection_main.cpp",
       "file" : "(\\W|\\w)*\\.h\\b",
       "annotation" : "Serialize"
     }

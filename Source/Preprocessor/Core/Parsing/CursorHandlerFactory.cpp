@@ -133,10 +133,10 @@ namespace Handlers
 
         for (int i = 0; i < arg_count; i++)
         {
-            auto arg_cursor = clang_Cursor_getArgument(cursor, i);
-            auto type       = clang_getCursorType(arg_cursor);
+            auto arg_cursor  = clang_Cursor_getArgument(cursor, i);
+            auto cursor_type = clang_getCursorType(arg_cursor);
 
-            method->Parameters.emplace_back(context.GetTypeInfo(visitor.GetTypeSpelling(type)));
+            method->Parameters.emplace_back(context.GetTypeInfo(visitor.GetTypeSpelling(cursor_type)));
         }
 
         return { false, method };
