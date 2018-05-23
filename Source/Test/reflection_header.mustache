@@ -24,7 +24,7 @@ namespace Meta::ReflectionData
 
     TReflectionVector<MethodInfo> {{class_name}}Meta::Methods = {
         {{#methods}}
-            { {{name}}, &{{{canonical_name}}}::{{name}}, Meta::GetType<{{{return_type}}}> },
+            { {{name}}, detail::MethodWrapper<decltype(&{{{canonical_name}}}::{{name}}), &{{{canonical_name}}}::{{name}}> },
         {{/methods}}
     };
 }

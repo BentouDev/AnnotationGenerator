@@ -20,11 +20,18 @@ void CursorHandlerFactory::RegisterHandler(CXCursorKind cursorKind, const TCurso
     Data[cursorKind] = handler;
 }
 
+bool CursorHandlerFactory::IsForwardDeclaration(CXCursor cursor) const
+{
+    return clang_equalCursors(clang_getCursorDefinition(cursor),
+                              clang_getNullCursor()) != 0;
+}
+
 auto CursorHandlerFactory::Handle(ParseContext& context, CXCursor cursor, CXCursorKind kind, Visitor& visitor) -> TCursorResolveResult
 {
     if (auto itr = Data.find(kind); itr != Data.end())
     {
-        return (itr->second)(context, cursor, visitor);
+        if (!IsForwardDeclaration(cursor))
+            return (itr->second)(context, cursor, visitor);
     }
 
     return { false, nullptr };
@@ -68,8 +75,7 @@ namespace Handlers
 
         if (auto itr = context.Classes.find(canon_name); itr == context.Classes.end())
         {
-            auto clazz            = std::make_shared<ClassInfo>();
-                 clazz->Name      = name;
+            auto clazz            = std::make_shared<ClassInfo>(name);
                  clazz->CanonName = canon_name;
 
             context.Classes.insert(std::make_pair(canon_name, clazz));
@@ -97,8 +103,7 @@ namespace Handlers
 
         if (auto itr = context.Classes.find(canon_name); itr == context.Classes.end())
         {
-            auto clazz       = std::make_shared<ClassInfo>();
-            clazz->Name      = name;
+            auto clazz       = std::make_shared<ClassInfo>(name);
             clazz->CanonName = canon_name;
 
             context.Classes.insert(std::make_pair(canon_name, clazz));
@@ -114,9 +119,11 @@ namespace Handlers
         UNUSED(context);
 
         auto type       = clang_getCursorType(cursor);
-        auto field      = visitor.GetScope().top()->asType()->Fields.emplace_back(std::make_shared<FieldInfo>());
-        field->Name     = visitor.GetCursorSpelling(cursor);
-        field->BaseType = context.GetTypeInfo(visitor.GetTypeSpelling(type));
+        auto field      = visitor.GetScope().top()->asType()->Fields.emplace_back
+        (
+                std::make_shared<FieldInfo>(visitor.GetCursorSpelling(cursor),
+                                            context.GetTypeInfo(visitor.GetTypeSpelling(type)))
+        );
 
         return { false, field };
     }
@@ -127,9 +134,11 @@ namespace Handlers
         auto return_type = clang_getResultType(type);
         int  arg_count   = clang_Cursor_getNumArguments(cursor);
 
-        auto method             = visitor.GetScope().top()->asType()->Methods.emplace_back(std::make_shared<MethodInfo>());
-             method->Name       = visitor.GetCursorSpelling(cursor);
-             method->ReturnType = context.GetTypeInfo(visitor.GetTypeSpelling(return_type));
+        auto method      = visitor.GetScope().top()->asType()->Methods.emplace_back(std::make_shared<MethodInfo>
+        (
+             visitor.GetCursorSpelling(cursor),
+             context.GetTypeInfo(visitor.GetTypeSpelling(return_type))
+        ));
 
         for (int i = 0; i < arg_count; i++)
         {

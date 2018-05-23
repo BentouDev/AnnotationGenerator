@@ -21,13 +21,11 @@ namespace Data
         ParseContext Parser;
 
         struct {
-            SourceFile*    CurrentSource;
             SourcePattern* CurrentPattern;
         } Generator;
 
         Context()
-            : Parser { nullptr }
-            , Generator { nullptr, nullptr }
+            : Generator { nullptr }
         { }
     };
 }

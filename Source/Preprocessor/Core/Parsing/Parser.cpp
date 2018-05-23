@@ -9,6 +9,7 @@
 
 #include <clang-c/Index.h>
 #include <iostream>
+#include <fstream>
 
 Parser::Parser(Data::Context& context)
 : Context(context)
@@ -34,7 +35,20 @@ std::vector<cstring> Parser::BuildArguments()
 
 std::string Parser::BuildWorkerFileContent(const fs::path& filepath)
 {
-    return "#include \"" + filepath.string() + "\"";
+    // todo: optimize memory usage
+    std::stringstream ss;
+    std::ifstream     file(filepath);
+    std::string       line;
+
+    while (std::getline(file, line))
+    {
+        if (line.find_first_of("#include") == std::string::npos)
+            ss << line;
+    }
+
+    return ss.str();
+
+    // return "#include \"" + filepath.string() + "\"";
 }
 
 CXUnsavedFile Parser::BuildWorkerFile(const std::string& content)

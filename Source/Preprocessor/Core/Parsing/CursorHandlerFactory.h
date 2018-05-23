@@ -17,6 +17,8 @@ class CursorHandlerFactory
 {
     std::map<CXCursorKind, TCursorTypeHandler> Data;
 
+    bool IsForwardDeclaration(CXCursor cursor) const;
+
 public:
     void RegisterHandlers(const std::vector<std::pair<CXCursorKind, TCursorTypeHandler>>& handlers);
     void RegisterHandler(CXCursorKind cursorKind, const TCursorTypeHandler& handler);

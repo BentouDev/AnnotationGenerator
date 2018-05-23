@@ -34,7 +34,7 @@ bool ArgumentParser::Parse(int argc, char** argv)
         return false;
     }
 
-    std::cout << "Current directory: " << fs::current_path() << std::endl;
+    std::cout << "Current working directory: " << fs::current_path() << std::endl;
 
     fs::path template_path;
     template_path += argv[1];
@@ -64,7 +64,18 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
     {
         auto& pattern = Context.Templates.emplace_back(std::make_unique<SourcePattern>());
 
-        pattern->Annotation   = element["annotation"].get<std::string>();
+        if (auto itr = element.find("annotation"); itr != element.end())
+        {
+            pattern->Annotation = itr->get<std::string>();
+        }
+
+        pattern->OutputDir = fs::current_path();
+
+        if (auto itr = element.find("output_dir"); itr != element.end())
+        {
+            pattern->OutputDir.append(itr->get<std::string>());
+        }
+
         pattern->ClassOutName = element["class_out"] .get<std::string>();
         pattern->MainOutName  = element["main_out"]  .get<std::string>();
         pattern->MainTemplate = CreateTemplate(directory, element["main_template"].get<std::string>());

@@ -9,6 +9,7 @@
 #include <cstring>
 #include <string>
 #include <stack>
+#include <cmath>
 
 #define countof( X ) \
     std::extent<decltype(X)>::value
@@ -45,6 +46,11 @@ namespace Utils
         auto begin() const { return std::begin(c); }
         auto end() const { return std::end(c); }
     };
+
+    inline unsigned GetNumberOfDigits (unsigned i)
+    {
+        return i > 0 ? (int) log10 ((double) i) + 1 : 1;
+    }
 }
 
 #endif //ANNOTATIONGENERATOR_UTILS_H

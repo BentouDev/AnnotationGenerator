@@ -14,6 +14,10 @@ using TClassMap = std::map<std::string, std::shared_ptr<ClassInfo>>;
 class ParseContext
 {
 public:
+    ParseContext()
+        : CurrentSource { nullptr }
+    { }
+
     SourceFile*                             CurrentSource;
     TClassMap                               Classes;
     std::vector<std::string>                Includes;

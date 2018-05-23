@@ -34,6 +34,7 @@ public:
     std::vector<std::unique_ptr<MustacheTemplate>> Templates;
     std::vector<std::unique_ptr<SourceFile>>       Sources;
 
+    fs::path    OutputDir;
     std::string Annotation;
     std::string ClassOutName;
     std::string MainOutName;

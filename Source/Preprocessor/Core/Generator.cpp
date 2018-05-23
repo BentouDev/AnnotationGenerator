@@ -79,11 +79,11 @@ TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
     return methods;
 }
 
-fs::path Generator::BuildOutputPath(std::unique_ptr<MustacheTemplate>& templ, std::shared_ptr<ClassInfo>& type)
+fs::path Generator::BuildOutputPath(std::shared_ptr<ClassInfo>& type)
 {
     TMustacheView out_name_view(Context.Generator.CurrentPattern->ClassOutName);
 
-    fs::path    path      = templ->Path.parent_path();
+    fs::path    path      = Context.Generator.CurrentPattern->OutputDir;
     std::string filename  = out_name_view.render({"class_name", type->Name});
     path.append(filename);
 
@@ -95,6 +95,8 @@ void Generator::GenerateFiles()
     TMustacheData all_data;
     all_data.set("classes", BuildAllData());
 
+    fs::create_directories(Context.Generator.CurrentPattern->OutputDir);
+
     for (auto& templ : Context.Generator.CurrentPattern->Templates)
     {
         if (templ->View)
@@ -105,7 +107,7 @@ void Generator::GenerateFiles()
 
                 if (auto itr = Cache.find(type->CanonName); itr != Cache.end())
                 {
-                    fs::path     path = BuildOutputPath(templ, type);
+                    fs::path     path = BuildOutputPath(type);
                     std::fstream file(path, std::ios_base::out);
 
                     file << templ->View->render(itr->second);

@@ -4,7 +4,9 @@
 
 #include "Runtime.h"
 #include <memory>
+#include <iomanip>
 
+#include "../Utils/Utils.h"
 #include "Parsing/CursorHandlerFactory.h"
 #include "Parsing/Parser.h"
 #include "Generator.h"
@@ -56,11 +58,23 @@ void Runtime::ProcessPattern(SourcePattern& pattern)
 
     Context.Generator.CurrentPattern = &pattern;
 
+    auto count   = static_cast<unsigned>(pattern.Sources.size());
+    int  padding = Utils::GetNumberOfDigits(count);
+    int  index   = 1;
     for (auto& file : pattern.Sources)
     {
+        std::cout
+        << "[" << std::setw(padding) << index << "/" << count
+        << "] Processing file " << file->Path
+        << std::endl << std::flush;
+
         ParseSourceFile(*file);
-        GenerateOutput (*file);
+
+        index++;
     }
+
+    Generator generator(Context);
+    generator.GenerateFiles();
 }
 
 void Runtime::ParseSourceFile(SourceFile& file)
@@ -69,12 +83,4 @@ void Runtime::ParseSourceFile(SourceFile& file)
 
     Parser parser(Context);
     parser.ProcessFile();
-}
-
-void Runtime::GenerateOutput(SourceFile& file)
-{
-    Context.Generator.CurrentSource = &file;
-
-    Generator generator(Context);
-    generator.GenerateFiles();
 }

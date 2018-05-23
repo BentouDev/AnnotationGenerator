@@ -12,8 +12,7 @@ std::shared_ptr<TypeInfo> ParseContext::GetTypeInfo(const std::string& type_name
     }
 
     // Stub with just name
-    auto info = std::make_shared<TypeInfo>();
-         info->Name = type_name;
+    auto info = std::make_shared<TypeInfo>(type_name);
 
     return info;
 }

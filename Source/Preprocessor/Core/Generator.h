@@ -18,7 +18,7 @@ class Generator
     TMustacheData BuildTypeData  (std::shared_ptr<ClassInfo>& type);
     TMustacheData BuildFieldData (std::shared_ptr<ClassInfo>& type);
     TMustacheData BuildMethodData(std::shared_ptr<ClassInfo>& type);
-    fs::path      BuildOutputPath(std::unique_ptr<MustacheTemplate>& templ, std::shared_ptr<ClassInfo>& type);
+    fs::path      BuildOutputPath(std::shared_ptr<ClassInfo>& type);
 
 public:
     explicit Generator(Data::Context& context);
