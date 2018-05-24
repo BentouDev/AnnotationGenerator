@@ -42,7 +42,7 @@ std::string Parser::BuildWorkerFileContent(const fs::path& filepath)
 
     while (std::getline(file, line))
     {
-        if (line.find_first_of("#include") == std::string::npos)
+        if (line.rfind("#include") == std::string::npos)
             ss << line;
     }
 

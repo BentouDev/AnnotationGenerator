@@ -63,15 +63,25 @@ void Runtime::ProcessPattern(SourcePattern& pattern)
     int  index   = 1;
     for (auto& file : pattern.Sources)
     {
+        float perc = float(index) / count;
         std::cout
-        << "[" << std::setw(padding) << index << "/" << count
-        << "] Processing file " << file->Path
+        << "[" << std::setw(3) << perc << "%] "
+        << Utils::setColor(36, 0)
+        << "Processing file " << file->Path
+        << Utils::resetColor()
         << std::endl << std::flush;
 
         ParseSourceFile(*file);
 
         index++;
-    }
+    }        
+    
+    std::cout
+        << "[100%] "
+        << Utils::setColor(36, 1)
+        << "Generating source..."
+        << Utils::resetColor()
+        << std::endl << std::flush;
 
     Generator generator(Context);
     generator.GenerateFiles();

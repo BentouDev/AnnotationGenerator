@@ -51,6 +51,32 @@ namespace Utils
     {
         return i > 0 ? (int) log10 ((double) i) + 1 : 1;
     }
+
+    struct _Color
+    {
+        int color;
+        int bold;
+    };
+
+    inline std::ostream& operator<<(std::ostream& os, const _Color& col)
+    {
+        if (col.color == -1)
+            os << "\033[0m";
+        else 
+            os << "\033[" << col.bold << ";" << col.color << "m";
+
+        return os;
+    }
+
+    inline _Color setColor(int color, int bold)
+    {
+        return _Color{ color, bold };
+    }
+
+    inline _Color resetColor()
+    {
+        return _Color{ -1, -1 };
+    }
 }
 
 #endif //ANNOTATIONGENERATOR_UTILS_H
