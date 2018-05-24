@@ -5,6 +5,7 @@
 #include "Runtime.h"
 #include <memory>
 #include <iomanip>
+#include <cmath>
 
 #include "../Utils/Utils.h"
 #include "Parsing/CursorHandlerFactory.h"
@@ -58,14 +59,13 @@ void Runtime::ProcessPattern(SourcePattern& pattern)
 
     Context.Generator.CurrentPattern = &pattern;
 
-    auto count   = static_cast<unsigned>(pattern.Sources.size());
-    int  padding = Utils::GetNumberOfDigits(count);
-    int  index   = 1;
+    auto count = static_cast<unsigned>(pattern.Sources.size());
+    int  index = 1;
     for (auto& file : pattern.Sources)
     {
-        float perc = float(index) / count;
+        float perc = 100.f * float(index) / count;
         std::cout
-        << "[" << std::setw(3) << perc << "%] "
+        << "[" << std::setw(3) << std::fixed << std::setprecision(0) << perc << "%] "
         << Utils::setColor(36, 0)
         << "Processing file " << file->Path
         << Utils::resetColor()
@@ -74,7 +74,7 @@ void Runtime::ProcessPattern(SourcePattern& pattern)
         ParseSourceFile(*file);
 
         index++;
-    }        
+    }
     
     std::cout
         << "[100%] "
