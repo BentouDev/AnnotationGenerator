@@ -43,18 +43,16 @@ std::string Parser::BuildWorkerFileContent(const fs::path& filepath)
     while (std::getline(file, line))
     {
         if (line.rfind("#include") == std::string::npos)
-            ss << line;
+            ss << line << std::endl;
     }
 
     return ss.str();
-
-    // return "#include \"" + filepath.string() + "\"";
 }
 
 CXUnsavedFile Parser::BuildWorkerFile(const std::string& content)
 {
     CXUnsavedFile worker_file{};
-    worker_file.Filename = "__temp.cpp";
+    worker_file.Filename = Context.Parser.CurrentUnitName.c_str();
     worker_file.Contents = content.c_str();
     worker_file.Length   = (unsigned long) content.size();
 
@@ -70,6 +68,8 @@ void Parser::ProcessFile()
                   << std::endl;
         return;
     }
+
+    Context.Parser.CurrentUnitName = "__temp.hpp";
 
     fs::path             directory   = Context.Parser.CurrentSource->Path.parent_path();
     std::string          path_arg    = "-I" + directory.string();

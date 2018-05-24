@@ -17,8 +17,6 @@ class CursorHandlerFactory
 {
     std::map<CXCursorKind, TCursorTypeHandler> Data;
 
-    bool IsForwardDeclaration(CXCursor cursor) const;
-
 public:
     void RegisterHandlers(const std::vector<std::pair<CXCursorKind, TCursorTypeHandler>>& handlers);
     void RegisterHandler(CXCursorKind cursorKind, const TCursorTypeHandler& handler);
@@ -27,6 +25,8 @@ public:
 
 namespace Handlers
 {
+    bool IsForwardDeclaration(CXCursor cursor);
+
     auto HandleNamespace (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
     auto HandleType      (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
     auto HandleTypeAlias (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;

@@ -95,7 +95,8 @@ CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */)
 {
     fs::path source = GetCursorSourcePath(cursor);
 
-    if (!fs::equivalent(source, Context.Parser.CurrentSource->Path))
+    if (!fs::equivalent(source, Context.Parser.CurrentSource->Path)
+    &&  source.string() != Context.Parser.CurrentUnitName)
     {
         return CXChildVisit_Continue;
     }

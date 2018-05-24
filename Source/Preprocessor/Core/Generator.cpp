@@ -120,7 +120,7 @@ void Generator::GenerateFiles()
     auto& main_tmpl = Context.Generator.CurrentPattern->MainTemplate;
     if (main_tmpl->View)
     {
-        fs::path main_path = main_tmpl->Path.parent_path();
+        fs::path main_path = Context.Generator.CurrentPattern->OutputDir;
         main_path.append(Context.Generator.CurrentPattern->MainOutName);
 
         std::fstream file(main_path, std::ios_base::out);

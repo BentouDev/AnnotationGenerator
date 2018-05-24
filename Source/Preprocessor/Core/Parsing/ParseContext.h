@@ -18,6 +18,7 @@ public:
         : CurrentSource { nullptr }
     { }
 
+    std::string                             CurrentUnitName;
     SourceFile*                             CurrentSource;
     TClassMap                               Classes;
     std::vector<std::string>                Includes;

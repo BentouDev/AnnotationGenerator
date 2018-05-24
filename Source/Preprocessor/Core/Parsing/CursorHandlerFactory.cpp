@@ -20,18 +20,11 @@ void CursorHandlerFactory::RegisterHandler(CXCursorKind cursorKind, const TCurso
     Data[cursorKind] = handler;
 }
 
-bool CursorHandlerFactory::IsForwardDeclaration(CXCursor cursor) const
-{
-    return clang_equalCursors(clang_getCursorDefinition(cursor),
-                              clang_getNullCursor()) != 0;
-}
-
 auto CursorHandlerFactory::Handle(ParseContext& context, CXCursor cursor, CXCursorKind kind, Visitor& visitor) -> TCursorResolveResult
 {
     if (auto itr = Data.find(kind); itr != Data.end())
     {
-        if (!IsForwardDeclaration(cursor))
-            return (itr->second)(context, cursor, visitor);
+        return (itr->second)(context, cursor, visitor);
     }
 
     return { false, nullptr };
@@ -39,6 +32,12 @@ auto CursorHandlerFactory::Handle(ParseContext& context, CXCursor cursor, CXCurs
 
 namespace Handlers
 {
+    bool IsForwardDeclaration(CXCursor cursor)
+    {
+        return clang_equalCursors(clang_getCursorDefinition(cursor),
+            clang_getNullCursor()) != 0;
+    }
+
     auto HandleNamespace(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
         UNUSED(context);
@@ -88,6 +87,9 @@ namespace Handlers
 
     auto HandleType(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
     {
+        if (IsForwardDeclaration(cursor))
+            return { false, nullptr };
+
         std::string name       = visitor.GetCursorSpelling(cursor);
         auto        type       = clang_getCursorType(cursor);
         auto        canon_ref  = clang_getTypeSpelling(type);
