@@ -4,6 +4,7 @@
 
 #include "ArgumentParser.h"
 #include "Utils.h"
+#include "../Core/Context.h"
 #include <regex>
 #include <iostream>
 #include <fstream>
@@ -20,11 +21,17 @@ bool ArgumentParser::Parse(int argc, char** argv)
         "--help",
     };
 
+    auto dir_args = {
+        "-d",
+        "--directory"
+    };
+
     if (argc == 2 && Utils::MatchesAny(argv[1], help_args))
     {
         std::cout << "Clang based C++ preprocessor adding annotation based code generation" << std::endl;
         std::cout << "Usage: AnnotationGenerator [TEMPLATE] [FILES]..." << std::endl;
-        std::cout << "\t help  - prints this info" << std::endl;
+        std::cout << "\t [h]elp      - prints this info" << std::endl;
+        std::cout << "\t [d]irectory - overrides output directory" << std::endl;
         return false;
     }
 
@@ -34,18 +41,38 @@ bool ArgumentParser::Parse(int argc, char** argv)
         return false;
     }
 
+    std::vector<std::string> parameters;
+    for (int i = 1; i < argc; i++)
+    {
+        std::string param = argv[i];
+        Utils::Trim(param);
+        if (Utils::MatchesAny(param, dir_args))
+        {
+            if (i + 1 < argc)
+            {
+                i++;
+                Context.Generator.OutputDirectory += std::string(argv[i]);
+            }
+            else
+            {
+                std::cerr << "--directory parameter was used but no path was specified!" << std::endl;
+                return false;
+            }
+        }
+        else
+        {
+            parameters.emplace_back(argv[i]);
+        }
+    }
+
     std::cout << "Current working directory: " << fs::current_path() << std::endl;
 
     fs::path template_path;
-    template_path += argv[1];
+    template_path += parameters[0];
 
-    std::vector<std::string> template_files;
-    for (int i = 2; i < argc; i++)
-    {
-        template_files.emplace_back(argv[i]);
-    }
+    parameters.erase(parameters.begin());
 
-    BuildContext(template_path, template_files);
+    BuildContext(template_path, parameters);
 
     return true;
 }
@@ -64,16 +91,28 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
     {
         auto& pattern = Context.Templates.emplace_back(std::make_unique<SourcePattern>());
 
+        if (auto itr = element.find("includes"); itr != element.end())
+        {
+            pattern->UseIncludes = true;
+        }
+
         if (auto itr = element.find("annotation"); itr != element.end())
         {
             pattern->Annotation = itr->get<std::string>();
         }
 
-        pattern->OutputDir = fs::current_path();
-
-        if (auto itr = element.find("output_dir"); itr != element.end())
+        if (Context.Generator.OutputDirectory.empty())
         {
-            pattern->OutputDir.append(itr->get<std::string>());
+            pattern->OutputDir = fs::current_path();
+
+            if (auto itr = element.find("output_dir"); itr != element.end())
+            {
+                pattern->OutputDir.append(itr->get<std::string>());
+            }
+        }
+        else
+        {
+            pattern->OutputDir = Context.Generator.OutputDirectory;
         }
 
         pattern->ClassOutName = element["class_out"] .get<std::string>();

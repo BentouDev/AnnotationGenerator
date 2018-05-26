@@ -26,6 +26,8 @@ public:
     std::unique_ptr<CursorHandlerFactory>   GlobalFactory;
     std::unique_ptr<CursorHandlerFactory>   TypeFactory;
 
+    bool                                    UseIncludes;
+
     std::shared_ptr<TypeInfo> GetTypeInfo(const std::string& type_name);
 };
 

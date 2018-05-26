@@ -12,7 +12,7 @@ class Runtime
     Data::Context& Context;
 
     void ProcessPattern (SourcePattern& pattern);
-    void ParseSourceFile(SourceFile& file);
+    void ParseSourceFile(SourcePattern& pattern, SourceFile& file);
 
 public:
     explicit Runtime(Data::Context& context);

@@ -69,27 +69,28 @@ void Runtime::ProcessPattern(SourcePattern& pattern)
         << Utils::setColor(36, 0)
         << "Processing file " << file->Path
         << Utils::resetColor()
-        << std::endl << std::flush;
+        << std::endl;
 
-        ParseSourceFile(*file);
+        ParseSourceFile(pattern, *file);
 
         index++;
     }
-    
+
     std::cout
         << "[100%] "
         << Utils::setColor(36, 1)
         << "Generating source..."
         << Utils::resetColor()
-        << std::endl << std::flush;
+        << std::endl;
 
     Generator generator(Context);
     generator.GenerateFiles();
 }
 
-void Runtime::ParseSourceFile(SourceFile& file)
+void Runtime::ParseSourceFile(SourcePattern& pattern, SourceFile& file)
 {
     Context.Parser.CurrentSource = &file;
+    Context.Parser.UseIncludes   = pattern.UseIncludes;
 
     Parser parser(Context);
     parser.ProcessFile();

@@ -30,6 +30,10 @@ private:
     void LoadTemplate(std::unique_ptr<MustacheTemplate>& tmpl);
 
 public:
+    SourcePattern()
+        : UseIncludes(false)
+    { }
+
     std::unique_ptr<MustacheTemplate>              MainTemplate;
     std::vector<std::unique_ptr<MustacheTemplate>> Templates;
     std::vector<std::unique_ptr<SourceFile>>       Sources;
@@ -38,6 +42,7 @@ public:
     std::string Annotation;
     std::string ClassOutName;
     std::string MainOutName;
+    bool        UseIncludes;
 
     void LoadTemplates();
 };

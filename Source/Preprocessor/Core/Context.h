@@ -22,6 +22,7 @@ namespace Data
 
         struct {
             SourcePattern* CurrentPattern;
+            fs::path       OutputDirectory;
         } Generator;
 
         Context()

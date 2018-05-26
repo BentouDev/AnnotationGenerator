@@ -35,18 +35,25 @@ std::vector<cstring> Parser::BuildArguments()
 
 std::string Parser::BuildWorkerFileContent(const fs::path& filepath)
 {
-    // todo: optimize memory usage
-    std::stringstream ss;
-    std::ifstream     file(filepath);
-    std::string       line;
-
-    while (std::getline(file, line))
+    if (Context.Parser.UseIncludes)
     {
-        if (line.rfind("#include") == std::string::npos)
-            ss << line << std::endl;
+        return "#include \"" + filepath.string() + "\"\n";
     }
+    else
+    {
+        // todo: optimize memory usage
+        std::stringstream ss;
+        std::ifstream     file(filepath);
+        std::string       line;
 
-    return ss.str();
+        while (std::getline(file, line))
+        {
+            if (line.rfind("#include") == std::string::npos)
+                ss << line << std::endl;
+        }
+
+        return ss.str();
+    }
 }
 
 CXUnsavedFile Parser::BuildWorkerFile(const std::string& content)
@@ -71,12 +78,15 @@ void Parser::ProcessFile()
 
     Context.Parser.CurrentUnitName = "__temp.hpp";
 
+    int excludeDeclarationsFromPCH = (int)false;
+    int displayDiagnostics         = (int)false;
+
     fs::path             directory   = Context.Parser.CurrentSource->Path.parent_path();
     std::string          path_arg    = "-I" + directory.string();
     std::vector<cstring> arguments   = BuildArguments();
     std::string          fileContent = BuildWorkerFileContent(Context.Parser.CurrentSource->Path);
     CXUnsavedFile        worker_file = BuildWorkerFile(fileContent);
-    CXIndex              main_index  = clang_createIndex(0, 1);
+    CXIndex              main_index  = clang_createIndex(excludeDeclarationsFromPCH, displayDiagnostics);
     CXTranslationUnit    worker_unit = clang_parseTranslationUnit
     (
         main_index,

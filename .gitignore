@@ -37,3 +37,4 @@
 .vs
 cmake-build-debug
 build
+Generated/

@@ -9,7 +9,7 @@ install(TARGETS Reflection
         ARCHIVE  DESTINATION lib
         LIBRARY  DESTINATION lib
         RUNTIME  DESTINATION bin)  # This is for Windows
-install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY include/ DESTINATION include/Reflection)
 
 target_include_directories(Reflection PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

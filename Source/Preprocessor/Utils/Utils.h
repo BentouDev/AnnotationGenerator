@@ -31,6 +31,12 @@ namespace Utils
         });
     }
 
+    inline std::string Trim(std::string &str)
+    {
+        str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+        return str;
+    }
+
     template<typename T, typename Container = std::deque<T>>
     class IterableStack
             : public std::stack<T, Container>
