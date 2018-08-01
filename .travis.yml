@@ -3,25 +3,27 @@ language: cpp
 notifications:
   email: false
 
-sudo: false
+  sudo: false
 dist: trusty
-
 services:
-  - docker
-
-secure: "TsniPN5EWc991q20yICwHli40b74UkFmtbPk5XBwGqQse4fh/LhX/yq29mKy3YrkOPCZhsk72lqlnatiaHb7XjG98kzrn29rOrfdnIs/3aAp+sr87wC5Tq8npB9Jg8CcKor5IihAy0E5IK40tSbZP6Zo66dd4oUTPg5SYdzdHHvGqCHsG6a9R/brEnJavfRoon1o5h5WeXclW+e6bKmeiP18RIE26Vb602ByI1BpYxkMKH2xQ5M0kMmyauI/5ZB3E/nj6/332DkOytzaRMq7HwQDFkrtzOCR68JMd1vt4w/ak14vHzjMzRzdAayCvNlChvAsShpN1zakIZBrdceqW3mYgJ6vxWkgssO/kdfl43xAQJTA7sJCEWMa5eIPKPVDCIEvc+ynjU1v/A2lFppCEvhTn2warGwrb42LU0J7Bqjm9L+ztGyEYpmDcQin3bpK1bd+uhLyTx6IQzTGLY8E1MvRy0vEaDEKvmfeC3T/ILbacbWcX1aqcExH+fQbZI55FJGympEelgz5gMWVQXIYnnvwgtUTKOQJWCLNoOSVUmQughWwVC50Dt5pN6i93inuR7eoDC9T1Qs11sNms1GkmvE6iSHxU2JNwJy0d3uFT/IZ2KqADtihJ8FJCDZL7TotVqXhmcUalJYwfAv1Pf+q8NMUTgWReAAvAMvnKasFtLI="
+- docker
 
 matrix:
   include:
-    - os: linux
-      compiler: clang-5
-      script:
-        - docker run --tty=false -it -v $PWD:/src --workdir /src bentou/ubuntuartfuldev sh ./build_clang.sh
+  - os: linux
+    compiler: clang-5
+    script:
+    - docker run --tty=false -it -v $PWD:/src --workdir /src bentou/ubuntuartfuldev
+      sh ./build_clang.sh
 
-before_script:
-  - docker pull bentou/ubuntuartfuldev
-  - docker ps -a
-  - mkdir bin
+      before_script:
+- docker pull bentou/ubuntuartfuldev
+- docker ps -a
+- mkdir bin
 
 after_success:
-  - docker run -it -v $PWD:/src --workdir /src bentou/ubuntuartfuldev sh ./upload_travis.sh $REPOSITORY_KEY
+- docker run -it -v $PWD:/src --workdir /src bentou/ubuntuartfuldev sh ./upload_travis.sh $REPOSITORY_KEY
+
+  env:
+  global:
+    secure: Lb2TVk3PTssV/2KsvSHvCuF4+DlzeHg87uVHaww22SFQ/MjI0ZEX36KL/gP6augAOT63vrZR4uGIT3uv+bWUj5PauKiTWZMBgyy38e34l+hT7xwzgEXRFGxz2j0NGa7CkwPWXZOtD+CKL5D6bC5yz5zgz+VG8gdhvbGLoQ/Mc7ZuB0vCIOBqWD6SjFiVtzimF1j+OZ2Hk3nluyLyNosdapmGJSVrRyhDhhRAkdPWxzWpOXl+B/52PL5tTP9Ag/QQv1sAd3sBUPtGprZhTZf97s4gzkDtBIV0iAqFULXVwgW78KmHLuIC8w2Lksp0tYR2fyR1dPpzoUKJ/1llpF1VEG8UKw0TRYS7MLlw39PD2TA/38bQ3TEreNLPs6iKzZvSoHJKp5JH9Pj9lDsSAMjAnkP+K/yh8+HLoK0ysqmXBVaI99iD4/nO0iOON4SJKPHK6n7Pk66MxLYqao2Q+Vsx862P/A3UPmdRqZM7D/T+k1w2S/+ec1FuoQHddH4DNdpM/d5oXu/7QzECdn7H15F/mEfbF8npCBwscGhfw6JN4WjgHZgzXSxKdTDftqTeB7VQzdXUO5ezV5VRkH9NnGS276EzuwawktdDKCUpX4UlbIjIfa3YMQtJv2BUJEtTp9Y5oUbaAzuuWdLUtVu4b7+peksruyQPnOEQ2kEbeW73PtA=
