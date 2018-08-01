@@ -3,27 +3,26 @@ language: cpp
 notifications:
   email: false
 
-  sudo: false
+sudo: false
 dist: trusty
 services:
-- docker
+  - docker
 
 matrix:
   include:
   - os: linux
     compiler: clang-5
     script:
-    - docker run --tty=false -it -v $PWD:/src --workdir /src bentou/ubuntuartfuldev
-      sh ./build_clang.sh
+    - docker run --tty=false -it -v $PWD:/src --workdir /src bentou/ubuntuartfuldev sh ./build_clang.sh
 
-      before_script:
-- docker pull bentou/ubuntuartfuldev
-- docker ps -a
-- mkdir bin
+before_script:
+  - docker pull bentou/ubuntuartfuldev
+  - docker ps -a
+  - mkdir bin
 
 after_success:
-- docker run -it -v $PWD:/src --workdir /src bentou/ubuntuartfuldev sh ./upload_travis.sh $REPOSITORY_KEY
+  - docker run -it -v $PWD:/src --workdir /src bentou/ubuntuartfuldev sh ./upload_travis.sh $REPOSITORY_KEY
 
-  env:
+env:
   global:
     secure: Lb2TVk3PTssV/2KsvSHvCuF4+DlzeHg87uVHaww22SFQ/MjI0ZEX36KL/gP6augAOT63vrZR4uGIT3uv+bWUj5PauKiTWZMBgyy38e34l+hT7xwzgEXRFGxz2j0NGa7CkwPWXZOtD+CKL5D6bC5yz5zgz+VG8gdhvbGLoQ/Mc7ZuB0vCIOBqWD6SjFiVtzimF1j+OZ2Hk3nluyLyNosdapmGJSVrRyhDhhRAkdPWxzWpOXl+B/52PL5tTP9Ag/QQv1sAd3sBUPtGprZhTZf97s4gzkDtBIV0iAqFULXVwgW78KmHLuIC8w2Lksp0tYR2fyR1dPpzoUKJ/1llpF1VEG8UKw0TRYS7MLlw39PD2TA/38bQ3TEreNLPs6iKzZvSoHJKp5JH9Pj9lDsSAMjAnkP+K/yh8+HLoK0ysqmXBVaI99iD4/nO0iOON4SJKPHK6n7Pk66MxLYqao2Q+Vsx862P/A3UPmdRqZM7D/T+k1w2S/+ec1FuoQHddH4DNdpM/d5oXu/7QzECdn7H15F/mEfbF8npCBwscGhfw6JN4WjgHZgzXSxKdTDftqTeB7VQzdXUO5ezV5VRkH9NnGS276EzuwawktdDKCUpX4UlbIjIfa3YMQtJv2BUJEtTp9Y5oUbaAzuuWdLUtVu4b7+peksruyQPnOEQ2kEbeW73PtA=
