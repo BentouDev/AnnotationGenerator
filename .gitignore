@@ -31,6 +31,7 @@
 *.out
 *.app
 
+test_package/build
 .directory
 .idea
 .vscode
