@@ -6,7 +6,7 @@ class AgnesConan(ConanFile):
     license = "MIT"
     url = "https://github.com/BentouDev/AnnotationGenerator"
     description = "AnnotationGenerator conan package"
-    settings = "os", "compiler", "build_type", "arch"
+    settings = "os"
     generators = "cmake"
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
