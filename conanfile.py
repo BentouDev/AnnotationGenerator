@@ -25,6 +25,8 @@ class AgnesConan(ConanFile):
 
         if self.settings.os == "Windows":
             self.copy("Agnes.exe", dst="bin", src="Source/Preprocessor/Release", keep_path=False, ignore_case=True)
+        else:
+            self.copy("Agnes", dst="bin", src="Source/Preprocessor", keep_path=False, ignore_case=True)
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self, folder="lib");
