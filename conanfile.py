@@ -10,7 +10,7 @@ class AgnesConan(ConanFile):
     generators = "cmake"
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
-    def conan_info(self):        
+    def package_id(self):        
         self.info.include_build_settings()
         del self.info.settings.compiler
         del self.info.settings.arch
