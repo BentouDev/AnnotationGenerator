@@ -6,13 +6,13 @@ class AgnesConan(ConanFile):
     license = "MIT"
     url = "https://github.com/BentouDev/AnnotationGenerator"
     description = "AnnotationGenerator conan package"
-    settings = "os", "build_type", "arch"
+    settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
     def conan_info(self):
         self.info.settings.build_type = "Any"
-        self.info.settings.compiler = "Any"
+        del self.info.settings.compiler
 
     def build(self):
         cmake = CMake(self)
