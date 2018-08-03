@@ -7,7 +7,6 @@ class AgnesConan(ConanFile):
     
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
-    description = "AnnotationGenerator conan AnnotationG"
     generators = "cmake"
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
