@@ -22,7 +22,8 @@ std::vector<cstring> Parser::BuildArguments()
         "-std=c++17",
         "-Wmicrosoft",
         "-Wunknown-pragmas",
-        "-D_DEBUG=1"
+        "-D_DEBUG=1",
+        "-DANNOTATION_GENERATOR"
     };
 
     for (auto& include : Context.Parser.Includes)
