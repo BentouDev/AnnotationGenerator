@@ -8,6 +8,7 @@
 #include "../../Utils/Utils.h"
 
 #include <clang-c/Index.h>
+#include <string_view>
 #include <iostream>
 #include <fstream>
 
@@ -26,6 +27,12 @@ std::vector<cstring> Parser::BuildArguments()
         "-DANNOTATION_GENERATOR"
     };
 
+    for (auto& path : Context.Parser.CurrentPattern->Directories)
+    {
+        std::string* leak = new std::string(std::string("-I") + path);
+        result.push_back(leak->c_str());
+    }
+
     for (auto& include : Context.Parser.Includes)
     {
         result.push_back(include.c_str());
@@ -34,27 +41,44 @@ std::vector<cstring> Parser::BuildArguments()
     return result;
 }
 
+// bool Parser::IncludeMatches(const std::string_view& include)
+// {
+//     auto itr = std::find_if(Context.Parser.CurrentPattern->Includes.begin(), Context.Parser.CurrentPattern->Includes.end(),
+//         [&](const std::string& defined){
+//             return include.rfind(defined) != std::string::npos;
+//     });
+
+//     return itr != Context.Parser.CurrentPattern->Includes.end();
+// }
+
 std::string Parser::BuildWorkerFileContent(const fs::path& filepath)
 {
+    // todo: optimize memory usage
+    std::stringstream ss;
+    
+    for (auto& incl : Context.Parser.CurrentPattern->Includes)
+    {
+        ss << "#include <" << incl << ">" << std::endl;
+    }
+
     if (Context.Parser.UseIncludes)
     {
-        return "#include \"" + filepath.string() + "\"\n";
+        ss << "#include \"" + filepath.string() + "\"\n";
     }
     else
     {
-        // todo: optimize memory usage
-        std::stringstream ss;
         std::ifstream     file(filepath);
         std::string       line;
 
         while (std::getline(file, line))
         {
-            if (line.rfind("#include") == std::string::npos)
+            auto incl_pos = line.rfind("#include");
+            if (incl_pos == std::string::npos)
                 ss << line << std::endl;
         }
-
-        return ss.str();
     }
+
+    return ss.str();
 }
 
 CXUnsavedFile Parser::BuildWorkerFile(const std::string& content)

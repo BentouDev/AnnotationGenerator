@@ -47,6 +47,7 @@ public:
     void VisitChildren(CXCursor param);
 
     std::vector<std::string> PreAnnotations;
+    bool HasPreAnnotation;
 
     std::string GetCursorKindName(CXCursorKind cursorKind);
     std::string GetCursorSpelling(CXCursor cursor);

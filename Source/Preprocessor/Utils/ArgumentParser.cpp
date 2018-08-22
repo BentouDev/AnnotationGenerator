@@ -96,6 +96,27 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
             pattern->UseIncludes = true;
         }
 
+        if (auto inject_itr = element.find("inject_includes"); inject_itr != element.end())
+        {
+            for (auto& inject : (*inject_itr))
+            {
+                pattern->Includes.push_back(inject.get<std::string>());
+            }
+        }
+
+        if (auto dir_itr = element.find("include_directories"); dir_itr != element.end())
+        {
+            for (auto& inject : (*dir_itr))
+            {
+                pattern->Directories.push_back(inject.get<std::string>());
+            }
+        }
+
+        if (auto itr = element.find("require_annotation"); itr != element.end())
+        {
+            pattern->RequireAnnotation = true;
+        }
+
         if (auto itr = element.find("annotation"); itr != element.end())
         {
             for (auto& annot : (*itr))

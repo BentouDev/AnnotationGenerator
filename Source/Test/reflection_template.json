@@ -8,7 +8,10 @@
       "output_dir" : "Generated",
       "file" : "(\\W|\\w)*\\.h\\b",
       "annotation" : ["__Y_CLASS__"],
-      "includes" : "true"
+      "includes" : "true",
+      "inject_includes": ["inject.h"],
+      "include_directories": ["."],
+      "require_annotation" : "true"
     }
   ]
 }

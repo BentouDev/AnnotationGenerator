@@ -31,18 +31,21 @@ private:
 
 public:
     SourcePattern()
-        : UseIncludes(false)
+        : UseIncludes(false), RequireAnnotation(false)
     { }
 
     std::unique_ptr<MustacheTemplate>              MainTemplate;
     std::vector<std::unique_ptr<MustacheTemplate>> Templates;
     std::vector<std::unique_ptr<SourceFile>>       Sources;
     std::vector<std::string>                       Annotations;
+    std::vector<std::string>                       Includes;
+    std::vector<std::string>                       Directories;
 
     fs::path    OutputDir;
     std::string ClassOutName;
     std::string MainOutName;
     bool        UseIncludes;
+    bool        RequireAnnotation;
 
     void LoadTemplates();
 };

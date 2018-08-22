@@ -116,6 +116,9 @@ namespace Handlers
             clazz->Annotations.insert (clazz->Annotations.end(), visitor.PreAnnotations.begin(), visitor.PreAnnotations.end());
             visitor.PreAnnotations.clear();
 
+            clazz->HasAnnotation |= visitor.HasPreAnnotation;
+            visitor.HasPreAnnotation = false;
+
             context.Classes.insert(std::make_pair(canon_name, clazz));
 
             return { true, clazz };
@@ -150,6 +153,9 @@ namespace Handlers
             clazz->Annotations.reserve(clazz->Annotations.size() + visitor.PreAnnotations.size());
             clazz->Annotations.insert (clazz->Annotations.end(), visitor.PreAnnotations.begin(), visitor.PreAnnotations.end());
             visitor.PreAnnotations.clear();
+            
+            clazz->HasAnnotation |= visitor.HasPreAnnotation;
+            visitor.HasPreAnnotation = false;
 
             context.Classes.insert(std::make_pair(canon_name, clazz));
 
@@ -202,7 +208,9 @@ namespace Handlers
 
         std::string name = visitor.GetCursorSpelling(cursor);
 
-        visitor.GetScope().top()->asType()->Annotations.emplace_back(std::move(name));
+        std::shared_ptr<ClassInfo> clazz = visitor.GetScope().top()->asType();
+        clazz->Annotations.emplace_back(std::move(name));
+        clazz->HasAnnotation = true;
 
         return { false, nullptr };
     }
@@ -215,6 +223,7 @@ namespace Handlers
         std::string name        = declaration.substr(1, declaration.size() - 2);
 
         visitor.PreAnnotations.emplace_back(std::move(name));
+        visitor.HasPreAnnotation = true;
 
         context.PopFactory(context.AnnotFactory);
 

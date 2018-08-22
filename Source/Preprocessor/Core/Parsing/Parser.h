@@ -18,6 +18,7 @@ class Parser
     auto BuildArguments() -> std::vector<cstring>;
     auto BuildWorkerFileContent(const fs::path& filepath) -> std::string;
     auto BuildWorkerFile(const std::string& content) -> CXUnsavedFile;
+//    bool IncludeMatches(const std::string_view& include);
 
 public:
     explicit Parser(Data::Context& context);

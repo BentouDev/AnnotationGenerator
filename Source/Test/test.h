@@ -1,17 +1,5 @@
 
-struct __Y_CLASS__
-{
-    __Y_CLASS__(const char* args)
-    { }
-};
-
-#define CONCATENATE_DETAIL(x, y) x##y
-#define CONCATENATE(x, y) CONCATENATE_DETAIL(x, y)
-#define MAKE_UNIQUE(x) CONCATENATE(x, __COUNTER__)
-
-#define Meta(...) __attribute__((annotate(#__VA_ARGS__)))
-#define YClass(...) __Y_CLASS__ MAKE_UNIQUE(__y_class__)( #__VA_ARGS__ );
-
+#include "inject.h"
 #include <string>
 
 namespace Core
@@ -28,7 +16,8 @@ namespace Core
 
 namespace koza::kwas
 {
-    enum Meta(Serialize) MyEnum
+    $YClass();
+    enum MyEnum
     {
         None = 0,
         Sth = 1,
@@ -59,7 +48,8 @@ namespace koza::kwas
     struct Dupersznit : public Attribute
     { };
 
-    YClass(Serialize, IsVocal(true), Dupersznit{ 0, 1})
+    $YClass(Serialize, IsVocal(true), Dupersznit{ 0, 1})
+    $YClass(SomethingElse)
     class Meta(CTTI) TestYClass
     {
 

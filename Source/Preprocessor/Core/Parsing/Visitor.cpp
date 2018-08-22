@@ -20,7 +20,7 @@ std::shared_ptr<ClassInfo> Visitor::ScopeInfo::asType() const
 }
 
 Visitor::Visitor(Data::Context& context)
-: Context(context)
+: Context(context), HasPreAnnotation(false)
 { }
 
 std::string Visitor::BuildScopeNamePrefix() const
@@ -106,12 +106,12 @@ CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */)
 
     CXCursorKind cursorKind = clang_getCursorKind(cursor);
     std::string  cursorName = GetCursorSpelling(cursor);
-    // auto         current_level = (unsigned int) Scope.size();
+    auto         current_level = (unsigned int) Scope.size();
 
-    // std::cout << std::string(current_level, '\t')
-    //           << " " << GetCursorKindName(cursorKind)
-    //           << " (" << cursorName
-    //           << ")" << std::endl;
+    std::cout << std::string(current_level, '\t')
+              << " " << GetCursorKindName(cursorKind)
+              << " (" << cursorName
+              << ")" << std::endl;
 
     auto [is_scope, info] = ResolveCursor(cursor, cursorKind);
     if (is_scope)

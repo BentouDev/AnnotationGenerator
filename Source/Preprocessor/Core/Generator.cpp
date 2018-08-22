@@ -22,7 +22,7 @@ TMustacheData Generator::BuildAllData()
     {
         UNUSED(_);
 
-        // if (ann_name.empty() || Utils::MatchesAny(ann_name, type->Annotations))
+        if (type->HasAnnotation || !Context.Generator.CurrentPattern->RequireAnnotation)
         {
             TMustacheData data = BuildTypeData(type);
 
