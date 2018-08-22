@@ -37,9 +37,9 @@ public:
     std::unique_ptr<MustacheTemplate>              MainTemplate;
     std::vector<std::unique_ptr<MustacheTemplate>> Templates;
     std::vector<std::unique_ptr<SourceFile>>       Sources;
+    std::vector<std::string>                       Annotations;
 
     fs::path    OutputDir;
-    std::string Annotation;
     std::string ClassOutName;
     std::string MainOutName;
     bool        UseIncludes;

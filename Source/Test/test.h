@@ -1,5 +1,16 @@
 
+struct __Y_CLASS__
+{
+    __Y_CLASS__(const char* args)
+    { }
+};
+
+#define CONCATENATE_DETAIL(x, y) x##y
+#define CONCATENATE(x, y) CONCATENATE_DETAIL(x, y)
+#define MAKE_UNIQUE(x) CONCATENATE(x, __COUNTER__)
+
 #define Meta(...) __attribute__((annotate(#__VA_ARGS__)))
+#define YClass(...) __Y_CLASS__ MAKE_UNIQUE(__y_class__)( #__VA_ARGS__ );
 
 #include <string>
 
@@ -25,7 +36,10 @@ namespace koza::kwas
         Default = Koza | Sth
     };
 
-    class Serialize
+    class Attribute
+    { };
+
+    class Serialize : public Attribute
     {
         using test = Core::Utils::sth<Core::dunno>;
 
@@ -38,6 +52,18 @@ namespace koza::kwas
     using AliasSerialize = Serialize;
 
     typedef Serialize TypedefSerialize;
+
+    struct IsVocal : public Attribute
+    { };
+
+    struct Dupersznit : public Attribute
+    { };
+
+    YClass(Serialize, IsVocal(true), Dupersznit{ 0, 1})
+    class Meta(CTTI) TestYClass
+    {
+
+    };
 
     class Meta(Serialize) MyGreatClass
     {

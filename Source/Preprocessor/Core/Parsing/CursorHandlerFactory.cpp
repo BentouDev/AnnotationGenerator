@@ -2,9 +2,11 @@
 // Created by bentoo on 22.04.18.
 //
 
+#include <iostream>
 #include "CursorHandlerFactory.h"
 #include "ParseContext.h"
 #include "Visitor.h"
+#include "../SourcePattern.h"
 #include "../../Utils/Utils.h"
 
 void CursorHandlerFactory::RegisterHandlers(const std::vector<std::pair<CXCursorKind, TCursorTypeHandler>>& handlers)
@@ -36,6 +38,39 @@ namespace Handlers
     {
         return clang_equalCursors(clang_getCursorDefinition(cursor),
             clang_getNullCursor()) != 0;
+    }
+
+    auto HandleVarDecl(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
+    {
+//        std::string name  = visitor.GetCursorSpelling(cursor);
+
+        auto        type = clang_getCursorType(cursor);
+        std::string name = visitor.GetTypeSpelling(type);
+        auto        annot = std::find_if(context.CurrentPattern->Annotations.begin(),
+                                         context.CurrentPattern->Annotations.end(),
+
+            [&](const std::string& annot_name) {
+                return annot_name.compare(name) == 0;
+            }
+        );
+
+        if (annot != context.CurrentPattern->Annotations.end())
+        {
+            context.PushFactory(context.AnnotFactory);
+
+            return { true, nullptr };
+        }
+
+        return { false, nullptr };
+    }
+
+    auto SkipRecurse(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
+    {
+        UNUSED(context);
+        UNUSED(cursor);
+        UNUSED(visitor);
+
+        return { true, nullptr };
     }
 
     auto HandleNamespace(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
@@ -77,6 +112,10 @@ namespace Handlers
             auto clazz            = std::make_shared<ClassInfo>(name);
                  clazz->CanonName = canon_name;
 
+            clazz->Annotations.reserve(clazz->Annotations.size() + visitor.PreAnnotations.size());
+            clazz->Annotations.insert (clazz->Annotations.end(), visitor.PreAnnotations.begin(), visitor.PreAnnotations.end());
+            visitor.PreAnnotations.clear();
+
             context.Classes.insert(std::make_pair(canon_name, clazz));
 
             return { true, clazz };
@@ -107,6 +146,10 @@ namespace Handlers
         {
             auto clazz       = std::make_shared<ClassInfo>(name);
             clazz->CanonName = canon_name;
+
+            clazz->Annotations.reserve(clazz->Annotations.size() + visitor.PreAnnotations.size());
+            clazz->Annotations.insert (clazz->Annotations.end(), visitor.PreAnnotations.begin(), visitor.PreAnnotations.end());
+            visitor.PreAnnotations.clear();
 
             context.Classes.insert(std::make_pair(canon_name, clazz));
 
@@ -160,6 +203,20 @@ namespace Handlers
         std::string name = visitor.GetCursorSpelling(cursor);
 
         visitor.GetScope().top()->asType()->Annotations.emplace_back(std::move(name));
+
+        return { false, nullptr };
+    }
+    
+    auto HandlePreAnnot(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
+    {
+        UNUSED(context);
+
+        std::string declaration = visitor.GetCursorSpelling(cursor);
+        std::string name        = declaration.substr(1, declaration.size() - 2);
+
+        visitor.PreAnnotations.emplace_back(std::move(name));
+
+        context.PopFactory(context.AnnotFactory);
 
         return { false, nullptr };
     }

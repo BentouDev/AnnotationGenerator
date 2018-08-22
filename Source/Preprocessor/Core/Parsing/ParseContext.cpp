@@ -4,6 +4,18 @@
 
 #include "ParseContext.h"
 
+void ParseContext::PushFactory(std::unique_ptr<CursorHandlerFactory>& factory)
+{
+    if (ForcedFactory == nullptr)
+        ForcedFactory = factory.get();
+}
+
+void ParseContext::PopFactory (std::unique_ptr<CursorHandlerFactory>& factory)
+{
+    if (ForcedFactory == factory.get())
+        ForcedFactory = nullptr;
+}
+
 std::shared_ptr<TypeInfo> ParseContext::GetTypeInfo(const std::string& type_name)
 {
     if (auto itr = Classes.find(type_name); itr != Classes.end())

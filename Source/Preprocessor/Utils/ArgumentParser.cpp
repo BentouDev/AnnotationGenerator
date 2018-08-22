@@ -98,7 +98,10 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
 
         if (auto itr = element.find("annotation"); itr != element.end())
         {
-            pattern->Annotation = itr->get<std::string>();
+            for (auto& annot : (*itr))
+            {
+                pattern->Annotations.push_back(annot.get<std::string>());
+            }
         }
 
         if (Context.Generator.OutputDirectory.empty())

@@ -16,6 +16,12 @@ namespace Meta::ReflectionData
         ClassInfo& Get() { return Data; }
     };
 
+    TReflectionVector<Attribute> {{class_name}}Meta::Attributes = {
+        {{#attributes}}
+            {{{value}}},
+        {{/attributes}}
+    };
+
     TReflectionVector<FieldInfo> {{class_name}}Meta::Fields = {
         {{#fields}}
             { {{name}}, &{{{canonical_name}}}::{{name}}, {{access}}, Meta::GetType<{{{type}}}> },

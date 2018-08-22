@@ -39,6 +39,9 @@ std::string Visitor::BuildScopeNamePrefix() const
 
 auto Visitor::ResolveCursor(CXCursor cursor, CXCursorKind cursorKind) -> TCursorResolveResult
 {
+    if (Context.Parser.ForcedFactory)
+        return Context.Parser.ForcedFactory->Handle(Context.Parser, cursor, cursorKind, *this);
+
     bool  is_in_type_scope = !Scope.empty() && Scope.top()->isType;
     auto& scope_handler = is_in_type_scope ? Context.Parser.TypeFactory : Context.Parser.GlobalFactory;
 
@@ -103,12 +106,12 @@ CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */)
 
     CXCursorKind cursorKind = clang_getCursorKind(cursor);
     std::string  cursorName = GetCursorSpelling(cursor);
-//    auto         current_level = (unsigned int) Scope.size();
+    // auto         current_level = (unsigned int) Scope.size();
 
-//    std::cout << std::string(current_level, '\t')
-//              << " " << GetCursorKindName(cursorKind)
-//              << " (" << cursorName
-//              << ")" << std::endl;
+    // std::cout << std::string(current_level, '\t')
+    //           << " " << GetCursorKindName(cursorKind)
+    //           << " (" << cursorName
+    //           << ")" << std::endl;
 
     auto [is_scope, info] = ResolveCursor(cursor, cursorKind);
     if (is_scope)

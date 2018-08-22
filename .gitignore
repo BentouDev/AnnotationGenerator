@@ -36,6 +36,7 @@ test_package/build
 .idea
 .vscode
 .vs
+tmp
 cmake-build-debug
 build
 Generated/

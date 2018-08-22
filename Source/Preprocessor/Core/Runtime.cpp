@@ -18,6 +18,7 @@ Runtime::Runtime(Data::Context& context)
 {
     Context.Parser.GlobalFactory = std::make_unique<CursorHandlerFactory>();
     Context.Parser.TypeFactory   = std::make_unique<CursorHandlerFactory>();
+    Context.Parser.AnnotFactory  = std::make_unique<CursorHandlerFactory>();
 
     Context.Parser.GlobalFactory->RegisterHandlers({
         { CXCursor_EnumDecl,      Handlers::HandleEnum },
@@ -27,6 +28,7 @@ Runtime::Runtime(Data::Context& context)
         { CXCursor_TypedefDecl,   Handlers::HandleTypeAlias },
         { CXCursor_TypeAliasDecl, Handlers::HandleTypeAlias },
         { CXCursor_Namespace,     Handlers::HandleNamespace },
+        { CXCursor_VarDecl,       Handlers::HandleVarDecl }
     });
 
     Context.Parser.TypeFactory->RegisterHandlers({
@@ -40,6 +42,12 @@ Runtime::Runtime(Data::Context& context)
         { CXCursor_FunctionDecl,  Handlers::HandleMethod },
         { CXCursor_CXXMethod,     Handlers::HandleMethod },
         { CXCursor_AnnotateAttr,  Handlers::HandleAnnotation },
+    });
+
+    Context.Parser.AnnotFactory->RegisterHandlers({
+        { CXCursor_CallExpr,      Handlers::SkipRecurse },
+        { CXCursor_UnexposedExpr, Handlers::SkipRecurse },
+        { CXCursor_StringLiteral, Handlers::HandlePreAnnot },
     });
 }
 
@@ -89,8 +97,9 @@ void Runtime::ProcessPattern(SourcePattern& pattern)
 
 void Runtime::ParseSourceFile(SourcePattern& pattern, SourceFile& file)
 {
-    Context.Parser.CurrentSource = &file;
-    Context.Parser.UseIncludes   = pattern.UseIncludes;
+    Context.Parser.CurrentSource  = &file;
+    Context.Parser.CurrentPattern = &pattern;
+    Context.Parser.UseIncludes    = pattern.UseIncludes;
 
     Parser parser(Context);
     parser.ProcessFile();

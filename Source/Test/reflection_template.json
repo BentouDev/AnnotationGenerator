@@ -7,7 +7,7 @@
       "main_out" : "reflection_main.cpp",
       "output_dir" : "Generated",
       "file" : "(\\W|\\w)*\\.h\\b",
-      "annotation" : "Serialize",
+      "annotation" : ["__Y_CLASS__"],
       "includes" : "true"
     }
   ]

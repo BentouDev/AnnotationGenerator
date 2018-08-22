@@ -17,12 +17,12 @@ TMustacheData Generator::BuildAllData()
 {
     TMustacheData types { TMustacheData::type::list };
 
-    std::string& ann_name = Context.Generator.CurrentPattern->Annotation;
+    // std::string& ann_name = Context.Generator.CurrentPattern->Annotation;
     for (auto& [_, type] : Context.Parser.Classes)
     {
         UNUSED(_);
 
-        if (ann_name.empty() || Utils::MatchesAny(ann_name, type->Annotations))
+        // if (ann_name.empty() || Utils::MatchesAny(ann_name, type->Annotations))
         {
             TMustacheData data = BuildTypeData(type);
 
@@ -38,8 +38,9 @@ TMustacheData Generator::BuildAllData()
 TMustacheData Generator::BuildTypeData(std::shared_ptr<ClassInfo>& type)
 {
     TMustacheData data;
-    data.set("fields", BuildFieldData (type));
-    data.set("methods", BuildMethodData(type));
+    data.set("fields",     BuildFieldData (type));
+    data.set("methods",    BuildMethodData(type));
+    data.set("attributes", BuildAttributeData(type));
     data.set("class_name", type->Name);
     data.set("canonical_name", type->CanonName);
 
@@ -77,6 +78,21 @@ TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
     }
 
     return methods;
+}
+
+TMustacheData Generator::BuildAttributeData(std::shared_ptr<ClassInfo>& type)
+{
+    TMustacheData attributes { TMustacheData::type::list };
+
+    for (auto& annotation : type->Annotations)
+    {
+        TMustacheData attribute_data;
+        attribute_data.set("value", annotation);
+
+        attributes << attribute_data;
+    }
+
+    return attributes;
 }
 
 fs::path Generator::BuildOutputPath(std::shared_ptr<ClassInfo>& type)

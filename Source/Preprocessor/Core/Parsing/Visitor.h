@@ -46,6 +46,8 @@ public:
 
     void VisitChildren(CXCursor param);
 
+    std::vector<std::string> PreAnnotations;
+
     std::string GetCursorKindName(CXCursorKind cursorKind);
     std::string GetCursorSpelling(CXCursor cursor);
     std::string GetTypeSpelling(CXType cursor);
