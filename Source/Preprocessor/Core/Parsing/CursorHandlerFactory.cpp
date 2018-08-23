@@ -109,8 +109,9 @@ namespace Handlers
 
         if (auto itr = context.Classes.find(canon_name); itr == context.Classes.end())
         {
-            auto clazz            = std::make_shared<ClassInfo>(name);
-                 clazz->CanonName = canon_name;
+            auto clazz              = std::make_shared<ClassInfo>(name);
+                 clazz->CanonName   = canon_name;
+                 clazz->FromInclude = context.CurrentSource->Path.string();
 
             clazz->Annotations.reserve(clazz->Annotations.size() + visitor.PreAnnotations.size());
             clazz->Annotations.insert (clazz->Annotations.end(), visitor.PreAnnotations.begin(), visitor.PreAnnotations.end());
@@ -147,8 +148,9 @@ namespace Handlers
 
         if (auto itr = context.Classes.find(canon_name); itr == context.Classes.end())
         {
-            auto clazz       = std::make_shared<ClassInfo>(name);
-            clazz->CanonName = canon_name;
+            auto clazz              = std::make_shared<ClassInfo>(name);
+                 clazz->CanonName   = canon_name;
+                 clazz->FromInclude = context.CurrentSource->Path.string();
 
             clazz->Annotations.reserve(clazz->Annotations.size() + visitor.PreAnnotations.size());
             clazz->Annotations.insert (clazz->Annotations.end(), visitor.PreAnnotations.begin(), visitor.PreAnnotations.end());

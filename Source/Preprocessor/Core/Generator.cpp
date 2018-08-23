@@ -43,6 +43,7 @@ TMustacheData Generator::BuildTypeData(std::shared_ptr<ClassInfo>& type)
     data.set("attributes", BuildAttributeData(type));
     data.set("class_name", type->Name);
     data.set("canonical_name", type->CanonName);
+    data.set("include",    type->FromInclude);
 
     return data;
 }

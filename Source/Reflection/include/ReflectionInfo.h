@@ -169,6 +169,7 @@ public:
 
     ClassInfo*  Super;
     std::string CanonName;
+    std::string FromInclude;
 
     REF_CONST std::vector<std::string> Annotations;
     TReflectionVector<ClassInfo>       Interfaces;
