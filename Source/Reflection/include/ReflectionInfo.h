@@ -164,7 +164,7 @@ class ClassInfo : public TypeInfo
 {
 public:
     ClassInfo(CompileString name)
-        : TypeInfo(name)
+        : TypeInfo(name), HasAnnotation(false)
     { }
 
     ClassInfo*  Super;
@@ -174,6 +174,7 @@ public:
     TReflectionVector<ClassInfo>       Interfaces;
     TReflectionVector<FieldInfo>       Fields;
     TReflectionVector<MethodInfo>      Methods;
+    bool                               HasAnnotation;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
