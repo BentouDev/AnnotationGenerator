@@ -29,8 +29,8 @@ std::vector<cstring> Parser::BuildArguments()
 
     for (auto& path : Context.Parser.CurrentPattern->Directories)
     {
-        std::string* leak = new std::string(std::string("-I") + path);
-        result.push_back(leak->c_str());
+        Arguments.emplace_back(std::make_unique<std::string>(std::string("-I") + path));
+        result.push_back(Arguments.back()->c_str());
     }
 
     for (auto& include : Context.Parser.Includes)
@@ -40,16 +40,6 @@ std::vector<cstring> Parser::BuildArguments()
 
     return result;
 }
-
-// bool Parser::IncludeMatches(const std::string_view& include)
-// {
-//     auto itr = std::find_if(Context.Parser.CurrentPattern->Includes.begin(), Context.Parser.CurrentPattern->Includes.end(),
-//         [&](const std::string& defined){
-//             return include.rfind(defined) != std::string::npos;
-//     });
-
-//     return itr != Context.Parser.CurrentPattern->Includes.end();
-// }
 
 std::string Parser::BuildWorkerFileContent(const fs::path& filepath)
 {
