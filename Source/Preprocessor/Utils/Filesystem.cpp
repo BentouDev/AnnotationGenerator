@@ -15,9 +15,14 @@ namespace std::experimental::filesystem
     }
 
     // Return path when appended to a_From will resolve to same as a_To
-    ::fs::path relative( ::fs::path a_From, ::fs::path a_To, std::error_code code)
+    ::fs::path relative( ::fs::path a_To, ::fs::path a_From, std::error_code code)
     {
-        a_From = ::fs::absolute( a_From ); a_To = ::fs::absolute( a_To );
+        a_From = ::fs::absolute( a_From );
+        a_To   = ::fs::absolute( a_To );
+
+        a_From = ::fs::canonical( a_From );
+        a_To   = ::fs::canonical( a_To );
+
         ::fs::path ret;
         ::fs::path::const_iterator itrFrom( a_From.begin() ), itrTo( a_To.begin() );
 

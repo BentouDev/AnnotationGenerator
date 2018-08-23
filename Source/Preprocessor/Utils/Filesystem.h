@@ -21,7 +21,7 @@ namespace std::experimental::filesystem
     }
 
     // Return path when appended to a_From will resolve to same as a_To
-    ::fs::path relative( ::fs::path a_From, ::fs::path a_To = ::fs::current_path(), std::error_code code = std::error_code{});
+    ::fs::path relative( ::fs::path a_To, ::fs::path a_From = ::fs::current_path(), std::error_code code = std::error_code{});
 }
 
 #else
