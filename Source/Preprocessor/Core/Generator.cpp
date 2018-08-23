@@ -38,12 +38,40 @@ TMustacheData Generator::BuildAllData()
 TMustacheData Generator::BuildTypeData(std::shared_ptr<ClassInfo>& type)
 {
     TMustacheData data;
+
+    fs::path absolute;
+             absolute.append(type->FromInclude);
+
+    std::string include_path = absolute.string();
+
+    std::vector<std::string> relatives {fs::relative(absolute).string()};
+
+    for (auto& incl_dir : Context.Generator.CurrentPattern->Directories)
+    {
+        fs::path dir;
+                 dir.append(incl_dir);
+
+        std::error_code err;
+        relatives.push_back(fs::relative(absolute, dir, err).string());
+    }
+
+    auto itr = std::min_element(relatives.begin(), relatives.end(),
+        [] (const std::string& s1, const std::string& s2) { 
+            return s1.length() < s2.length(); 
+        }
+    );
+
+    if (itr != relatives.end())
+    {
+        include_path = *itr;
+    }
+
     data.set("fields",     BuildFieldData (type));
     data.set("methods",    BuildMethodData(type));
     data.set("attributes", BuildAttributeData(type));
     data.set("class_name", type->Name);
     data.set("canonical_name", type->CanonName);
-    data.set("include",    type->FromInclude);
+    data.set("include",    include_path);
 
     return data;
 }

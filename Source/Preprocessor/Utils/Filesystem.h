@@ -5,9 +5,9 @@
 #ifndef ANNOTATIONGENERATOR_FILESYSTEM_H
 #define ANNOTATIONGENERATOR_FILESYSTEM_H
 
-#include <experimental/filesystem>
+#include <filesystem>
 
 using cstring = const char*;
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 #endif //ANNOTATIONGENERATOR_FILESYSTEM_H

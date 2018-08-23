@@ -98,7 +98,8 @@ CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */)
 {
     fs::path source = GetCursorSourcePath(cursor);
 
-    if (!fs::equivalent(source, Context.Parser.CurrentSource->Path)
+    std::error_code err;
+    if (!fs::equivalent(source, Context.Parser.CurrentSource->Path, err)
     &&  source.string() != Context.Parser.CurrentUnitName)
     {
         return CXChildVisit_Continue;
