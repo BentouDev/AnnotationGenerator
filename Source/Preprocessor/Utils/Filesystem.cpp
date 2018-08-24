@@ -1,6 +1,6 @@
 #include "Filesystem.h"
 
-#if __cpp_lib_experimental_filesystem || __has_include(<experimental/filesystem>)
+#ifdef YAGE_FILESYSTEM_EXPERIMENTAL
 
 namespace std::experimental::filesystem
 {
@@ -42,4 +42,4 @@ namespace std::experimental::filesystem
     }
 }
 
-#endif
+#endif // YAGE_FILESYSTEM_EXPERIMENTAL

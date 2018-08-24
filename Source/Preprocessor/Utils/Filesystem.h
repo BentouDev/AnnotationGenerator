@@ -6,9 +6,11 @@
 #define ANNOTATIONGENERATOR_FILESYSTEM_H
 
 #if __cpp_lib_filesystem || __has_include(<filesystem>)
+#define YAGE_FILESYSTEM
 #include <filesystem>
 namespace fs = std::filesystem;
 #elif __cpp_lib_experimental_filesystem || __has_include(<experimental/filesystem>)
+#define YAGE_FILESYSTEM_EXPERIMENTAL
 #include <experimental/filesystem>
 
 namespace fs = std::experimental::filesystem;
