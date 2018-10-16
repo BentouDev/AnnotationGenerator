@@ -85,8 +85,8 @@ void Parser::ProcessFile()
 {
     if (!fs::exists(Context.Parser.CurrentSource->Path))
     {
-        std::cerr << "Unable to open source file "
-                  << Context.Parser.CurrentSource->Path << "."
+        std::cerr << "Unable to open source file '"
+                  << Context.Parser.CurrentSource->Path << "'."
                   << std::endl;
         return;
     }
