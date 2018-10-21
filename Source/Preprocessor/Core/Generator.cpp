@@ -57,7 +57,7 @@ TMustacheData Generator::BuildTypeData(std::shared_ptr<ClassInfo>& type)
 
     relatives.erase(std::remove_if(relatives.begin(), relatives.end(), [](const std::string& str){
         return str.empty();
-    }));
+    }), relatives.end());
 
     auto itr = std::min_element(relatives.begin(), relatives.end(),
         [] (const std::string& s1, const std::string& s2) { 

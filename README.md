@@ -12,6 +12,7 @@ Clang based C++ preprocessor for annotation based reflection generation
 
 ```bash
 $ AnnotationGenerator [TEMPLATE] [FILES]...
+$ AnnotationGenerator [TEMPLATE] -i [INPUT_LIST_FILE]
 ```
 
 Where :

@@ -1,6 +1,6 @@
 # Clang based C++ preprocessor for annotation based reflection generation 
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(AnnotationGenerator VERSION 0.1 LANGUAGES CXX C)
+project(AnnotationGenerator VERSION 0.3 LANGUAGES CXX C)
 
 # Add modules
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Modules" ${CMAKE_MODULE_PATH})

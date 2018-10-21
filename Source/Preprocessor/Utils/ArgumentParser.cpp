@@ -6,6 +6,7 @@
 #include "Utils.h"
 #include "../Core/Context.h"
 #include <regex>
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -26,10 +27,16 @@ bool ArgumentParser::Parse(int argc, char** argv)
         "--directory"
     };
 
+    auto input_args = {
+        "-i",
+        "--input"
+    };
+
     if (argc == 2 && Utils::MatchesAny(argv[1], help_args))
     {
         std::cout << "Clang based C++ preprocessor adding annotation based code generation" << std::endl;
         std::cout << "Usage: AnnotationGenerator [TEMPLATE] [FILES]..." << std::endl;
+        std::cout << "       AnnotationGenerator [TEMPLATE] -i [INPUT_LIST_FILE]" << std::endl;
         std::cout << "\t [h]elp      - prints this info" << std::endl;
         std::cout << "\t [d]irectory - overrides output directory" << std::endl;
         return false;
@@ -42,6 +49,7 @@ bool ArgumentParser::Parse(int argc, char** argv)
     }
 
     std::vector<std::string> parameters;
+    fs::path                 input_list_file;
     for (int i = 1; i < argc; i++)
     {
         std::string param = argv[i];
@@ -51,11 +59,28 @@ bool ArgumentParser::Parse(int argc, char** argv)
             if (i + 1 < argc)
             {
                 i++;
-                Context.Generator.OutputDirectory += std::string(argv[i]);
+                auto output = std::string(argv[i]);
+                Context.Generator.OutputDirectory += output;
+                std::cout << "Current output directory: " << output << std::endl;
             }
             else
             {
                 std::cerr << "--directory parameter was used but no path was specified!" << std::endl;
+                return false;
+            }
+        }
+        else if (Utils::MatchesAny(param, input_args))
+        {
+            if (i + 1 < argc)
+            {
+                i++;
+                auto input = std::string(argv[i]);
+                input_list_file += input;
+                std::cout << "Using input file: " << input << std::endl;
+            }
+            else
+            {
+                std::cerr << "--input parameter was used but no file was specified!" << std::endl;
                 return false;
             }
         }
@@ -69,6 +94,18 @@ bool ArgumentParser::Parse(int argc, char** argv)
 
     fs::path template_path;
     template_path += parameters[0];
+
+    if (!input_list_file.empty())
+    {
+        std::ifstream if_handle(input_list_file, std::ios_base::in);
+        if (if_handle)
+        {
+            for (std::string line; std::getline(if_handle, line);)
+            {
+                parameters.emplace_back(std::move(line));
+            }
+        }
+    }
 
     parameters.erase(parameters.begin());
 

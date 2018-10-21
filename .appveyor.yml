@@ -30,4 +30,4 @@ build_script:
 on_success:
   - cmd: conan remote add yage https://api.bintray.com/conan/bentoudev/yage
   - cmd: conan user -p %REPOSITORY_KEY% -r yage bentoudev
-  - cmd: conan upload Agnes/0.2@bentoudev/yage --all -r=yage
+  - cmd: conan upload Agnes/0.3@bentoudev/yage --all -r=yage

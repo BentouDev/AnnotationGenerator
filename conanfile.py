@@ -2,7 +2,7 @@ from conans import ConanFile, CMake, tools
 
 class AgnesConan(ConanFile):
     name = "Agnes"
-    version = "0.2"
+    version = "0.3"
     license = "MIT"
     
     description = "AnnotationGenerator conan package"
