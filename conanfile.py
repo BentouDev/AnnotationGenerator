@@ -13,7 +13,9 @@ class AgnesConan(ConanFile):
 
     git = tools.Git()
     print("Git: branch - " + git.get_branch())
-    print("     tag    - " + git.get_tag())
+    tag = git.get_tag()
+    if tag:
+        print("     tag    - " + tag)
     print("     commit - " + git.get_commit())
 
     print("CI: " + os.environ['CI'])
