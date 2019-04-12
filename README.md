@@ -1,6 +1,6 @@
 # AnnotationGenerator
 
-Clang based C++ preprocessor for annotation based reflection generation
+Clang based C++ preprocessor for annotation based code generation
 
 ### Build status
 
