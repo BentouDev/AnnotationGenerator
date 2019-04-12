@@ -3,6 +3,7 @@ from conans import ConanFile, CMake, tools
 class AgnesConan(ConanFile):
     name = "Agnes"
     license = "MIT"
+    version = "dev"
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
