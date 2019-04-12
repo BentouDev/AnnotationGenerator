@@ -1,4 +1,5 @@
 from conans import ConanFile, CMake, tools
+import os
 
 class AgnesConan(ConanFile):
     name = "Agnes"
@@ -9,6 +10,17 @@ class AgnesConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
+
+    git = tools.Git()
+    print("Git: branch - " + git.get_branch())
+    print("     tag    - " + git.get_tag())
+    print("     commit - " + git.get_commit())
+
+    print("CI: " + os.environ['CI'])
+    print("APP_VEYOR: " + os.environ['APPVEYOR'])
+    print("      tag: " + os.environ['APPVEYOR_REPO_TAG'])
+    print("TRAVIS: " + os.environ['TRAVIS'])
+    print("   tag: " + os.environ['TRAVIS_TAG'])
 
     def package_id(self):
         self.info.include_build_settings()
@@ -33,16 +45,4 @@ class AgnesConan(ConanFile):
             self.copy("Agnes", dst="bin", src="Source/Preprocessor", keep_path=False, ignore_case=True)
 
     def package_info(self):
-        git = tools.Git()
-        print("Git: branch - " + git.get_branch())
-        print("     tag    - " + git.get_tag())
-        print("     commit - " + git.get_commit())
-
-        print("path: " + self.env_info.path)
-        print("CI: " + self.env_info['CI'])
-        print("APP_VEYOR: " + self.env_info['APPVEYOR'])
-        print("      tag: " + self.env_info['APPVEYOR_REPO_TAG'])
-        print("TRAVIS: " + self.env_info['TRAVIS'])
-        print("   tag: " + self.env_info['TRAVIS_TAG'])
-
         self.cpp_info.libs = tools.collect_libs(self, folder="lib")
