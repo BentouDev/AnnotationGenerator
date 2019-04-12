@@ -12,11 +12,12 @@ class AgnesConan(ConanFile):
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
     git = tools.Git()
-    print("Git: branch - " + git.get_branch())
-    tag = git.get_tag()
-    if tag:
-        print("     tag    - " + tag)
-    print("     commit - " + git.get_commit())
+    if git:
+        print("Git: branch - " + git.get_branch())
+        tag = git.get_tag()
+        if tag:
+            print("     tag    - " + tag)
+        print("     commit - " + git.get_commit())
 
     print("CI: " + str('CI' in os.environ))
 
