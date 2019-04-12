@@ -18,13 +18,17 @@ class AgnesConan(ConanFile):
         print("     tag    - " + tag)
     print("     commit - " + git.get_commit())
 
-    print("CI: " + os.environ['CI'])
+    print("CI: " + str('CI' in os.environ))
+
     if 'APPVEYOR' in os.environ:
         print("APP_VEYOR: " + os.environ['APPVEYOR'])
-        print("      tag: " + os.environ['APPVEYOR_REPO_TAG'])
+        if 'APPVEYOR_REPO_TAG_NAME' in os.environ:
+            print("      tag: " + os.environ['APPVEYOR_REPO_TAG_NAME'])
+    
     if 'TRAVIS' in os.environ:
         print("TRAVIS: " + os.environ['TRAVIS'])
-        print("   tag: " + os.environ['TRAVIS_TAG'])
+        if 'TRAVIS_TAG' in os.environ:
+            print("   tag: " + os.environ['TRAVIS_TAG'])
 
     def package_id(self):
         self.info.include_build_settings()
