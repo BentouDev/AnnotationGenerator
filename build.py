@@ -49,6 +49,7 @@ def getGitVersion():
         data['commit'] = runCommand(['git', 'rev-parse', 'HEAD'])
         return data
     except Exception as error:
+        print (' [*] Caught error: ' + str(error))
         return None
 
 def execute(password):
