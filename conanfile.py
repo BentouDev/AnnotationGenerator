@@ -7,10 +7,10 @@ class AgnesConan(ConanFile):
     version = None
     commit = None
 
-    if 'AGNES_VERSION' in os.environ:
-        version = os.environ['AGNES_VERSION']
-    if 'AGNES_COMMIT' in os.environ:
-        commit = os.environ['AGNES_COMMIT']
+    # if 'AGNES_VERSION' in os.environ:
+    #     version = os.environ['AGNES_VERSION']
+    # if 'AGNES_COMMIT' in os.environ:
+    #     commit = os.environ['AGNES_COMMIT']
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"

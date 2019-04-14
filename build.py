@@ -16,12 +16,13 @@ def createBuilder(channel, commit, password, version):
                 upload="https://api.bintray.com/conan/bentoudev/yage",
                 password=password)
     else:
-        return ConanMultiPackager(username=username, 
+        return ConanMultiPackager(username=username,
                 channel=channel,
                 stable_branch_pattern=branch_pattern)
 
 def build(channel, commit, password, version):
     builder = createBuilder(channel, commit, password, version)
+
 
     # settings = 
     # if 'TRAVIS' in os.environ:
