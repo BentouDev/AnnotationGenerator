@@ -3,7 +3,7 @@ from cpt.packager import ConanMultiPackager
 from conans import tools
 import os, sys
 
-DEBUG_MODE = False
+DEBUG_MODE = True
 
 def createBuilder(channel, commit, password, version):
     branch_pattern = 'release*' # channel is set explicitly!
@@ -49,9 +49,10 @@ def runCommand(args):
 
         out = stdout.split('\n')
         if DEBUG_MODE:
-            print(" [*] stdout: " + stdout)
+            print(" [*] stdout: " + out[0])
+            print(" [*] all : ")
             for x in range(len(out)):
-                print(out[x])
+                print(x + ': ' + out[x])
 
         return out[0]
     except Exception as error:
