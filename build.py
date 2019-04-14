@@ -47,37 +47,44 @@ def getGitVersion():
 def execute(password):
     channel = 'dev'
     version = None
-    gitData = getGitVersion()
 
     if 'CI' in os.environ:
         print(' [info] CI Environment detected')
 
         if 'APPVEYOR' in os.environ:
-            print("APP_VEYOR: " + os.environ['APPVEYOR'])
+            print(" [info] Welcome, AppVeyor!")
             if 'APPVEYOR_REPO_TAG_NAME' in os.environ:
                 version = os.environ['APPVEYOR_REPO_TAG_NAME']
                 channel = 'stable'
+            if 'APPVEYOR_REPO_COMMIT' in os.environ:
+                commit = os.environ['APPVEYOR_REPO_COMMIT']
 
         if 'TRAVIS' in os.environ:
-            print("TRAVIS: " + os.environ['TRAVIS'])
+            print(" [info] Welcome, Travis!")
             os.environ['CXX'] = 'clang++-5.0'
             os.environ['CC'] = 'clang-5.0'
             if 'TRAVIS_TAG' in os.environ:
                 version = os.environ['TRAVIS_TAG']
                 channel = 'stable'
+            if 'TRAVIS_COMMIT' in os.environ:
+                commit = os.environ['TRAVIS_COMMIT']
 
-    if not version:
+    if not version or not commit:
+        print (' [*] Attempt to get version from git...')
+        gitData = getGitVersion()
         version = gitData['version']
+        commit = gitData['commit']
 
-    commit = gitData['commit']
+    if version and commit:
+        print (' [info] Channel: ' + channel)
+        print (' [info] Version: ' + version)
+        print (' [info] Commit: ' + commit)
+        print ('')
+        print (' [*] Executing conan build...')
 
-    print (' [info] Channel: ' + channel)
-    print (' [info] Version: ' + version)
-    print (' [info] Commit: ' + commit)
-    print ('')
-    print (' [*] Executing conan build...')
-
-    build(channel, commit, password, version)
+        build(channel, commit, password, version)
+    else:
+        print (' [error] Unable to determine version!', file=sys.stderr)
 
 if __name__ == '__main__':
     print ('')
