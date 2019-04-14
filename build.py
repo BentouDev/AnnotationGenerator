@@ -1,7 +1,7 @@
 #!/bin/python3
 from cpt.packager import ConanMultiPackager
 from conans import tools
-import subprocess, os, sys
+import os, sys
 
 def build(channel, commit, password, version):
     branch_pattern = 'release*' # channel is set explicitly!
