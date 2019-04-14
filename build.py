@@ -29,7 +29,7 @@ def runCommand(args):
     if len(args) == 0:
         return None
     try:
-        cmd = subprocess.run(args, encoding='utf-8', stdout=subprocess.PIPE)
+        cmd = subprocess.run(args, encoding='utf-8')#, stdout=subprocess.PIPE)
         cmd.check_returncode()
         return cmd.stdout.split('\n')[0]
     except Exception as error:
@@ -84,7 +84,9 @@ def execute(password):
 
         build(channel, commit, password, version)
     else:
-        sys.stderr.write(' [error] Unable to determine version!')
+        msg = "Unable to determine version"
+        sys.stderr.write(' [error] {}!', msg)
+        raise Exception(msg)
 
 if __name__ == '__main__':
     print ('')
