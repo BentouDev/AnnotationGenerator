@@ -31,7 +31,10 @@ def runCommand(args):
     try:
         cmd = subprocess.run(args, encoding='utf-8')#, stdout=subprocess.PIPE)
         cmd.check_returncode()
-        return cmd.stdout.split('\n')[0]
+        out = cmd.stdout.split('\n')
+        for x in range(len(out))
+            print(out[x])
+        return out[0]
     except Exception as error:
         return None
 
