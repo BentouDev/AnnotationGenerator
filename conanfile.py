@@ -5,6 +5,7 @@ class AgnesConan(ConanFile):
     name = "Agnes"
     license = "MIT"
     version = "dev"
+    commit = tools.Git().get_commit()
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
