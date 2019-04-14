@@ -6,11 +6,11 @@ class AgnesConan(ConanFile):
     license = "MIT"
     version = "dev"
     commit = None
-    
+
     try:
         tools.Git().get_commit()
     except Exception as error:
-        print(" [error] Failed to automatically get git commit, error: " + str(error))
+        self.output.warn(" [error] Failed to automatically get git commit, error: " + str(error))
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
