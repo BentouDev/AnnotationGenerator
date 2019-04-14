@@ -79,8 +79,9 @@ def execute(password):
     if not version or not commit:
         print (' [*] Attempt to get version from git...')
         gitData = getGitVersion()
-        version = gitData['version']
-        commit = gitData['commit']
+        if gitData:
+            version = gitData['version']
+            commit = gitData['commit']
 
     if version and commit:
         print (' [info] Channel: ' + channel)
