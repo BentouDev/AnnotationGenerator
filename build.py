@@ -5,21 +5,23 @@ import os, sys
 
 DEBUG_MODE = False
 
-def build(channel, commit, password, version):
+def createBuilder(channel, commit, password, version):
     branch_pattern = 'release*' # channel is set explicitly!
     username = "bentoudev"
-    builder = None
 
     if password:
-        builder = ConanMultiPackager(username=username,
+        return ConanMultiPackager(username=username,
                 channel=channel,
                 stable_branch_pattern=branch_pattern,
                 upload="https://api.bintray.com/conan/bentoudev/yage",
                 password=password)
     else:
-        builder = ConanMultiPackager(username=username, 
+        return ConanMultiPackager(username=username, 
                 channel=channel,
                 stable_branch_pattern=branch_pattern)
+
+def build(channel, commit, password, version):
+    builder = createBuilder(channel, commit, password, version)
 
     settings = {"arch": "x86_64", "build_type": "Release"}
     if 'TRAVIS' in os.environ:
