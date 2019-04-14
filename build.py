@@ -21,14 +21,15 @@ def createBuilder(channel, commit, password, version):
                 stable_branch_pattern=branch_pattern)
 
 def build(channel, commit, password, version):
+
+    os.environ['AGNES_COMMIT'] = commit
+    os.environ['AGNES_VERSION'] = version
+
     builder = createBuilder(channel, commit, password, version)
 
     # settings = 
     # if 'TRAVIS' in os.environ:
     #     settings['compiler'] = 'clang'
-
-    os.environ['AGNES_COMMIT'] = commit
-    os.environ['AGNES_VERSION'] = version
 
     builder.add(settings={"arch": "x86_64", "build_type": "Release"},
                 options={},
