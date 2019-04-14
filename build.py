@@ -4,11 +4,19 @@ from conans import tools
 import subprocess, os, sys
 
 def build(channel, commit, password, version):
-    builder = ConanMultiPackager(username="bentoudev", 
-                upload="https://api.bintray.com/conan/bentoudev/yage", 
+    branch_pattern = 'release*' # channel is set explicitly!
+    username = "bentoudev"
+
+    if password:
+        builder = ConanMultiPackager(username=username,
                 channel=channel,
-                stable_branch_pattern='release*', # channel is set explicitly!
+                stable_branch_pattern=branch_pattern,
+                upload="https://api.bintray.com/conan/bentoudev/yage",
                 password=password)
+    else:
+        builder = ConanMultiPackager(username=username, 
+                channel=channel,
+                stable_branch_pattern=branch_pattern)
 
     builder.add(settings={"arch": "x86_64", "build_type": "Release"},
                 options={},
@@ -41,7 +49,6 @@ def execute(password):
     version = None
     gitData = getGitVersion()
 
-    print ('')
     if 'CI' in os.environ:
         print(' [info] CI Environment detected')
 
@@ -73,7 +80,9 @@ def execute(password):
     build(channel, commit, password, version)
 
 if __name__ == '__main__':
+    print ('')
     if len(sys.argv) >= 2:
         execute(sys.argv[1])
     else:
-        print("Missing repository key argument!", file=sys.stderr)
+        print(" [warn] Missing repository key argument! Package won't be uploaded")
+        execute(None)
