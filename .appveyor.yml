@@ -25,6 +25,8 @@ install:
 
 build_script:
   - cmd: conan --version
+  - cmd: git describe
+  - cmd: git rev-parse HEAD
   - cmd: python build.py %REPOSITORY_KEY%
   #- cmd: conan create . bentoudev/yage -s build_type=Release -s arch=x86_64
 
