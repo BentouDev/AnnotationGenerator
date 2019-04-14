@@ -32,7 +32,7 @@ def runCommand(args):
         cmd = subprocess.run(args, encoding='utf-8')#, stdout=subprocess.PIPE)
         cmd.check_returncode()
         out = cmd.stdout.split('\n')
-        for x in range(len(out))
+        for x in range(len(out)):
             print(out[x])
         return out[0]
     except Exception as error:
