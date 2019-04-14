@@ -26,12 +26,12 @@ def build(channel, commit, password, version):
     builder.run()
 
 def runCommand(args):
-    import subprocess
+    import subprocess as sp
     if len(args) == 0:
         return None
     try:
         #print(' [*] Running cmd... ' + args[0])
-        cmd = subprocess.run(args, encoding='utf-8', stdout=subprocess.PIPE)
+        cmd = sp.run(args, encoding='utf-8', stdout=sp.PIPE)
         cmd.check_returncode()
         #print(" [*] stdout: " + str(cmd.stdout))
         out = cmd.stdout.split('\n')
