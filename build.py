@@ -30,13 +30,13 @@ def runCommand(args):
     if len(args) == 0:
         return None
     try:
-        #print(' [*] Running cmd... ' + args[0])
+        print(' [*] Running cmd... ' + args[0])
         cmd = run(args, encoding='utf-8', stdout=PIPE)
         cmd.check_returncode()
-        #print(" [*] stdout: " + str(cmd.stdout))
+        print(" [*] stdout: " + str(cmd.stdout))
         out = cmd.stdout.split('\n')
-        #for x in range(len(out)):
-        #    print(out[x])
+        for x in range(len(out)):
+            print(out[x])
         return out[0]
     except Exception as error:
         print (' [*] Caught error: ' + str(error))
