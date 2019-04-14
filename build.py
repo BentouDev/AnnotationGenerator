@@ -8,6 +8,7 @@ DEBUG_MODE = False
 def build(channel, commit, password, version):
     branch_pattern = 'release*' # channel is set explicitly!
     username = "bentoudev"
+    builder = None
 
     if password:
         builder = ConanMultiPackager(username=username,
