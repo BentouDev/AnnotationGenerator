@@ -5,7 +5,12 @@ class AgnesConan(ConanFile):
     name = "Agnes"
     license = "MIT"
     version = "dev"
-    commit = tools.Git().get_commit()
+    commit = None
+    
+    try:
+        tools.Git().get_commit()
+    except Exception as error:
+        print(" [error] Failed to automatically get git commit, error: " + str(error))
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
