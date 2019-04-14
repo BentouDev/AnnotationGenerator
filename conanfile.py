@@ -11,27 +11,29 @@ class AgnesConan(ConanFile):
     generators = "cmake"
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
-    git = tools.Git()
-    if git:
-        print("Git: branch - " + git.get_branch())
-        tag = git.get_tag()
-        if tag:
-            print("     tag    - " + tag)
-        print("     commit - " + git.get_commit())
+    def printInfo():
+        git = tools.Git()
+        if git:
+            print("Git: branch - " + git.get_branch())
+            tag = git.get_tag()
+            if tag:
+                print("     tag    - " + tag)
+            print("     commit - " + git.get_commit())
 
-    print("CI: " + str('CI' in os.environ))
+        print("CI: " + str('CI' in os.environ))
 
-    if 'APPVEYOR' in os.environ:
-        print("APP_VEYOR: " + os.environ['APPVEYOR'])
-        if 'APPVEYOR_REPO_TAG_NAME' in os.environ:
-            print("      tag: " + os.environ['APPVEYOR_REPO_TAG_NAME'])
-    
-    if 'TRAVIS' in os.environ:
-        print("TRAVIS: " + os.environ['TRAVIS'])
-        if 'TRAVIS_TAG' in os.environ:
-            print("   tag: " + os.environ['TRAVIS_TAG'])
+        if 'APPVEYOR' in os.environ:
+            print("APP_VEYOR: " + os.environ['APPVEYOR'])
+            if 'APPVEYOR_REPO_TAG_NAME' in os.environ:
+                print("      tag: " + os.environ['APPVEYOR_REPO_TAG_NAME'])
+        
+        if 'TRAVIS' in os.environ:
+            print("TRAVIS: " + os.environ['TRAVIS'])
+            if 'TRAVIS_TAG' in os.environ:
+                print("   tag: " + os.environ['TRAVIS_TAG'])
 
     def package_id(self):
+        printInfo()
         self.info.include_build_settings()
         del self.info.settings.compiler
         del self.info.settings.arch
