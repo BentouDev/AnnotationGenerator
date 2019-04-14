@@ -11,7 +11,7 @@ class AgnesConan(ConanFile):
     generators = "cmake"
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
-    def printInfo():
+    def printInfo(self):
         git = tools.Git()
         if git:
             print("Git: branch - " + git.get_branch())
@@ -33,7 +33,7 @@ class AgnesConan(ConanFile):
                 print("   tag: " + os.environ['TRAVIS_TAG'])
 
     def package_id(self):
-        printInfo()
+        self.printInfo()
         self.info.include_build_settings()
         del self.info.settings.compiler
         del self.info.settings.arch
