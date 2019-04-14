@@ -84,7 +84,6 @@ def execute(password):
             print(" [info] Welcome, AppVeyor!")
             if 'APPVEYOR_REPO_TAG_NAME' in os.environ:
                 version = os.environ['APPVEYOR_REPO_TAG_NAME']
-                channel = 'stable'
             if 'APPVEYOR_REPO_COMMIT' in os.environ:
                 commit = os.environ['APPVEYOR_REPO_COMMIT']
 
@@ -94,7 +93,6 @@ def execute(password):
             os.environ['CC'] = 'clang-5.0'
             if 'TRAVIS_TAG' in os.environ:
                 version = os.environ['TRAVIS_TAG']
-                channel = 'stable'
             if 'TRAVIS_COMMIT' in os.environ:
                 commit = os.environ['TRAVIS_COMMIT']
 
@@ -104,6 +102,8 @@ def execute(password):
         if gitData:
             version = gitData['version']
             commit = gitData['commit']
+    else:
+        channel = 'stable'
 
     if version and commit:
         print (' [info] Channel: ' + channel)
