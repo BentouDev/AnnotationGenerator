@@ -11,29 +11,12 @@ class AgnesConan(ConanFile):
     generators = "cmake"
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
-    def printInfo(self):
-        git = tools.Git()
-        if git:
-            print("Git: branch - " + git.get_branch())
-            tag = git.get_tag()
-            if tag:
-                print("     tag    - " + tag)
-            print("     commit - " + git.get_commit())
-
-        print("CI: " + str('CI' in os.environ))
-
-        if 'APPVEYOR' in os.environ:
-            print("APP_VEYOR: " + os.environ['APPVEYOR'])
-            if 'APPVEYOR_REPO_TAG_NAME' in os.environ:
-                print("      tag: " + os.environ['APPVEYOR_REPO_TAG_NAME'])
-        
-        if 'TRAVIS' in os.environ:
-            print("TRAVIS: " + os.environ['TRAVIS'])
-            if 'TRAVIS_TAG' in os.environ:
-                print("   tag: " + os.environ['TRAVIS_TAG'])
-
     def package_id(self):
-        self.printInfo()
+        if 'AGNES_VERSION' in os.environ:
+            self.version = os.environ['AGNES_VERSION']
+        if 'AGNES_COMMIT' in os.environ:
+            self.commit = os.environ['AGNES_COMMIT']
+
         self.info.include_build_settings()
         del self.info.settings.compiler
         del self.info.settings.arch
@@ -41,6 +24,9 @@ class AgnesConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        cmake.definitions['AGNES_VERSION'] = self.version
+        cmake.definitions['AGNES_COMMIT'] = self.commit
+        cmake.definitions['AGNES_CHANNEL'] = self.channel
         cmake.configure(source_folder=".")
         cmake.build()
 

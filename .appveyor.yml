@@ -25,9 +25,11 @@ install:
 
 build_script:
   - cmd: conan --version
-  - cmd: conan create . bentoudev/yage -s build_type=Release -s arch=x86_64
+  - cmd: python build.py %REPOSITORY_KEY%
+  #- cmd: conan create . bentoudev/yage -s build_type=Release -s arch=x86_64
 
-on_success:
-  - cmd: conan remote add yage https://api.bintray.com/conan/bentoudev/yage
-  - cmd: conan user -p %REPOSITORY_KEY% -r yage bentoudev
-  - cmd: conan upload Agnes/0.3@bentoudev/yage --all -r=yage
+#on_success:
+  #- cmd: python build.py %REPOSITORY_KEY%
+  #- cmd: conan remote add yage https://api.bintray.com/conan/bentoudev/yage
+  #- cmd: conan user -p %REPOSITORY_KEY% -r yage bentoudev
+  #- cmd: conan upload Agnes/0.3@bentoudev/yage --all -r=yage
