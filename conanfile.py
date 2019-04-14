@@ -4,8 +4,8 @@ import os
 class AgnesConan(ConanFile):
     name = "Agnes"
     license = "MIT"
-    version = None
-    commit = None
+    version = 'None'
+    commit = 'None'
 
     # if 'AGNES_VERSION' in os.environ:
     #     version = os.environ['AGNES_VERSION']
