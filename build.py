@@ -3,7 +3,7 @@ from cpt.packager import ConanMultiPackager
 from conans import tools
 import os, sys
 
-DEBUG_MODE = True
+DEBUG_MODE = False
 
 def createBuilder(channel, commit, password, version):
     branch_pattern = 'release*' # channel is set explicitly!
@@ -42,7 +42,8 @@ def runCommand(args):
         if DEBUG_MODE:
             print(' [*] Running cmd... ' + args[0])
         raw_out = subprocess.check_output(args, shell=False)
-        stdout = str(raw_out)
+
+        stdout = raw_out.decode()
 
         #cmd = run(args, encoding='utf-8', stdout=PIPE)
         #cmd.check_returncode()
@@ -50,11 +51,10 @@ def runCommand(args):
         out = stdout.split('\n')
         if DEBUG_MODE:
             print(" [*] stdout: " + out[0])
-            print(" [*] all : ")
             for x in range(len(out)):
-                print(x + ': ' + out[x])
+                print(str(x) + ': ' + out[x])
 
-        return out[0]
+        return str(out[0])
     except Exception as error:
         print (' [*] Caught error: ' + str(error))
         return None
