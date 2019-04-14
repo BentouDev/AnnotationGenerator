@@ -38,6 +38,7 @@ def runCommand(args):
             print(out[x])
         return out[0]
     except Exception as error:
+        print (' [*] Caught error: ' + str(error))
         return None
 
 def getGitVersion():
