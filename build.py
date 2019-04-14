@@ -26,15 +26,17 @@ def build(channel, commit, password, version):
     builder.run()
 
 def runCommand(args):
-    from subprocess import run, PIPE
+    import subprocess
     if len(args) == 0:
         return None
     try:
         print(' [*] Running cmd... ' + args[0])
-        cmd = run(args, encoding='utf-8', stdout=PIPE)
-        cmd.check_returncode()
-        print(" [*] stdout: " + str(cmd.stdout))
-        out = cmd.stdout.split('\n')
+        raw_out = subprocess.check_output(args, shell=False)
+        stdout = str(raw_out)
+        #cmd = run(args, encoding='utf-8', stdout=PIPE)
+        #cmd.check_returncode()
+        print(" [*] stdout: " + stdout)
+        out = stdout.split('\n')
         for x in range(len(out)):
             print(out[x])
         return out[0]
