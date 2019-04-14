@@ -4,13 +4,13 @@ import os
 class AgnesConan(ConanFile):
     name = "Agnes"
     license = "MIT"
-    version = "dev"
+    version = None
     commit = None
 
-#    try:
-#        tools.Git().get_commit()
-#    except Exception as error:
-#        output.warn(" [error] Failed to automatically get git commit, error: " + str(error))
+    if 'AGNES_VERSION' in os.environ:
+        version = os.environ['AGNES_VERSION']
+    if 'AGNES_COMMIT' in os.environ:
+        commit = os.environ['AGNES_COMMIT']
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
@@ -18,10 +18,6 @@ class AgnesConan(ConanFile):
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
     def package_id(self):
-        if 'AGNES_VERSION' in os.environ:
-            self.version = os.environ['AGNES_VERSION']
-        if 'AGNES_COMMIT' in os.environ:
-            self.commit = os.environ['AGNES_COMMIT']
 
         self.info.include_build_settings()
         del self.info.settings.compiler
