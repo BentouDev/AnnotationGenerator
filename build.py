@@ -84,7 +84,7 @@ def execute(password):
 
         build(channel, commit, password, version)
     else:
-        print (' [error] Unable to determine version!', file=sys.stderr)
+        sys.stderr.write(' [error] Unable to determine version!')
 
 if __name__ == '__main__':
     print ('')
