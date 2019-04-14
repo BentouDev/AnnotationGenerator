@@ -1,16 +1,14 @@
 from conans import ConanFile, CMake, tools
 import os
 
+agnes_version = os.getenv('AGNES_VERSION', '0.0')
+agnes_commit = os.getenv('AGNES_COMMIT', '')
+
 class AgnesConan(ConanFile):
     name = "Agnes"
     license = "MIT"
-    version = 'None'
-    commit = 'None'
-
-    # if 'AGNES_VERSION' in os.environ:
-    #     version = os.environ['AGNES_VERSION']
-    # if 'AGNES_COMMIT' in os.environ:
-    #     commit = os.environ['AGNES_COMMIT']
+    version = agnes_version
+    commit = agnes_commit
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
