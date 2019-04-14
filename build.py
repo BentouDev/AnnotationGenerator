@@ -29,8 +29,10 @@ def runCommand(args):
     if len(args) == 0:
         return None
     try:
+        print(' [*] Running cmd... ' + args[0])
         cmd = subprocess.run(args, encoding='utf-8')#, stdout=subprocess.PIPE)
         cmd.check_returncode()
+        print(" [*] stdout: " + cmd.stdout)
         out = cmd.stdout.split('\n')
         for x in range(len(out)):
             print(out[x])
