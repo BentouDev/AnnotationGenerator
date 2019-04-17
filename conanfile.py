@@ -15,6 +15,11 @@ class AgnesConan(ConanFile):
     generators = "cmake"
     exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
 
+    build_requires = [
+        "jsonformoderncpp/3.6.1@vthiery/stable",
+        "kainjow-mustache/3.2.1@bincrafters/stable"
+    ]
+
     def package_id(self):
 
         self.info.include_build_settings()

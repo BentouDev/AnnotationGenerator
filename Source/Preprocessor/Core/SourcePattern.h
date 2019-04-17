@@ -7,7 +7,7 @@
 
 #include <memory>
 #include <vector>
-#include <mustache.hpp>
+#include <kainjow/mustache.hpp>
 #include "SourceFile.h"
 #include "../Utils/Filesystem.h"
 
