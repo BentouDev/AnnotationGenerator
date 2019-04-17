@@ -40,3 +40,4 @@ tmp
 cmake-build-debug
 build
 Generated/
+CMakeSettings.json
