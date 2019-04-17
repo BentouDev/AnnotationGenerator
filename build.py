@@ -76,6 +76,7 @@ def getGitVersion():
 def execute(password):
     channel = 'dev'
     version = None
+    commit = None
 
     if 'CI' in os.environ:
         print(' [info] CI Environment detected')
