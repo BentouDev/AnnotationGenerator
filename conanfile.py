@@ -7,6 +7,7 @@ agnes_commit = os.getenv('AGNES_COMMIT', '')
 class AgnesConan(ConanFile):
     name = "Agnes"
     license = "MIT"
+    url = "https://github.com/BentouDev/AnnotationGenerator"
     version = agnes_version
     commit = agnes_commit
 
@@ -21,7 +22,6 @@ class AgnesConan(ConanFile):
     ]
 
     def package_id(self):
-
         self.info.include_build_settings()
         del self.info.settings.compiler
         del self.info.settings.arch
