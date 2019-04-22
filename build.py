@@ -104,7 +104,7 @@ def execute(password):
         if gitData:
             version = gitData['version']
             commit = gitData['commit']
-        ver_parts = version.split('-1-')
+        ver_parts = version.split('-')
         if len(ver_parts) > 1:
             if build_number:
                 # Fix semvar
