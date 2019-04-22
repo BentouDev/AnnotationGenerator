@@ -77,6 +77,7 @@ def execute(password):
     channel = 'dev'
     version = None
     commit = None
+    build_number = None
 
     if 'CI' in os.environ:
         print(' [info] CI Environment detected')
@@ -103,6 +104,13 @@ def execute(password):
         if gitData:
             version = gitData['version']
             commit = gitData['commit']
+        ver_parts = version.split('-1-')
+        if len(ver_parts) > 1:
+            if build_number:
+                # Fix semvar
+                version = ver_parts[0] + '+' + build_number
+            else:
+                version = ver_parts[0] + '-dev'
     else:
         channel = 'stable'
 
