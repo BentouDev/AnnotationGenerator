@@ -36,8 +36,17 @@ namespace Handlers
 {
     bool IsForwardDeclaration(CXCursor cursor)
     {
-        return clang_equalCursors(clang_getCursorDefinition(cursor),
-            clang_getNullCursor()) != 0;
+        auto definition = clang_getCursorDefinition(cursor);
+
+        // If the definition is null, then there is no definition in this translation
+        // unit, so this cursor must be a forward declaration.
+        if (clang_equalCursors(definition, clang_getNullCursor()))
+            return true;
+
+        // If there is a definition, then the forward declaration and the definition
+        // are in the same translation unit. This cursor is the forward declaration if
+        // it is _not_ the definition.
+        return !clang_equalCursors(cursor, definition);
     }
 
     auto HandleVarDecl(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult

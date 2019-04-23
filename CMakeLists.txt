@@ -23,7 +23,7 @@ if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
                  "${CMAKE_BINARY_DIR}/conan.cmake")
 endif()
 
-include(${CMAKE_BINARY_DIR}/conan.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/Modules/Conan.cmake)
 
 # Add dependencies
 conan_cmake_run(CONANFILE conanfile.py
