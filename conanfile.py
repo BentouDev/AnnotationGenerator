@@ -21,6 +21,7 @@ class AgnesConan(ConanFile):
         "kainjow-mustache/3.2.1@bincrafters/stable"
     ]
 
+    # Binary package, host settings doesn't matter
     def package_id(self):
         self.info.include_build_settings()
         del self.info.settings.compiler
@@ -35,11 +36,6 @@ class AgnesConan(ConanFile):
         cmake.configure(source_folder=".")
         cmake.build()
 
-        # Explicit way:
-        # self.run('cmake %s/hello %s'
-        #          % (self.source_folder, cmake.command_line))
-        # self.run("cmake --build . %s" % cmake.build_config)
-
     def package(self):
         if self.settings.os == "Windows":
             self.copy("Agnes.exe", dst="bin", src="bin", keep_path=False, ignore_case=True)
@@ -47,6 +43,3 @@ class AgnesConan(ConanFile):
         else:
             self.copy("Agnes", dst="bin", src="bin", keep_path=False, ignore_case=True)
             self.copy("Agnes", dst="bin", src="Source/Preprocessor", keep_path=False, ignore_case=True)
-
-    def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self, folder="lib")
