@@ -1,0 +1,20 @@
+target: 'libclang'
+
+config:
+  kind: IMPORTED_TARGET
+
+filters:
+  - filter:
+      config_string: '*windows*'
+
+    includes:
+      interface:
+        - "C:/Program Files/LLVM/include"
+
+    link_libraries:
+      interface:
+        - libclang.lib
+
+    linker_paths:
+       interface:
+        - "C:/Program Files/LLVM/lib/"

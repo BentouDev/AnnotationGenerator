@@ -1,0 +1,27 @@
+target: 'Agnes'
+
+config:
+  kind: EXECUTABLE
+
+#filters:
+#  - filter:
+#      config_string: 'windows-*'
+#    link_libraries:
+#      private:
+#        - stdc++fs
+
+dependencies:
+  private:
+    - libclang
+    - Reflection
+    - kainjow_mustache
+    - nlohmann_json
+
+source:
+  paths: '.'
+  patterns:
+    - '*.cpp'
+
+defines:
+    private:
+    - 'ANNOTATION_GENERATOR'

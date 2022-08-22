@@ -1,0 +1,13 @@
+target: 'Reflection'
+
+config:
+  kind: STATIC_LIBRARY
+
+source:
+  paths: 'src'
+  patterns:
+    - '*.cpp'
+
+includes:
+  public:
+    - 'include'

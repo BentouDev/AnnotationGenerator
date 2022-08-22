@@ -1,0 +1,17 @@
+name: CI (on push)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - id: conan
+        uses: turtlebrowser/get-conan@v1.1
+      - run: conan remote add DEPS_REMOTE ${{ secrets.CONAN_REMOTE_URL }}
+      - id: build
+        uses: bentoudev/zet-cpp-build@main

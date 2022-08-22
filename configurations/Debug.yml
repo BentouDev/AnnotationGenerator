@@ -1,0 +1,10 @@
+configuration: Debug
+
+base_configuration: DEBUG
+runtime_library: STATIC_DEBUG
+
+filters:
+  - filter:
+      config_string: '*'
+    linker_flags:
+      public: /DEBUG

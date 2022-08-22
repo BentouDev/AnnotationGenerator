@@ -1,0 +1,21 @@
+project: AnnotationGenerator
+
+config:
+  verbose_build: false
+  platforms:
+    - 'platform/windows.yml'
+  rules:
+    - 'configurations/MsvcRules.yml'
+  configurations:
+    - 'configurations/Debug.yml'
+    - 'configurations/Develop.yml'
+  config_string: '{platform}-{configuration}-{toolchain}'
+
+conan:
+  build_tools: build_tools.ini
+  dependencies: dependencies.ini
+
+targets:
+  - 'Source/Preprocessor/project.yml'
+  - 'Source/Reflection/project.yml'
+  - 'Source/LibClang/project.yml'

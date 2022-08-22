@@ -1,0 +1,131 @@
+rule: MsvcRules
+
+filters:
+  - filter:
+      config_string: "*msvc*"
+    compiler_flags:
+      public:
+        - /Z7
+        - /nologo
+        - /W4
+        - /Wall
+        - /WX
+        - /TP
+        - /EHsc
+        - /Zc:inline
+        - /Zc:strictStrings
+        - /fp:fast
+        # Generate intrinsics functions
+        - /Oi
+        - /DWIN64
+        # Disable exceptions
+        - /EHa-
+        # Preprocess to a file
+        #- /P
+        # Enable separate handling of external headers
+        - /experimental:external
+        # Treat all #include <> as external
+        - /external:anglebrackets
+        # Disable warnings for external headers
+        - /external:W0
+        # Disable rtti
+        #- /GR-
+        - /std:c++20
+        # Padding added after data member
+        - /wd4820
+        # Unreferenced inline function has been removed
+        - /wd4514
+        # Assignment operator was implicitly defined as deleted
+        - /wd4626
+        # Move assignment operator was implicitly defined as deleted
+        - /wd5027
+        # Disable Spectre mitigation complain
+        - /wd5045
+    defines:
+      public:
+        - __STDC_WANT_SECURE_LIB__
+        - WIN32_LEAN_AND_MEAN
+        - _WIN32
+        - __WINDOWS__
+    linker_flags:
+      public:
+        - /WX
+        - /NOLOGO
+        #- /NODEFAULTLIB
+        # Don't complain about linking libs only
+        - /IGNORE:4001
+        # Don't complain about missing pdb
+        - /IGNORE:4099
+        #- /MACHINE:X64
+        - kernel32.lib
+        #- libucrt.lib
+        #- libvcruntime.lib
+        #- libcmt.lib
+        #- libcpmt.lib
+    librarian_flags:
+      public:
+        - /NOLOGO
+        - /NODEFAULTLIB
+
+  - filter:
+      config_string: "*msvc*"
+      kind: DYNAMIC_LIBRARY
+    linker_flags:
+      private:
+        - /DLL
+
+  - filter:
+      config_string: "*msvc*"
+      runtime_library: STATIC_RELEASE
+    compiler_flags:
+      public: /MT
+    linker_flags:
+      public: 
+      - libucrt.lib
+      - libvcruntime.lib
+      - libcmt.lib
+      - libcpmt.lib
+
+  - filter:
+      config_string: "*msvc*"
+      runtime_library: STATIC_DEBUG
+    compiler_flags:
+      public: /MTd
+    linker_flags:
+      public:
+      - libucrtd.lib
+      - libvcruntimed.lib
+      - libcmtd.lib
+      - libcpmtd.lib
+
+  - filter:
+      config_string: "*msvc*"
+      runtime_library: DYNAMIC_RELEASE
+    compiler_flags:
+      public: /MD
+    linker_flags:
+      public:
+      - ucrt.lib
+      - vcruntime.lib
+      - msvcrt.lib
+      - msvcprt.lib
+
+  - filter:
+      config_string: "*msvc*"
+      runtime_library: DYNAMIC_DEBUG
+    compiler_flags:
+      public: /MDd
+    linker_flags:
+      public:
+      - ucrtd.lib
+      - vcruntimed.lib
+      - msvcrtd.lib
+      - msvcprtd.lib
+
+  # - configuration: "*debug*msvc*"
+  #   compiler_flags:
+  #     public:
+  #       - /Od   # Disable optimizations
+  #       - /RTC1 # Runtime error checks
+  #       - /GS   # Buffer security checks
+  #       - /Oy-  # Disable ommiting frame pointer
