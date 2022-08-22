@@ -3,15 +3,15 @@
 //
 
 #include "Runtime.h"
+#include "Generator.h"
+#include "Context.h"
+#include "Parsing/CursorHandlerFactory.h"
+#include "Parsing/Parser.h"
+#include "Utils/Utils.h"
+
 #include <memory>
 #include <iomanip>
 #include <cmath>
-
-#include "../Utils/Utils.h"
-#include "Parsing/CursorHandlerFactory.h"
-#include "Parsing/Parser.h"
-#include "Generator.h"
-#include "Context.h"
 
 Runtime::Runtime(Data::Context& context)
 : Context(context)
@@ -71,7 +71,7 @@ void Runtime::ProcessPattern(SourcePattern& pattern)
     int  index = 1;
     for (auto& file : pattern.Sources)
     {
-        float perc = 100.f * float(index) / count;
+        float perc = 100.f * float(index) / float(count);
         std::cout
         << "[" << std::setw(3) << std::fixed << std::setprecision(0) << perc << "%] "
         << Utils::setColor(36, 0)

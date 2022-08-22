@@ -5,10 +5,10 @@
 #ifndef ANNOTATIONGENERATOR_CURSORHANDLERFACTORY_H
 #define ANNOTATIONGENERATOR_CURSORHANDLERFACTORY_H
 
+#include "Typedefs.h"
+
 #include <clang-c/Index.h>
 #include <map>
-
-#include "Typedefs.h"
 
 class ParseContext;
 class Visitor;

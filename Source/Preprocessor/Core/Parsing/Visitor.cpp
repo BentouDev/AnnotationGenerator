@@ -2,9 +2,10 @@
 // Created by bentoo on 01.04.18.
 //
 
-#include <iostream>
 #include "Visitor.h"
-#include "../Context.h"
+#include "Core/Context.h"
+
+#include <iostream>
 
 Visitor::ScopeInfo::ScopeInfo(std::shared_ptr<MetaInfo> obj, const std::string& name, CXCursor cursor)
 : ReflectionObj(obj), Name(name), Cursor(cursor)
@@ -48,7 +49,7 @@ auto Visitor::ResolveCursor(CXCursor cursor, CXCursorKind cursorKind) -> TCursor
     return scope_handler->Handle(Context.Parser, cursor, cursorKind, *this);
 }
 
-std::string Visitor::GetCursorKindName(CXCursorKind cursorKind)
+std::string Visitor::GetCursorKindName(CXCursorKind cursorKind) noexcept
 {
     CXString kindName  = clang_getCursorKindSpelling(cursorKind);
     std::string result = clang_getCString(kindName);
@@ -57,7 +58,7 @@ std::string Visitor::GetCursorKindName(CXCursorKind cursorKind)
     return result;
 }
 
-std::string Visitor::GetTypeSpelling(CXType type)
+std::string Visitor::GetTypeSpelling(CXType type) noexcept
 {
     CXString cursorSpelling = clang_getTypeSpelling(type);
     std::string result      = clang_getCString(cursorSpelling);
@@ -66,7 +67,7 @@ std::string Visitor::GetTypeSpelling(CXType type)
     return result;
 }
 
-std::string Visitor::GetCursorSpelling(CXCursor cursor)
+std::string Visitor::GetCursorSpelling(CXCursor cursor) noexcept
 {
     CXString cursorSpelling = clang_getCursorSpelling(cursor);
     std::string result      = clang_getCString(cursorSpelling);
@@ -75,7 +76,7 @@ std::string Visitor::GetCursorSpelling(CXCursor cursor)
     return result;
 }
 
-fs::path Visitor::GetCursorSourcePath(CXCursor cursor)
+fs::path Visitor::GetCursorSourcePath(CXCursor cursor) noexcept
 {
     CXSourceLocation location = clang_getCursorLocation(cursor);
     CXFile           source{};
@@ -89,12 +90,12 @@ fs::path Visitor::GetCursorSourcePath(CXCursor cursor)
     return source_path;
 }
 
-CXChildVisitResult Visitor::routine_wrapper(CXCursor cursor, CXCursor parent, CXClientData data)
+CXChildVisitResult Visitor::routine_wrapper(CXCursor cursor, CXCursor parent, CXClientData data) noexcept
 {
     return reinterpret_cast<Visitor*>(data)->RoutineStep(cursor, parent);
 }
 
-CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */)
+CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */) noexcept
 {
     fs::path source = GetCursorSourcePath(cursor);
 
@@ -127,7 +128,7 @@ CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */)
     return CXChildVisit_Continue;
 }
 
-void Visitor::VisitChildren(CXCursor root)
+void Visitor::VisitChildren(CXCursor root) noexcept
 {
     clang_visitChildren(root, Visitor::routine_wrapper, this);
 }

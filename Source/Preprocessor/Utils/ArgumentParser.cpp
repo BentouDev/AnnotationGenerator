@@ -4,12 +4,13 @@
 
 #include "ArgumentParser.h"
 #include "Utils.h"
-#include "../Core/Context.h"
+#include "Core/Context.h"
+
+#include <nlohmann/json.hpp>
 #include <regex>
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <nlohmann/json.hpp>
 
 ArgumentParser::ArgumentParser(Data::Context& context)
 : Context(context)

@@ -2,10 +2,11 @@
 // Created by bentoo on 27.03.18.
 //
 
-#include <fstream>
 #include "Generator.h"
 #include "Context.h"
-#include "../Utils/Utils.h"
+#include "Utils/Utils.h"
+
+#include <fstream>
 
 Generator::Generator(Data::Context& context)
     : Context(context)
@@ -84,12 +85,12 @@ TMustacheData Generator::BuildFieldData(std::shared_ptr<ClassInfo>& type)
 {
     TMustacheData fields { TMustacheData::type::list };
 
-    for (auto& field : type->Fields)
+    for (const auto& field : type->Fields)
     {
         TMustacheData field_data;
         field_data.set("name", field->Name);
         field_data.set("type", field->BaseType->Name);
-        field_data.set("access", field->AccessType);
+        field_data.set("access", std::to_string(field->AccessType));
 
         fields << field_data;
     }
@@ -101,7 +102,7 @@ TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
 {
     TMustacheData methods { TMustacheData::type::list };
 
-    for (auto& method : type->Methods)
+    for (const auto& method : type->Methods)
     {
         TMustacheData method_data;
         method_data.set("name", method->Name);
@@ -117,7 +118,7 @@ TMustacheData Generator::BuildAttributeData(std::shared_ptr<ClassInfo>& type)
 {
     TMustacheData attributes { TMustacheData::type::list };
 
-    for (auto& annotation : type->Annotations)
+    for (const auto& annotation : type->Annotations)
     {
         TMustacheData attribute_data;
         attribute_data.set("value", annotation);

@@ -6,6 +6,8 @@
 #define ANNOTATIONGENERATOR_TYPEDEFS_H
 
 #include <ReflectionInfo.h>
+
+#include <clang-c/Index.h>
 #include <functional>
 #include <memory>
 

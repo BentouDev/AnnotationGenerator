@@ -5,11 +5,12 @@
 #ifndef ANNOTATIONGENERATOR_OPTIONS_H
 #define ANNOTATIONGENERATOR_OPTIONS_H
 
-#include <vector>
-#include <memory>
 #include "SourcePattern.h"
 #include "ReflectionInfo.h"
-#include "Parsing/ParseContext.h"
+#include "Core/Parsing/ParseContext.h"
+
+#include <vector>
+#include <memory>
 
 namespace Data
 {
@@ -28,6 +29,9 @@ namespace Data
         Context()
             : Generator { nullptr }
         { }
+
+        Context(const Context&) = delete;
+        Context(Context&&) = delete;
     };
 }
 

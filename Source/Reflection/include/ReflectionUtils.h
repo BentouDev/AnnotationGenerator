@@ -10,9 +10,9 @@
 #include <cstdint>
 
 #ifndef ANNOTATION_GENERATOR
-#define REF_CONST const
+
 template <typename T>
-using TReflectionVector = const std::vector<T>;
+using TReflectionVector = std::vector<T>;
 
 template <typename T>
 using TRef = const T*;
@@ -35,7 +35,6 @@ public:
 };
 
 #else
-#define REF_CONST
 template <typename T>
 using TReflectionVector = std::vector<std::shared_ptr<T>>;
 template <typename T>

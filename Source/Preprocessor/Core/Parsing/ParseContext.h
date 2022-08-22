@@ -5,9 +5,10 @@
 #ifndef ANNOTATIONGENERATOR_PARSECONTEXT_H
 #define ANNOTATIONGENERATOR_PARSECONTEXT_H
 
-#include <ReflectionInfo.h>
 #include "CursorHandlerFactory.h"
-#include "../SourceFile.h"
+#include "Core/SourceFile.h"
+
+#include <ReflectionInfo.h>
 
 using TClassMap = std::map<std::string, std::shared_ptr<ClassInfo>>;
 
@@ -18,6 +19,8 @@ public:
     ParseContext()
         : CurrentSource { nullptr }, ForcedFactory { nullptr }
     { }
+
+    ParseContext(const ParseContext&) = delete;
 
     std::string                             CurrentUnitName;
     SourceFile*                             CurrentSource;

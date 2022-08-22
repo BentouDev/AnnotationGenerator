@@ -2,12 +2,13 @@
 // Created by bentoo on 22.04.18.
 //
 
-#include <iostream>
 #include "CursorHandlerFactory.h"
 #include "ParseContext.h"
 #include "Visitor.h"
-#include "../SourcePattern.h"
-#include "../../Utils/Utils.h"
+#include "Core/SourcePattern.h"
+#include "Utils/Utils.h"
+
+#include <iostream>
 
 void CursorHandlerFactory::RegisterHandlers(const std::vector<std::pair<CXCursorKind, TCursorTypeHandler>>& handlers)
 {
@@ -180,8 +181,8 @@ namespace Handlers
     {
         UNUSED(context);
 
-        auto type       = clang_getCursorType(cursor);
-        auto field      = visitor.GetScope().top()->asType()->Fields.emplace_back
+        auto type  = clang_getCursorType(cursor);
+        auto field = visitor.GetScope().top()->asType()->Fields.emplace_back
         (
                 std::make_shared<FieldInfo>(visitor.GetCursorSpelling(cursor),
                                             context.GetTypeInfo(visitor.GetTypeSpelling(type)))
@@ -194,15 +195,21 @@ namespace Handlers
     {
         auto type        = clang_getCursorType(cursor);
         auto return_type = clang_getResultType(type);
-        int  arg_count   = clang_Cursor_getNumArguments(cursor);
+        int  arg_result = clang_Cursor_getNumArguments(cursor);
+        unsigned arg_count = 0U;
 
-        auto method      = visitor.GetScope().top()->asType()->Methods.emplace_back(std::make_shared<MethodInfo>
+        if (arg_result >= 0)
+        {
+            arg_count = (unsigned int) arg_result;
+        }
+
+        std::shared_ptr<MethodInfo> method = visitor.GetScope().top()->asType()->Methods.emplace_back(std::make_shared<MethodInfo>
         (
              visitor.GetCursorSpelling(cursor),
              context.GetTypeInfo(visitor.GetTypeSpelling(return_type))
         ));
 
-        for (int i = 0; i < arg_count; i++)
+        for (unsigned int i = 0; i < arg_count; i++)
         {
             auto arg_cursor  = clang_Cursor_getArgument(cursor, i);
             auto cursor_type = clang_getCursorType(arg_cursor);

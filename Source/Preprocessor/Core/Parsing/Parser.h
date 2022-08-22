@@ -5,9 +5,10 @@
 #ifndef ANNOTATIONGENERATOR_PREPROCESSOR_H
 #define ANNOTATIONGENERATOR_PREPROCESSOR_H
 
+#include "Core/Context.h"
+#include "Utils/Filesystem.h"
+
 #include <clang-c/Index.h>
-#include "../Context.h"
-#include "../../Utils/Filesystem.h"
 
 class SourceFile;
 

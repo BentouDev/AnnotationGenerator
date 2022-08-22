@@ -2,9 +2,10 @@
 // Created by bentoo on 25.03.18.
 //
 
+#include "SourcePattern.h"
+
 #include <fstream>
 #include <iostream>
-#include "SourcePattern.h"
 
 void SourcePattern::LoadTemplates()
 {
@@ -23,7 +24,7 @@ void SourcePattern::LoadTemplate(std::unique_ptr<MustacheTemplate>& templ)
         std::fstream file(templ->Path);
         std::string  mustache_view;
 
-        mustache_view.reserve(fs::file_size(templ->Path));
+        mustache_view.reserve((unsigned int) fs::file_size(templ->Path));
         mustache_view.assign((std::istreambuf_iterator<char>(file)),
             std::istreambuf_iterator<char>());
 

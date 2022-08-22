@@ -5,11 +5,12 @@
 #ifndef ANNOTATIONGENERATOR_CODETEMPLATE_H
 #define ANNOTATIONGENERATOR_CODETEMPLATE_H
 
+#include "SourceFile.h"
+#include "Utils/Filesystem.h"
+
+#include <kainjow/mustache.hpp>
 #include <memory>
 #include <vector>
-#include <kainjow/mustache.hpp>
-#include "SourceFile.h"
-#include "../Utils/Filesystem.h"
 
 using TMustacheView = kainjow::mustache::mustache;
 using TMustacheData = kainjow::mustache::data;
@@ -19,6 +20,8 @@ struct MustacheTemplate
     explicit MustacheTemplate(const fs::path& path)
     : Path(path)
     { }
+
+    MustacheTemplate(const MustacheTemplate&) = delete;
 
     fs::path                       Path;
     std::unique_ptr<TMustacheView> View;
@@ -33,6 +36,8 @@ public:
     SourcePattern()
         : UseIncludes(false), RequireAnnotation(false)
     { }
+
+    SourcePattern(const SourcePattern&) = delete;
 
     std::unique_ptr<MustacheTemplate>              MainTemplate;
     std::vector<std::unique_ptr<MustacheTemplate>> Templates;

@@ -55,7 +55,7 @@ namespace Utils
 
     inline unsigned GetNumberOfDigits (unsigned i)
     {
-        return i > 0 ? (int) log10 ((double) i) + 1 : 1;
+        return i > 0U ? (unsigned int) log10 ((double) i) + 1U : 1U;
     }
 
     struct _Color

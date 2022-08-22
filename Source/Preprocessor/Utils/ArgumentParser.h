@@ -5,11 +5,12 @@
 #ifndef ANNOTATIONGENERATOR_ARGUMENTPARSER_H
 #define ANNOTATIONGENERATOR_ARGUMENTPARSER_H
 
-#include <vector>
-#include <nlohmann/json_fwd.hpp>
 #include "Argument.h"
 #include "Filesystem.h"
-#include "../Core/Context.h"
+#include "Core/Context.h"
+
+#include <nlohmann/json_fwd.hpp>
+#include <vector>
 
 class ArgumentParser
 {

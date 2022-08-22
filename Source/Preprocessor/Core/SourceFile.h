@@ -5,7 +5,7 @@
 #ifndef ANNOTATIONGENERATOR_SOURCEFILE_H
 #define ANNOTATIONGENERATOR_SOURCEFILE_H
 
-#include "../Utils/Filesystem.h"
+#include "Utils/Filesystem.h"
 
 class SourceFile
 {

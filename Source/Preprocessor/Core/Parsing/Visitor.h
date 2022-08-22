@@ -5,18 +5,18 @@
 #ifndef ANNOTATIONGENERATOR_VISITOR_H
 #define ANNOTATIONGENERATOR_VISITOR_H
 
+#include "Typedefs.h"
+#include "Core/Context.h"
+#include "Utils/Utils.h"
+
 #include <clang-c/Index.h>
 #include <map>
 #include <stack>
 #include <functional>
 
-#include "Typedefs.h"
-#include "../Context.h"
-#include "../../Utils/Utils.h"
-
 class Visitor
 {
-    static CXChildVisitResult routine_wrapper(CXCursor cursor, CXCursor /* parent */, CXClientData data);
+    static CXChildVisitResult routine_wrapper(CXCursor cursor, CXCursor /* parent */, CXClientData data) noexcept;
 
     struct ScopeInfo
     {
@@ -32,10 +32,10 @@ class Visitor
 
     using TScope = Utils::IterableStack<std::unique_ptr<ScopeInfo>>;
 
-    fs::path    GetCursorSourcePath(CXCursor param);
+    fs::path    GetCursorSourcePath(CXCursor param) noexcept;
 
     TCursorResolveResult ResolveCursor(CXCursor cursor, CXCursorKind kind);
-    CXChildVisitResult   RoutineStep(CXCursor cursor, CXCursor parent);
+    CXChildVisitResult   RoutineStep(CXCursor cursor, CXCursor parent) noexcept;
 
     Data::Context& Context;
 
@@ -44,14 +44,14 @@ class Visitor
 public:
     explicit Visitor(Data::Context& context);
 
-    void VisitChildren(CXCursor param);
+    void VisitChildren(CXCursor param) noexcept;
 
     std::vector<std::string> PreAnnotations;
     bool HasPreAnnotation;
 
-    std::string GetCursorKindName(CXCursorKind cursorKind);
-    std::string GetCursorSpelling(CXCursor cursor);
-    std::string GetTypeSpelling(CXType cursor);
+    std::string GetCursorKindName(CXCursorKind cursorKind) noexcept;
+    std::string GetCursorSpelling(CXCursor cursor) noexcept;
+    std::string GetTypeSpelling(CXType cursor) noexcept;
     std::string BuildScopeNamePrefix() const;
     TScope&     GetScope() { return Scope; }
 };
