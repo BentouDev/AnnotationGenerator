@@ -1,2 +1,3 @@
 platform: Windows
-base_platform: x64
+host_arch: x64
+target_arch: x64
