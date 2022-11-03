@@ -4,8 +4,6 @@ config:
   verbose_build: false
   platforms:
     - 'platform/windows.yml'
-  rules:
-    - 'configurations/MsvcRules.yml'
   configurations:
     - 'configurations/Debug.yml'
     - 'configurations/Develop.yml'
