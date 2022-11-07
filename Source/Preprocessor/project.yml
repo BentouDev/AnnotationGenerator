@@ -3,13 +3,6 @@ target: 'Agnes'
 config:
   kind: EXECUTABLE
 
-#filters:
-#  - filter:
-#      config_string: 'windows-*'
-#    link_libraries:
-#      private:
-#        - stdc++fs
-
 dependencies:
   private:
     - libclang

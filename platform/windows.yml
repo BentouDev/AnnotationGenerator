@@ -13,20 +13,3 @@ toolchains:
   - family: MSVC
     # cppstd: cpp20
     version: latest
-
-filters:
-  - filter:
-      config_string: '*msvc*'
-    compiler_flags:
-      public:
-        - /std:c++20
-        # Padding added after data member
-        - /wd4820
-        # Unreferenced inline function has been removed
-        - /wd4514
-        # Assignment operator was implicitly defined as deleted
-        - /wd4626
-        # Move assignment operator was implicitly defined as deleted
-        - /wd5027
-        # Disable Spectre mitigation complain
-        - /wd5045

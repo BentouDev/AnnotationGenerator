@@ -41,3 +41,4 @@ cmake-build-debug
 build
 Generated/
 CMakeSettings.json
+*.sln

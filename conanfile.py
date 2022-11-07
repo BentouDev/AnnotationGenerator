@@ -1,25 +1,28 @@
-from conans import ConanFile, CMake, tools
+from conans import ConanFile
 import os
 
-agnes_version = os.getenv('AGNES_VERSION', '0.0')
-agnes_commit = os.getenv('AGNES_COMMIT', '')
 
 class AgnesConan(ConanFile):
     name = "Agnes"
     license = "MIT"
     url = "https://github.com/BentouDev/AnnotationGenerator"
-    version = agnes_version
-    commit = agnes_commit
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake"
-    exports_sources = ["Modules/*", "Dependencies/*", "Source/*", "CMakeLists.txt"]
+    exports_sources = ["Source/*", "**.yml"]
 
     build_requires = [
         "jsonformoderncpp/3.6.1@vthiery/stable",
-        "kainjow-mustache/3.2.1@bincrafters/stable"
+        "kainjow-mustache/3.2.1@bincrafters/stable",
     ]
+
+    tool_requires = ["zetsubougen/[>=0.6.4]@bentou/stable", "fastbuild-installer/1.07@bentou/stable"]
+    python_requires = ["zetsubougen/[>=0.6.4]@bentou/stable"]
+    python_requires_extend = "zetsubougen.ZetsubouBase"
+
+    @property
+    def project_file(self):
+        return os.path.join(self.folders.base_source, 'project.yml')
 
     # Binary package, host settings doesn't matter
     def package_id(self):
@@ -28,13 +31,13 @@ class AgnesConan(ConanFile):
         del self.info.settings.arch
         del self.info.settings.build_type
 
+    def generate(self):
+        self.zetsubou.init(self, project_file=self.project_file)
+        self.zetsubou.configure()
+
     def build(self):
-        cmake = CMake(self)
-        cmake.definitions['AGNES_VERSION'] = self.version
-        cmake.definitions['AGNES_COMMIT'] = self.commit
-        cmake.definitions['AGNES_CHANNEL'] = self.channel
-        cmake.configure(source_folder=".")
-        cmake.build()
+        self.zetsubou.init(self, project_file=self.project_file)
+        self.zetsubou.build()
 
     def package(self):
         if self.settings.os == "Windows":

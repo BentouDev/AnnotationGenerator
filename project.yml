@@ -2,11 +2,15 @@ project: AnnotationGenerator
 
 config:
   verbose_build: false
+  venv: build/venv
   platforms:
     - 'platform/windows.yml'
+  rules:
+    - 'configurations/Rules.yml'
   configurations:
     - 'configurations/Debug.yml'
     - 'configurations/Develop.yml'
+    - 'configurations/Retail.yml'
   config_string: '{platform}-{configuration}-{toolchain}'
 
 conan:
