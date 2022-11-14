@@ -1,7 +1,6 @@
 configuration: Retail
 
 base_configuration: RELEASE
-runtime_library: STATIC_RELEASE
 
 filters:
   - filter:

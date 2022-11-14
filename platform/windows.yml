@@ -8,8 +8,3 @@ defines:
     - WIN32_LEAN_AND_MEAN
     - _WIN32
     - __WINDOWS__
-
-toolchains:
-  - family: MSVC
-    # cppstd: cpp20
-    version: latest

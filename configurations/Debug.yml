@@ -1,7 +1,6 @@
 configuration: Debug
 
 base_configuration: DEBUG
-runtime_library: STATIC_DEBUG
 
 filters:
   - filter:

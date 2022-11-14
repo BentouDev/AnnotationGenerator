@@ -1,7 +1,6 @@
 configuration: Develop
 
 base_configuration: RELEASE_WITH_DEBUG_INFO
-runtime_library: STATIC_RELEASE
 
 filters:
   - filter:
