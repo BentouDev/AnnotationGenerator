@@ -4,9 +4,9 @@ Clang based C++ preprocessor for annotation based code generation
 
 ### Build status
 
-|Windows|Linux|
-|:-------:|:------:|
-|[![Build status](https://ci.appveyor.com/api/projects/status/x82rh0rx426woaw0?svg=true)](https://ci.appveyor.com/project/MrJaqbq/annotationgenerator)|[![Build Status](https://travis-ci.org/BentouDev/AnnotationGenerator.svg?branch=master)](https://travis-ci.org/BentouDev/AnnotationGenerator)
+|Windows|
+|:-------:|
+|[![CI (on push)](https://github.com/BentouDev/AnnotationGenerator/actions/workflows/ci.yml/badge.svg)](https://github.com/BentouDev/AnnotationGenerator/actions/workflows/ci.yml)|
 
 ### Usage
 
