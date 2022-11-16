@@ -42,3 +42,4 @@ build
 Generated/
 CMakeSettings.json
 *.sln
+venv
