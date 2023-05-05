@@ -18,3 +18,9 @@ filters:
     linker_paths:
        interface:
         - "C:/Program Files/LLVM/lib/"
+
+    distribute_files:
+        patterns:
+          - libclang.dll
+        paths:
+          - "C:/Program Files/LLVM/bin/"

@@ -2,7 +2,7 @@ project: AnnotationGenerator
 
 config:
   verbose_build: false
-  venv: build/venv
+  dev_profile: 'configurations/dev_profile.yml'
   platforms:
     - 'platform/windows.yml'
   rules:

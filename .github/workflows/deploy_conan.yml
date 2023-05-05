@@ -1,0 +1,49 @@
+name: Deploy Conan package
+
+on:
+  workflow_call:
+    inputs:
+      profile:
+        description: 'Conan profile to use'
+        required: true
+        type: string
+        default: 'windows_msvc'
+
+jobs:
+  deploy_conan:
+    name: 'Deploy'
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get conan
+      uses: turtlebrowser/get-conan@v1.2
+
+    - name: Get LLVM
+      run: choco upgrade llvm
+
+    - name: Install conan profile
+      run: conan config install profiles/${{ inputs.profile }} -tf profiles
+
+    - name: Install zetsubou
+      run: pip install zetsubou --upgrade --no-cache-dir
+      shell: bash
+
+    - name: Create Conan package
+      uses: bentoudev/conan-create@main
+      with:
+        package_id: --name=${{ inputs.package }} --version=${{ inputs.version }} --user=bentou --channel=${{ inputs.repository }}
+        recipe_dir: ./packages/${{ inputs.package }}
+        options: >
+          -pr:h=${{ github.event.inputs.profile }}
+          -pr:b=${{ github.event.inputs.profile }}
+          -s build_type=Release
+          --build=missing
+
+    - name: Upload to Conan
+      uses: bentoudev/conan-upload@main
+      with:
+        package_name: agnes
+        remote_url: ${{ secrets.CONAN_REMOTE_URL }}
+        user: ${{ secrets.CONAN_REMOTE_USER }}
+        password: ${{ secrets.CONAN_REMOTE_PASSWORD }}

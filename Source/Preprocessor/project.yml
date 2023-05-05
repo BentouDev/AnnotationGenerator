@@ -1,4 +1,4 @@
-target: 'Agnes'
+target: 'agnes'
 
 config:
   kind: EXECUTABLE
@@ -6,7 +6,7 @@ config:
 dependencies:
   private:
     - libclang
-    - Reflection
+    - reflection
     - kainjow_mustache
     - nlohmann_json
 

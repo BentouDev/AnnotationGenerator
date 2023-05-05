@@ -1,4 +1,4 @@
-target: 'Reflection'
+target: 'reflection'
 
 config:
   kind: HEADER_ONLY

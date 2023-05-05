@@ -1,14 +1,14 @@
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
-from conan.errors import ConanException
+from conan.tools.files import copy
 import os
 
 
 class AgnesConan(ConanFile):
-    name = "Agnes"
+    name = "agnes"
     license = "MIT"
     url = "https://github.com/BentouDev/AnnotationGenerator"
-    version = '0.4.3'
+    version = '0.4.4'
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
@@ -16,10 +16,10 @@ class AgnesConan(ConanFile):
 
     build_requires = [
         "nlohmann_json/3.11.2",
-        "kainjow-mustache/4.1",
+        "kainjow_mustache/4.1@bentou/stable",
     ]
 
-    tool_requires = ["zetsubougen/[>=0.6.4]@bentou/stable", "fastbuild-installer/1.07@bentou/stable"]
+    tool_requires = ["zetsubougen/[>=0.6.4]@bentou/stable", "fastbuild_installer/1.09@bentou/stable"]
     python_requires = ["zetsubougen/[>=0.6.4]@bentou/stable"]
     python_requires_extend = "zetsubougen.ZetsubouBase"
 
@@ -29,7 +29,7 @@ class AgnesConan(ConanFile):
         "Source/*",
         "build_tools.ini",
         "dependencies.ini",
-        "**.yml",
+        "project.yml",
     ]
 
     @property
@@ -38,9 +38,7 @@ class AgnesConan(ConanFile):
 
     # Binary package, host settings doesn't matter
     def package_id(self):
-        self.info.include_build_settings()
         del self.info.settings.compiler
-        del self.info.settings.arch
         del self.info.settings.build_type
 
     def validate(self):
@@ -48,7 +46,7 @@ class AgnesConan(ConanFile):
             raise ConanInvalidConfiguration(f"This package is not compatible with '{self.info.settings.os}' yet!")
 
     def validate_build(self):
-        if self.settings.compiler not in ['Visual Studio', 'clang', 'msvc']:
+        if self.settings.compiler not in ['clang', 'msvc']:
             raise ConanInvalidConfiguration(f"This package cannot be built with '{self.settings.compiler}' yet!")
 
     def layout(self):
@@ -66,15 +64,18 @@ class AgnesConan(ConanFile):
         self.zetsubou.build()
 
     def package(self):
+        bin = os.path.join(self.package_folder, 'bin')
         if self.settings.os == "Windows":
-            self.copy("*/Agnes.exe", dst="bin", src="", keep_path=False, ignore_case=True)
+            copy(self, "*/agnes.exe", dst=bin, src=self.build_folder, keep_path=False, ignore_case=True)
+            copy(self, "*/libclang.dll", dst=bin, src=self.build_folder, keep_path=False, ignore_case=True)
         else:
-            self.copy("*/Agnes", dst="bin", src="", keep_path=False, ignore_case=True)
+            copy(self, "*/agnes", dst=bin, src=self.build_folder, keep_path=False, ignore_case=True)
 
     def package_info(self):
-        self.env_info.PATH.append(self.package_folder)
+        bin = os.path.join(self.package_folder, 'bin')
+        self.buildenv_info.append_path('PATH', bin)
 
         if self.settings.os == "Windows":
-            self.env_info.AGNES_EXE = os.path.join(self.package_folder, "Agnes.exe")
+            self.buildenv_info.AGNES_EXE = os.path.join(bin, "Agnes.exe")
         if self.settings.os == "Linux":
-            self.env_info.AGNES_EXE = os.path.join(self.package_folder, "Agnes")
+            self.buildenv_info.AGNES_EXE = os.path.join(bin, "Agnes")
