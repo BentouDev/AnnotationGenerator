@@ -53,7 +53,7 @@ jobs:
     - name: Create Conan package
       uses: bentoudev/conan-create@main
       with:
-        package_id: --name=${{ inputs.package }} --version=${{ inputs.version }} --user=bentou --channel=${{ inputs.repository }}
+        package_id: --name=${{ inputs.package }} --user=bentou --channel=stable
         recipe_dir: conanfile.py
         options: >
           -pr:h=${{ github.event.inputs.profile }}
@@ -68,4 +68,3 @@ jobs:
         remote_url: ${{ secrets.CONAN_REMOTE_URL }}
         user: ${{ secrets.CONAN_REMOTE_USER }}
         password: ${{ secrets.CONAN_REMOTE_PASSWORD }}
-        options: --user=bentou --channel=stable
