@@ -11,8 +11,31 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v3
-      - id: conan
-        uses: turtlebrowser/get-conan@v1.1
-      - run: conan remote add DEPS_REMOTE ${{ secrets.CONAN_REMOTE_URL }}
-      - id: build
+
+      - name: Get Conan
+        id: conan
+        uses: turtlebrowser/get-conan@v1.2
+      - name: Add Conan remote
+        run: conan remote add DEPS_REMOTE ${{ secrets.CONAN_REMOTE_URL }}
+
+      - name: Cache Conan packages
+        id: cache-conan
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-conan-packages
+        with:
+          path: ~/.conan/data
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.ini') }}
+          restore-keys: |
+              ${{ runner.os }}-build-${{ env.cache-name }}-
+              ${{ runner.os }}-build-
+              ${{ runner.os }}-
+
+      - if: ${{ steps.cache-conan.outputs.cache-hit == 'true' }}
+        name: List the state of Conan packages
+        continue-on-error: true
+        run: conan list "*"
+
+      - name: Build
+        id: build
         uses: bentoudev/zet-cpp-build@main
