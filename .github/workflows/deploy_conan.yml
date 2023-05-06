@@ -22,6 +22,9 @@ jobs:
     - name: Install conan profile
       run: conan config install profiles/${{ inputs.profile }} -tf profiles
 
+    - name: Setup remote repository
+      run: conan remote add DEPS_REMOTE ${{ secrets.CONAN_REMOTE_URL }}
+
     - name: Cache Conan packages
       id: cache-conan
       uses: actions/cache@v3
