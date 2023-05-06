@@ -8,7 +8,7 @@ class AgnesConan(ConanFile):
     name = "agnes"
     license = "MIT"
     url = "https://github.com/BentouDev/AnnotationGenerator"
-    version = '0.4.4'
+    version = '0.4.5'
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
@@ -19,8 +19,8 @@ class AgnesConan(ConanFile):
         "kainjow_mustache/4.1@bentou/stable",
     ]
 
-    tool_requires = ["zetsubougen/[>=0.6.4]@bentou/stable", "fastbuild_installer/1.09@bentou/stable"]
-    python_requires = ["zetsubougen/[>=0.6.4]@bentou/stable"]
+    tool_requires = ["zetsubougen/[>=0.7.0]@bentou/stable", "fastbuild_installer/1.09@bentou/stable"]
+    python_requires = ["zetsubougen/[>=0.7.0]@bentou/stable"]
     python_requires_extend = "zetsubougen.ZetsubouBase"
 
     exports_sources = [
