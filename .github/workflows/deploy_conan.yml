@@ -68,3 +68,4 @@ jobs:
         remote_url: ${{ secrets.CONAN_REMOTE_URL }}
         user: ${{ secrets.CONAN_REMOTE_USER }}
         password: ${{ secrets.CONAN_REMOTE_PASSWORD }}
+        options: --user=bentou --channel=stable
