@@ -51,7 +51,7 @@ jobs:
       uses: bentoudev/conan-create@main
       with:
         package_id: --name=${{ inputs.package }} --version=${{ inputs.version }} --user=bentou --channel=${{ inputs.repository }}
-        recipe_dir: ./packages/${{ inputs.package }}
+        recipe_dir: conanfile.py
         options: >
           -pr:h=${{ github.event.inputs.profile }}
           -pr:b=${{ github.event.inputs.profile }}
