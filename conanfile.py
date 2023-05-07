@@ -36,7 +36,7 @@ class AgnesConan(ConanFile):
         return os.path.join(self.folders.base_source, 'project.yml')
 
     def export(self):
-        copy(self, 'project.yml', self.folders.base_source, self.export_folder)
+        copy(self, 'project.yml', self.recipe_folder, self.export_folder)
 
     # Binary package, host settings doesn't matter
     def package_id(self):
