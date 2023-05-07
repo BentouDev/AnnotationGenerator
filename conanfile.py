@@ -28,7 +28,8 @@ class AgnesConan(ConanFile):
         "platform/*",
         "Source/*",
         "build_tools.ini",
-        "dependencies.ini"
+        "dependencies.ini",        
+        "project.yml",
     ]
 
     @property
