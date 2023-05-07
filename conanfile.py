@@ -28,13 +28,15 @@ class AgnesConan(ConanFile):
         "platform/*",
         "Source/*",
         "build_tools.ini",
-        "dependencies.ini",
-        "project.yml",
+        "dependencies.ini"
     ]
 
     @property
     def project_file(self):
         return os.path.join(self.folders.base_source, 'project.yml')
+
+    def export(self):
+        copy(self, self.project_file, self.export_folder)
 
     # Binary package, host settings doesn't matter
     def package_id(self):
