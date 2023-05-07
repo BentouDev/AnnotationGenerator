@@ -150,9 +150,9 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
             }
         }
 
-        if (auto itr = element.find("require_annotation"); itr != element.end())
+        if (auto itr = element.find("require_annotation"); itr != element.end() && itr->is_boolean())
         {
-            pattern->RequireAnnotation = true;
+            pattern->RequireAnnotation = itr->get<bool>();
         }
 
         if (auto itr = element.find("annotation"); itr != element.end())
