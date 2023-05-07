@@ -8,7 +8,7 @@ class AgnesConan(ConanFile):
     name = "agnes"
     license = "MIT"
     url = "https://github.com/BentouDev/AnnotationGenerator"
-    version = '0.4.5'
+    version = '0.4.6'
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
@@ -37,7 +37,7 @@ class AgnesConan(ConanFile):
         return os.path.join(self.folders.base_source, 'project.yml')
 
     def export(self):
-        copy(self, 'project.yml', self.recipe_folder, self.export_folder)        
+        copy(self, 'project.yml', self.recipe_folder, self.export_folder)
         copy(self, 'build_tools.ini', self.recipe_folder, self.export_folder)
         copy(self, 'dependencies.ini', self.recipe_folder, self.export_folder)
 
