@@ -1,0 +1,21 @@
+project: ZetsubouBuildstepTest
+
+config:
+  verbose_build: false
+  dev_profile: 'config/dev_profile.yml'
+  venv: build/venv
+  platforms:
+    - 'config/windows.yml'
+  configurations:
+    - 'config/retail.yml'
+  cli_tools:
+    - 'config/agnes_preprocessor.yml'
+  config_string: '{platform}-{configuration}-{toolchain}'
+
+conan:
+  build_tools: build_tools.ini
+
+targets:
+  - 'target.yml'
+  - 'generate.yml'
+  - 'rtti.yml'

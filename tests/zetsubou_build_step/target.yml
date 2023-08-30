@@ -1,0 +1,14 @@
+target: 'app'
+
+config:
+  kind: EXECUTABLE
+
+dependencies:
+  public:
+    - rtti
+
+source:
+  paths: 'src'
+  patterns:
+    - '*.cpp'
+

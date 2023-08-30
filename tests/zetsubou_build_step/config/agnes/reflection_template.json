@@ -1,0 +1,28 @@
+{
+  "patterns" : [
+    {
+      "main_template" : "reflection_main.mustache",
+      "main_file_name" : "reflection_main.cpp",
+
+      "header_template" : ["reflection_header.mustache"],
+      "header_file_name" : "{{header_name}}.gen.cpp",
+
+      "class_template" : ["reflection_class.mustache"],
+      "class_file_name" : "{{class_name}}.gen.cpp",
+
+      "enum_template" : ["reflection_enum.mustache"],
+      "enum_file_name" : "{{enum_name}}.gen.cpp",
+
+      "output_dir" : "Generated",
+
+      "file_regex_pattern" : "(\\W|\\w)*\\.h\\b",
+
+      "enable_pre_annotation" : ["__Y_CLASS__"],
+      "require_annotation" : true,
+
+      "include_source_header" : true,
+      "inject_includes": ["inject.h"],
+      "include_directories": ["."]
+    }
+  ]
+}

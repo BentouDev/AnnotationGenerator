@@ -18,6 +18,8 @@ conan:
   dependencies: dependencies.ini
 
 targets:
-  - 'Source/Preprocessor/project.yml'
-  - 'Source/Reflection/project.yml'
-  - 'Source/LibClang/project.yml'
+  app:
+   - 'Source/Preprocessor/project.yml'
+  lib:
+   - 'Source/Reflection/project.yml'
+   - 'Source/LibClang/project.yml'

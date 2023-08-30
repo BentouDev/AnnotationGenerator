@@ -34,22 +34,26 @@ private:
 
 public:
     SourcePattern()
-        : UseIncludes(false), RequireAnnotation(false)
+        : IncludeSourceHeader(false), RequireAnnotation(false)
     { }
 
     SourcePattern(const SourcePattern&) = delete;
 
     std::unique_ptr<MustacheTemplate>              MainTemplate;
-    std::vector<std::unique_ptr<MustacheTemplate>> Templates;
+    std::vector<std::unique_ptr<MustacheTemplate>> HeaderTemplates;
+    std::vector<std::unique_ptr<MustacheTemplate>> ClassTemplates;
+    std::vector<std::unique_ptr<MustacheTemplate>> EnumTemplates;
     std::vector<std::unique_ptr<SourceFile>>       Sources;
-    std::vector<std::string>                       Annotations;
-    std::vector<std::string>                       Includes;
-    std::vector<std::string>                       Directories;
+    std::vector<std::string>                       EnablePreAnnotationFrom;
+    std::vector<std::string>                       InjectIncludes;
+    std::vector<std::string>                       IncludeDirectories;
 
     fs::path    OutputDir;
-    std::string ClassOutName;
     std::string MainOutName;
-    bool        UseIncludes;
+    std::string HeaderOutName;
+    std::string ClassOutName;
+    std::string EnumOutName;
+    bool        IncludeSourceHeader;
     bool        RequireAnnotation;
 
     void LoadTemplates();

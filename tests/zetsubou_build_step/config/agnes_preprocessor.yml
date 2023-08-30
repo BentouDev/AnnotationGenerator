@@ -1,0 +1,9 @@
+name: agnes_preprocessor
+executable: agnes.exe
+output_file: reflection_main.cpp
+output_dir: '{root}/build/codegen/{config_variant}'
+options:
+  - 'config/agnes/reflection_template.json'
+  - '%1'
+  - '--directory'
+  - '%3'

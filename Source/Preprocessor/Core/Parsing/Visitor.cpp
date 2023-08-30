@@ -10,13 +10,25 @@
 Visitor::ScopeInfo::ScopeInfo(std::shared_ptr<MetaInfo> obj, const std::string& name, CXCursor cursor)
 : ReflectionObj(obj), Name(name), Cursor(cursor)
 {
-    auto ptr = std::dynamic_pointer_cast<ClassInfo>(ReflectionObj);
+    auto ptr = std::dynamic_pointer_cast<TypeInfo>(ReflectionObj);
     isType   = (bool) ptr;
 }
 
-std::shared_ptr<ClassInfo> Visitor::ScopeInfo::asType() const
+std::shared_ptr<TypeInfo> Visitor::ScopeInfo::asType() const
+{
+    auto ptr = std::dynamic_pointer_cast<TypeInfo>(ReflectionObj);
+    return ptr;
+}
+
+std::shared_ptr<ClassInfo> Visitor::ScopeInfo::asClazz() const
 {
     auto ptr = std::dynamic_pointer_cast<ClassInfo>(ReflectionObj);
+    return ptr;
+}
+
+std::shared_ptr<EnumInfo> Visitor::ScopeInfo::asEnum() const
+{
+    auto ptr = std::dynamic_pointer_cast<EnumInfo>(ReflectionObj);
     return ptr;
 }
 

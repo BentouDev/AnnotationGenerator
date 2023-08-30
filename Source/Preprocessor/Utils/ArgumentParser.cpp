@@ -5,6 +5,7 @@
 #include "ArgumentParser.h"
 #include "Utils.h"
 #include "Core/Context.h"
+#include "Version.h"
 
 #include <nlohmann/json.hpp>
 #include <regex>
@@ -142,24 +143,29 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
     {
         auto& pattern = Context.Templates.emplace_back(std::make_unique<SourcePattern>());
 
-        if (auto itr = element.find("includes"); itr != element.end())
+        // will include source header into worker file
+        // instead of copying it's lines into it
+        if (auto itr = element.find("include_source_header"); itr != element.end())
         {
-            pattern->UseIncludes = true;
+            pattern->IncludeSourceHeader = true;
         }
 
+        // includes to be injected into worker file
+        // injected includes are also parsed by libclang
         if (auto inject_itr = element.find("inject_includes"); inject_itr != element.end())
         {
             for (auto& inject : (*inject_itr))
             {
-                pattern->Includes.push_back(inject.get<std::string>());
+                pattern->InjectIncludes.push_back(inject.get<std::string>());
             }
         }
 
+        // directories to search injected includes in
         if (auto dir_itr = element.find("include_directories"); dir_itr != element.end())
         {
             for (auto& inject : (*dir_itr))
             {
-                pattern->Directories.push_back(inject.get<std::string>());
+                pattern->IncludeDirectories.push_back(inject.get<std::string>());
             }
         }
 
@@ -168,11 +174,16 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
             pattern->RequireAnnotation = itr->get<bool>();
         }
 
-        if (auto itr = element.find("annotation"); itr != element.end())
+        // variables of this type placed before class definition or field
+        // are treaded as annotations
+        // requires specialized header with macro which enables these only for ANNOTATION_GENERATOR
+        // so they are not placed in normal code
+        // variables of this type are also ignored from field lists
+        if (auto itr = element.find("enable_pre_annotation"); itr != element.end())
         {
             for (auto& annot : (*itr))
             {
-                pattern->Annotations.push_back(annot.get<std::string>());
+                pattern->EnablePreAnnotationFrom.push_back(annot.get<std::string>());
             }
         }
 
@@ -190,18 +201,30 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
             pattern->OutputDir = Context.Generator.OutputDirectory;
         }
 
-        pattern->ClassOutName = element["class_out"] .get<std::string>();
-        pattern->MainOutName  = element["main_out"]  .get<std::string>();
+        pattern->MainOutName = element["main_file_name"].get<std::string>();
         pattern->MainTemplate = CreateTemplate(directory, element["main_template"].get<std::string>());
 
+        pattern->HeaderOutName = element["header_file_name"].get<std::string>();
+        for (auto& tmpl : element["header_template"])
+        {
+            pattern->HeaderTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+        }
+
+        pattern->ClassOutName = element["class_file_name"].get<std::string>();
         for (auto& tmpl : element["class_template"])
         {
-            pattern->Templates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+            pattern->ClassTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+        }
+
+        pattern->EnumOutName = element["enum_file_name"].get<std::string>();
+        for (auto& tmpl : element["enum_template"])
+        {
+            pattern->EnumTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
         }
 
         for (auto& file_path : files)
         {
-            auto regex_string = element["file"].get<std::string>();
+            auto regex_string = element["file_regex_pattern"].get<std::string>();
             const std::regex regex(regex_string);
 
             if (std::regex_match(file_path, regex))

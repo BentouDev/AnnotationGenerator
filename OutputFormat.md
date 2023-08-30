@@ -1,10 +1,26 @@
 # Output format
-Values available in mustache files.
+Entities available in mustache files.
 
 ## Root
 | type | name |
 |-|-|
 | [Class\[\]](#Class) | classes |
+| [Enum\[\]](#Enum) | enums |
+
+## Enum
+| type | name |
+|-|-|
+| [EnumValue\[\]](#EnumValue) | values |
+| [Attribute\[\]](#Attribute) | attributes |
+| string | enum_name |
+| string | canonical_name |
+| string | include |
+
+## EnumValue
+| type | name |
+|-|-|
+| string | name |
+| long long | value |
 
 ## Class
 | type | name |

@@ -1,0 +1,1 @@
+zetsubou regen tests/zetsubou_build_step/project.yml

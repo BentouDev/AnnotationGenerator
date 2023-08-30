@@ -1,0 +1,1 @@
+zetsubou build tests/zetsubou_build_step/project.yml

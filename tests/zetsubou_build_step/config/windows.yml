@@ -1,0 +1,10 @@
+platform: Windows
+host_system: Windows
+host_arch: x64
+target_arch: x64
+
+defines:
+  public:
+    - WIN32_LEAN_AND_MEAN
+    - _WIN32
+    - __WINDOWS__

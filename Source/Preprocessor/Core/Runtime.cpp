@@ -32,16 +32,17 @@ Runtime::Runtime(Data::Context& context)
     });
 
     Context.Parser.TypeFactory->RegisterHandlers({
-        { CXCursor_EnumDecl,      Handlers::HandleEnum },
-        { CXCursor_ClassDecl,     Handlers::HandleType },
-        { CXCursor_StructDecl,    Handlers::HandleType },
-        { CXCursor_ClassTemplate, Handlers::HandleType },
-        { CXCursor_TypedefDecl,   Handlers::HandleTypeAlias },
-        { CXCursor_TypeAliasDecl, Handlers::HandleTypeAlias },
-        { CXCursor_FieldDecl,     Handlers::HandleField },
-        { CXCursor_FunctionDecl,  Handlers::HandleMethod },
-        { CXCursor_CXXMethod,     Handlers::HandleMethod },
-        { CXCursor_AnnotateAttr,  Handlers::HandleAnnotation },
+        { CXCursor_EnumConstantDecl, Handlers::HandleEnumValue },
+        { CXCursor_EnumDecl,         Handlers::HandleEnum },
+        { CXCursor_ClassDecl,        Handlers::HandleType },
+        { CXCursor_StructDecl,       Handlers::HandleType },
+        { CXCursor_ClassTemplate,    Handlers::HandleType },
+        { CXCursor_TypedefDecl,      Handlers::HandleTypeAlias },
+        { CXCursor_TypeAliasDecl,    Handlers::HandleTypeAlias },
+        { CXCursor_FieldDecl,        Handlers::HandleField },
+        { CXCursor_FunctionDecl,     Handlers::HandleMethod },
+        { CXCursor_CXXMethod,        Handlers::HandleMethod },
+        { CXCursor_AnnotateAttr,     Handlers::HandleAnnotation },
     });
 
     Context.Parser.AnnotFactory->RegisterHandlers({
@@ -97,9 +98,9 @@ void Runtime::ProcessPattern(SourcePattern& pattern)
 
 void Runtime::ParseSourceFile(SourcePattern& pattern, SourceFile& file)
 {
-    Context.Parser.CurrentSource  = &file;
+    Context.Parser.CurrentSource = &file;
     Context.Parser.CurrentPattern = &pattern;
-    Context.Parser.UseIncludes    = pattern.UseIncludes;
+    Context.Parser.IncludeSourceHeader = pattern.IncludeSourceHeader;
 
     Parser parser(Context);
     parser.ProcessFile();

@@ -14,7 +14,7 @@ Generator::Generator(Data::Context& context)
 
 }
 
-TMustacheData Generator::BuildAllData()
+TMustacheData Generator::BuildAllClassData()
 {
     TMustacheData types { TMustacheData::type::list };
 
@@ -25,7 +25,7 @@ TMustacheData Generator::BuildAllData()
 
         if (type->HasAnnotation || !Context.Generator.CurrentPattern->RequireAnnotation)
         {
-            TMustacheData data = BuildTypeData(type);
+            TMustacheData data = BuildClazzData(type);
 
             Cache.insert(std::make_pair(type->CanonName, data));
 
@@ -36,33 +36,52 @@ TMustacheData Generator::BuildAllData()
     return types;
 }
 
-TMustacheData Generator::BuildTypeData(std::shared_ptr<ClassInfo>& type)
+TMustacheData Generator::BuildAllEnumData()
 {
-    TMustacheData data;
+    TMustacheData types{ TMustacheData::type::list };
 
+    for (auto& [_, type] : Context.Parser.Enums)
+    {
+        UNUSED(_);
+
+        if (type->HasAnnotation || !Context.Generator.CurrentPattern->RequireAnnotation)
+        {
+            TMustacheData data = BuildEnumData(type);
+
+            Cache.insert(std::make_pair(type->CanonName, data));
+
+            types << data;
+        }
+    }
+
+    return types;
+}
+
+std::string Generator::BuildIncludePath(std::shared_ptr<TypeInfo> type)
+{
     fs::path absolute;
-             absolute.append(type->FromInclude);
+    absolute.append(type->FromInclude);
 
     std::string include_path = absolute.string();
 
-    std::vector<std::string> relatives {fs::relative(absolute).string()};
+    std::vector<std::string> relatives{ fs::relative(absolute).string() };
 
-    for (auto& incl_dir : Context.Generator.CurrentPattern->Directories)
+    for (auto& incl_dir : Context.Generator.CurrentPattern->IncludeDirectories)
     {
         fs::path dir;
-                 dir.append(incl_dir);
+        dir.append(incl_dir);
 
         std::error_code err;
         relatives.push_back(fs::relative(absolute, dir, err).string());
     }
 
-    relatives.erase(std::remove_if(relatives.begin(), relatives.end(), [](const std::string& str){
+    relatives.erase(std::remove_if(relatives.begin(), relatives.end(), [](const std::string& str) {
         return str.empty();
     }), relatives.end());
 
     auto itr = std::min_element(relatives.begin(), relatives.end(),
-        [] (const std::string& s1, const std::string& s2) { 
-            return s1.length() < s2.length(); 
+        [](const std::string& s1, const std::string& s2) {
+            return s1.length() < s2.length();
         }
     );
 
@@ -71,12 +90,49 @@ TMustacheData Generator::BuildTypeData(std::shared_ptr<ClassInfo>& type)
         include_path = *itr;
     }
 
+    return include_path;
+}
+
+TMustacheData Generator::BuildEnumData(std::shared_ptr<EnumInfo>& type)
+{
+    TMustacheData data;
+
+    data.set("attributes", BuildAttributeData(type));
+    data.set("enum_name", type->Name);
+    data.set("canonical_name", type->CanonName);
+    data.set("values", BuildEnumValuesData(type));
+    data.set("include", BuildIncludePath(type));
+
+    return data;
+}
+
+TMustacheData Generator::BuildEnumValuesData(std::shared_ptr<EnumInfo>& type)
+{
+    TMustacheData values{ TMustacheData::type::list };
+
+    for (const auto& enum_value : type->Values)
+    {
+        TMustacheData value_data;
+
+        value_data.set("name", enum_value->Name);
+        value_data.set("value", std::to_string(enum_value->NumValue));
+
+        values << value_data;
+    }
+
+    return values;
+}
+
+TMustacheData Generator::BuildClazzData(std::shared_ptr<ClassInfo>& type)
+{
+    TMustacheData data;
+
     data.set("fields",     BuildFieldData (type));
     data.set("methods",    BuildMethodData(type));
     data.set("attributes", BuildAttributeData(type));
     data.set("class_name", type->Name);
     data.set("canonical_name", type->CanonName);
-    data.set("include",    include_path);
+    data.set("include",   BuildIncludePath(type));
 
     return data;
 }
@@ -114,7 +170,7 @@ TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
     return methods;
 }
 
-TMustacheData Generator::BuildAttributeData(std::shared_ptr<ClassInfo>& type)
+TMustacheData Generator::BuildAttributeData(std::shared_ptr<TypeInfo> type)
 {
     TMustacheData attributes { TMustacheData::type::list };
 
@@ -129,25 +185,123 @@ TMustacheData Generator::BuildAttributeData(std::shared_ptr<ClassInfo>& type)
     return attributes;
 }
 
-fs::path Generator::BuildOutputPath(std::shared_ptr<ClassInfo>& type)
+fs::path Generator::BuildHeaderOutputPath(const std::string& include)
 {
-    TMustacheView out_name_view(Context.Generator.CurrentPattern->ClassOutName);
+    TMustacheView out_name_view(Context.Generator.CurrentPattern->HeaderOutName);
 
-    fs::path    path      = Context.Generator.CurrentPattern->OutputDir;
-    std::string filename  = out_name_view.render({"class_name", type->Name});
+    fs::path path = Context.Generator.CurrentPattern->OutputDir;
+    std::string filename = out_name_view.render({ "header_name", include });
     path.append(filename);
 
     return path;
 }
 
+fs::path Generator::BuildClassOutputPath(std::shared_ptr<ClassInfo> type)
+{
+    TMustacheView out_name_view(Context.Generator.CurrentPattern->ClassOutName);
+
+    fs::path path = Context.Generator.CurrentPattern->OutputDir;
+    std::string filename = out_name_view.render({ "class_name", type->Name });
+    path.append(filename);
+
+    return path;
+}
+
+fs::path Generator::BuildEnumOutputPath(std::shared_ptr<EnumInfo> type)
+{
+    TMustacheView out_name_view(Context.Generator.CurrentPattern->EnumOutName);
+
+    fs::path    path = Context.Generator.CurrentPattern->OutputDir;
+    std::string filename = out_name_view.render({ "enum_name", type->Name });
+    path.append(filename);
+
+    return path;
+}
+
+TMustacheData Generator::BuildIncludesData()
+{
+    TMustacheData data { TMustacheData::type::list };
+
+    for (std::unique_ptr<SourceFile>& src : Context.Parser.CurrentPattern->Sources)
+    {
+        TMustacheData inc_data;
+        inc_data.set("path", src->Path.string());
+        data << inc_data;
+    }
+
+    return data;
+}
+
 void Generator::GenerateFiles()
 {
     TMustacheData all_data;
-    all_data.set("classes", BuildAllData());
+    all_data.set("classes", BuildAllClassData());
+    all_data.set("enums", BuildAllEnumData());
+    all_data.set("includes", BuildIncludesData());
 
     fs::create_directories(Context.Generator.CurrentPattern->OutputDir);
 
-    for (auto& templ : Context.Generator.CurrentPattern->Templates)
+    // Per header template
+    struct IncludeData
+    {
+        std::vector<std::shared_ptr<ClassInfo>> classes;
+        std::vector<std::shared_ptr<EnumInfo>> enums;
+    };
+
+    std::map<std::string, IncludeData> include_map;
+
+    for (auto& [_, type] : Context.Parser.Classes)
+    {
+        include_map[type->FromInclude].classes.push_back(type);
+    }
+
+    for (auto& [_, type] : Context.Parser.Enums)
+    {
+        include_map[type->FromInclude].enums.push_back(type);
+    }
+
+    for (auto& templ : Context.Generator.CurrentPattern->HeaderTemplates)
+    {
+        if (templ->View)
+        {
+            for (auto& [include, data] : include_map)
+            {
+                TMustacheData mapped_data;
+
+                TMustacheData classes{ TMustacheData::type::list };
+                for (auto& clazz : data.classes)
+                {
+                    if (auto itr = Cache.find(clazz->CanonName); itr != Cache.end())
+                    {
+                        classes << itr->second;
+                    }
+                }
+
+                TMustacheData enums{ TMustacheData::type::list };
+                for (auto& clazz : data.enums)
+                {
+                    if (auto itr = Cache.find(clazz->CanonName); itr != Cache.end())
+                    {
+                        enums << itr->second;
+                    }
+                }
+
+                mapped_data.set("classes", classes);
+                mapped_data.set("enums", enums);
+
+                fs::path inc_path = include;
+
+                fs::path     path = BuildHeaderOutputPath(inc_path.filename().string());
+                std::fstream file(path, std::ios_base::out);
+
+                file << templ->View->render(mapped_data);
+                file.close();
+            }
+        }
+    }
+
+    // Class templates
+    for (auto& templ : Context.Generator.CurrentPattern->ClassTemplates)
     {
         if (templ->View)
         {
@@ -157,7 +311,7 @@ void Generator::GenerateFiles()
 
                 if (auto itr = Cache.find(type->CanonName); itr != Cache.end())
                 {
-                    fs::path     path = BuildOutputPath(type);
+                    fs::path     path = BuildClassOutputPath(type);
                     std::fstream file(path, std::ios_base::out);
 
                     file << templ->View->render(itr->second);
@@ -167,6 +321,28 @@ void Generator::GenerateFiles()
         }
     }
 
+    // Enum templates
+    for (auto& templ : Context.Generator.CurrentPattern->EnumTemplates)
+    {
+        if (templ->View)
+        {
+            for (auto& [_, type] : Context.Parser.Enums)
+            {
+                UNUSED(_);
+
+                if (auto itr = Cache.find(type->CanonName); itr != Cache.end())
+                {
+                    fs::path     path = BuildEnumOutputPath(type);
+                    std::fstream file(path, std::ios_base::out);
+
+                    file << templ->View->render(itr->second);
+                    file.close();
+                }
+            }
+        }
+    }
+
+    // Main template
     auto& main_tmpl = Context.Generator.CurrentPattern->MainTemplate;
     if (main_tmpl->View)
     {

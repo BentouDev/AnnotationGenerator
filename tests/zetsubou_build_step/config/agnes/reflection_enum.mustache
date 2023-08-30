@@ -1,0 +1,17 @@
+namespace Meta
+{
+    class {{enum_name}}_Enum
+    {
+        std::vector<EnumValue> Values = {
+            {{#values}}
+               { {{name}}, {{value}} },
+            {{/values}}
+        };
+
+        std::vector<Attribute> Attributes = {
+            {{#attributes}}
+                {{value}},
+            {{/attributes}}
+        };
+    };
+}

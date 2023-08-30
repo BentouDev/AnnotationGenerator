@@ -9,7 +9,17 @@
 
 void SourcePattern::LoadTemplates()
 {
-    for (auto& templ : Templates)
+    for (auto& templ : ClassTemplates)
+    {
+        LoadTemplate(templ);
+    }
+
+    for (auto& templ : EnumTemplates)
+    {
+        LoadTemplate(templ);
+    }
+
+    for (auto& templ : HeaderTemplates)
     {
         LoadTemplate(templ);
     }

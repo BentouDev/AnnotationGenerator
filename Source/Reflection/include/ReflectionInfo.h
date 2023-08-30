@@ -66,8 +66,14 @@ class TypeInfo : public MetaInfo
 {
 public:
     TypeInfo(CompileString name)
-        : MetaInfo(name)
+        : MetaInfo(name), HasAnnotation(false)
     { }
+
+    std::string CanonName;
+    std::string FromInclude;
+
+    std::vector<std::string> Annotations;
+    bool HasAnnotation;
 
     TypeId Id;
 };
@@ -164,18 +170,14 @@ class ClassInfo : public TypeInfo
 {
 public:
     ClassInfo(CompileString name)
-        : TypeInfo(name), HasAnnotation(false)
+        : TypeInfo(name)
     { }
 
     ClassInfo*  Super;
-    std::string CanonName;
-    std::string FromInclude;
 
-    std::vector<std::string> Annotations;
     TReflectionVector<ClassInfo>   Interfaces;
     TReflectionVector<FieldInfo>   Fields;
     TReflectionVector<MethodInfo>  Methods;
-    bool                           HasAnnotation;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -183,9 +185,11 @@ public:
 class EnumValueInfo : public MetaInfo
 {
 public:
-    EnumValueInfo(CompileString name)
-        : MetaInfo(name)
+    EnumValueInfo(CompileString name, long long value)
+        : MetaInfo(name), NumValue(value)
     { }
+
+    long long NumValue;
 
     template <typename T>
     T* GetValue();

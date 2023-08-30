@@ -14,12 +14,21 @@ class Generator
     Data::Context& Context;
     TTypeCache     Cache;
 
-    TMustacheData BuildAllData      ();
-    TMustacheData BuildTypeData     (std::shared_ptr<ClassInfo>& type);
-    TMustacheData BuildFieldData    (std::shared_ptr<ClassInfo>& type);
-    TMustacheData BuildMethodData   (std::shared_ptr<ClassInfo>& type);
-    TMustacheData BuildAttributeData(std::shared_ptr<ClassInfo>& type);
-    fs::path      BuildOutputPath   (std::shared_ptr<ClassInfo>& type);
+    std::string   BuildIncludePath     (std::shared_ptr<TypeInfo> type);
+
+    TMustacheData BuildIncludesData    ();
+    TMustacheData BuildAllClassData    ();
+    TMustacheData BuildAllEnumData     ();
+    TMustacheData BuildAttributeData   (std::shared_ptr<TypeInfo> type);
+    TMustacheData BuildEnumData        (std::shared_ptr<EnumInfo>& type);
+    TMustacheData BuildEnumValuesData  (std::shared_ptr<EnumInfo>& type);
+    TMustacheData BuildClazzData       (std::shared_ptr<ClassInfo>& type);
+    TMustacheData BuildFieldData       (std::shared_ptr<ClassInfo>& type);
+    TMustacheData BuildMethodData      (std::shared_ptr<ClassInfo>& type);
+
+    fs::path      BuildHeaderOutputPath(const std::string& include_name);
+    fs::path      BuildClassOutputPath (std::shared_ptr<ClassInfo> type);
+    fs::path      BuildEnumOutputPath  (std::shared_ptr<EnumInfo> type);
 
 public:
     explicit Generator(Data::Context& context);

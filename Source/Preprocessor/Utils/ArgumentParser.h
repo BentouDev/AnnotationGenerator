@@ -5,7 +5,6 @@
 #ifndef ANNOTATIONGENERATOR_ARGUMENTPARSER_H
 #define ANNOTATIONGENERATOR_ARGUMENTPARSER_H
 
-#include "Argument.h"
 #include "Filesystem.h"
 #include "Core/Context.h"
 

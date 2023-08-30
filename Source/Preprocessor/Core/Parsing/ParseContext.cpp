@@ -3,6 +3,7 @@
 //
 
 #include "ParseContext.h"
+#include <Utils/Utils.h>
 
 void ParseContext::PushFactory(std::unique_ptr<CursorHandlerFactory>& factory)
 {
@@ -19,6 +20,11 @@ void ParseContext::PopFactory (std::unique_ptr<CursorHandlerFactory>& factory)
 std::shared_ptr<TypeInfo> ParseContext::GetTypeInfo(const std::string& type_name)
 {
     if (auto itr = Classes.find(type_name); itr != Classes.end())
+    {
+        return std::dynamic_pointer_cast<TypeInfo>(itr->second);
+    }
+
+    if (auto itr = Enums.find(type_name); itr != Enums.end())
     {
         return std::dynamic_pointer_cast<TypeInfo>(itr->second);
     }

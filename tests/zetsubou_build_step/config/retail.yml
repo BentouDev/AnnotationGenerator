@@ -1,0 +1,9 @@
+configuration: Retail
+
+base_configuration: RELEASE
+
+filters:
+  - filter:
+      config_string: '*msvc*'
+    librarian_flags:
+      public: /LTCG

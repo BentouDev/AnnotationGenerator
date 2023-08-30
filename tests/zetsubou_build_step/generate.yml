@@ -1,0 +1,16 @@
+# Generates code, but doesn't compile it
+target: 'generate_rtti'
+
+config:
+  kind: BUILD_STEP
+  compiler: agnes_preprocessor
+
+source:
+  paths: '{root}/'
+  patterns:
+    - '*.h'
+    - '*.hxx'
+    - '*.hpp'
+
+source_exclude:
+  paths: '{root}/build'

@@ -1,0 +1,6 @@
+toolchains:
+  - compiler_family: MSVC
+    compiler_version: latest
+    cppstd: cpp20
+    toolset: v143
+    runtime: dynamic

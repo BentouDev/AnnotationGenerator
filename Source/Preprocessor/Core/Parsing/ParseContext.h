@@ -8,16 +8,19 @@
 #include "CursorHandlerFactory.h"
 #include "Core/SourceFile.h"
 
+#include <clang-c/Index.h>
+
 #include <ReflectionInfo.h>
 
 using TClassMap = std::map<std::string, std::shared_ptr<ClassInfo>>;
+using TEnumMap = std::map<std::string, std::shared_ptr<EnumInfo>>;
 
 class SourcePattern;
 class ParseContext
 {
 public:
     ParseContext()
-        : CurrentSource { nullptr }, ForcedFactory { nullptr }
+        : CurrentSource { nullptr }, ForcedFactory { nullptr }, TranslationUnit { nullptr }
     { }
 
     ParseContext(const ParseContext&) = delete;
@@ -26,6 +29,7 @@ public:
     SourceFile*                             CurrentSource;
     SourcePattern*                          CurrentPattern;
     TClassMap                               Classes;
+    TEnumMap                                Enums;
     std::vector<std::string>                Includes;
 
     std::unique_ptr<CursorHandlerFactory>   GlobalFactory;
@@ -33,7 +37,10 @@ public:
     std::unique_ptr<CursorHandlerFactory>   AnnotFactory;
     CursorHandlerFactory*                   ForcedFactory;
 
-    bool                                    UseIncludes;
+    CXTranslationUnit*                      TranslationUnit;
+    CXFile                                  FileHandle;
+
+    bool                                    IncludeSourceHeader;
 
     void PushFactory(std::unique_ptr<CursorHandlerFactory>& factory);
     void PopFactory (std::unique_ptr<CursorHandlerFactory>& factory);

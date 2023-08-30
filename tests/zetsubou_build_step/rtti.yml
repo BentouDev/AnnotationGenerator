@@ -1,0 +1,18 @@
+# Compiles generated code
+target: 'rtti'
+
+config:
+  kind: STATIC_LIBRARY
+
+dependencies:
+  public:
+    - generate_rtti
+
+source:
+  paths: '{root}/build/codegen'
+  patterns:
+    - '*.h'
+    - '*.hxx'
+    - '*.hpp'
+    - '*.cxx'
+    - '*.cpp'

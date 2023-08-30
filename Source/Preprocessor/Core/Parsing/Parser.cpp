@@ -27,7 +27,7 @@ std::vector<cstring> Parser::BuildArguments()
         "-DANNOTATION_GENERATOR"
     };
 
-    for (auto& path : Context.Parser.CurrentPattern->Directories)
+    for (auto& path : Context.Parser.CurrentPattern->IncludeDirectories)
     {
         Arguments.emplace_back(std::make_unique<std::string>(std::string("-I") + path));
         result.push_back(Arguments.back()->c_str());
@@ -46,12 +46,12 @@ std::string Parser::BuildWorkerFileContent(const fs::path& filepath)
     // todo: optimize memory usage
     std::stringstream ss;
     
-    for (auto& incl : Context.Parser.CurrentPattern->Includes)
+    for (auto& incl : Context.Parser.CurrentPattern->InjectIncludes)
     {
         ss << "#include <" << incl << ">" << std::endl;
     }
 
-    if (Context.Parser.UseIncludes)
+    if (Context.Parser.IncludeSourceHeader)
     {
         ss << "#include \"" + filepath.string() + "\"\n";
     }
@@ -112,6 +112,8 @@ void Parser::ProcessFile()
         1, CXTranslationUnit_None
     );
 
+    CXFile file_handle = clang_getFile(worker_unit, worker_file.Filename);
+
     DISPOSE
     {
         clang_disposeTranslationUnit(worker_unit);
@@ -125,6 +127,9 @@ void Parser::ProcessFile()
                   << std::endl;
         return;
     }
+
+    Context.Parser.TranslationUnit = &worker_unit;
+    Context.Parser.FileHandle = file_handle;
 
     CXCursor root = clang_getTranslationUnitCursor(worker_unit);
 

@@ -21,7 +21,9 @@ class Visitor
     struct ScopeInfo
     {
         ScopeInfo(std::shared_ptr<MetaInfo> obj, const std::string& name, CXCursor cursor);
-        auto asType() const -> std::shared_ptr<ClassInfo>;
+        auto asType() const -> std::shared_ptr<TypeInfo>;
+        auto asClazz() const->std::shared_ptr<ClassInfo>;
+        auto asEnum() const->std::shared_ptr<EnumInfo>;
 
         std::shared_ptr<MetaInfo> ReflectionObj;
         std::string               Name;
