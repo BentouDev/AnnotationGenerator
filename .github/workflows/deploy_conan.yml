@@ -3,13 +3,59 @@ name: Deploy Conan package
 on:
   workflow_dispatch:
     inputs:
+      version_upgrade:
+        description: 'Which part of semantic version do you want to increment?'
+        required: true
+        default: '--patch'
+        type: choice
+        options:
+        - '--patch'
+        - '--minor'
+        - '--major'
+        - 'none'
       profile:
         description: 'Conan profile to use'
         required: true
         type: string
         default: 'windows_msvc'
+      commit_user_name:
+        description: Name used for the commit user
+        required: false
+        default: github-actions[bot]
+      commit_user_email:
+        description: Email address used for the commit user
+        required: false
+        default: github-actions[bot]@users.noreply.github.com
 
 jobs:
+  bump_version:
+    if: ${{ github.event.inputs.version_upgrade != 'none' }}
+    needs: [ test_unit, test_acceptance ]
+    runs-on: ubuntu-latest
+    outputs:
+      new_sha: ${{ steps.bump_ver.outputs.new_sha }}
+      new_version: ${{ steps.bump_ver.outputs.new_version }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+        cache: pip
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install bumpver
+    - name: Setup author
+      run: |
+        git config --global user.email ${{ github.event.inputs.commit_user_email }}
+        git config --global user.name ${{ github.event.inputs.commit_user_name }}
+    - name: Bump version & commit
+      id: bump_ver
+      uses: bentoudev/bump-version@main
+      with:
+        version_upgrade: ${{ github.event.inputs.version_upgrade }}
+
   deploy_conan:
     name: 'Deploy'
     runs-on: windows-latest

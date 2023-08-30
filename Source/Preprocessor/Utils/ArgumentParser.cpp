@@ -11,6 +11,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <format>
 
 ArgumentParser::ArgumentParser(Data::Context& context)
 : Context(context)
@@ -21,6 +23,11 @@ bool ArgumentParser::Parse(int argc, char** argv)
     auto help_args = {
         "-h",
         "--help",
+    };
+
+    auto version_args = {
+        "-v",
+        "--version",
     };
 
     auto dir_args = {
@@ -41,6 +48,12 @@ bool ArgumentParser::Parse(int argc, char** argv)
         std::cout << "\t [h]elp      - prints this info" << std::endl;
         std::cout << "\t [d]irectory - overrides output directory" << std::endl;
         return false;
+    }
+
+    if (argc == 2 && Utils::MatchesAny(argv[1], version_args))
+    {
+        const auto now = std::chrono::system_clock::now();
+        std::cout << "Agnes " << AGNES_VERSION << " - Copyright BentouDev @ 2017-" << std::format("{:%Y}", now) << std::endl;
     }
 
     if (argc <= 2)
