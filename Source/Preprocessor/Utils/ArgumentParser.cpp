@@ -141,6 +141,17 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
 {
     for (auto& element : parser["patterns"])
     {
+        auto try_get_str = [&](const char* str)
+        {
+            auto itr = element.find(str);
+            if (itr != element.end())
+            {
+                return (*itr).get<std::string>();
+            }
+
+            return std::string{};
+        };
+
         auto& pattern = Context.Templates.emplace_back(std::make_unique<SourcePattern>());
 
         // will include source header into worker file
@@ -201,25 +212,36 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
             pattern->OutputDir = Context.Generator.OutputDirectory;
         }
 
-        pattern->MainOutName = element["main_file_name"].get<std::string>();
-        pattern->MainTemplate = CreateTemplate(directory, element["main_template"].get<std::string>());
+        pattern->MainOutName = try_get_str("main_file_name");
+        pattern->MainTemplate = CreateTemplate(directory, try_get_str("main_template"));
 
-        pattern->HeaderOutName = element["header_file_name"].get<std::string>();
-        for (auto& tmpl : element["header_template"])
+        pattern->HeaderOutName = try_get_str("header_file_name");
+        if (auto itr = element.find("header_template"); itr != element.end())
         {
-            pattern->HeaderTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+            for (auto& tmpl : itr.value())
+            {
+                pattern->HeaderTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+            }
         }
 
         pattern->ClassOutName = element["class_file_name"].get<std::string>();
-        for (auto& tmpl : element["class_template"])
+        if (auto itr = element.find("class_template"); itr != element.end())
         {
-            pattern->ClassTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+            for (auto& tmpl : itr.value())
+
+            {
+                pattern->ClassTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+            }
         }
 
         pattern->EnumOutName = element["enum_file_name"].get<std::string>();
-        for (auto& tmpl : element["enum_template"])
+
+        if (auto itr = element.find("enum_template"); itr != element.end())
         {
-            pattern->EnumTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+            for (auto& tmpl : itr.value())
+            {
+                pattern->EnumTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+            }
         }
 
         for (auto& file_path : files)
