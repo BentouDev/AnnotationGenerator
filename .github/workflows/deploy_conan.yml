@@ -28,17 +28,21 @@ on:
         default: github-actions[bot]@users.noreply.github.com
 
 jobs:
+  test_acceptance:
+    uses: ./.github/workflows/test_acceptance.yml
+    secrets: inherit
+
   bump_version:
     if: ${{ github.event.inputs.version_upgrade != 'none' }}
-    needs: [ test_unit, test_acceptance ]
+    needs: [ test_acceptance ]
     runs-on: ubuntu-latest
     outputs:
       new_sha: ${{ steps.bump_ver.outputs.new_sha }}
       new_version: ${{ steps.bump_ver.outputs.new_version }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
         cache: pip

@@ -1,0 +1,50 @@
+name: Acceptance test
+
+on:
+  workflow_call:
+
+jobs:
+  test_acceptance:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+        cache: pip
+
+    - name: Get Conan
+      id: conan
+      uses: turtlebrowser/get-conan@v1.2
+    - name: Add Conan remote
+      run: conan remote add DEPS_REMOTE ${{ secrets.CONAN_REMOTE_URL }}
+    - name: Detect profile
+      run: conan profile detect
+
+    - name: Cache Conan packages
+      id: cache-conan
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-conan-packages
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.ini') }}
+        restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+    - if: ${{ steps.cache-conan.outputs.cache-hit == 'true' }}
+      name: List the state of Conan packages
+      continue-on-error: true
+      run: conan list "*"
+
+    - name: Build Agnes
+      id: build
+      uses: bentoudev/zet-cpp-build@main
+
+    - name: Regen test
+      run: ./test_regen.bat
+    - name: Build test
+      run: ./test_build.bat
