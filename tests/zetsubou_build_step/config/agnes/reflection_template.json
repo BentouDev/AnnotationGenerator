@@ -17,8 +17,7 @@
 
       "file_regex_pattern" : "(\\W|\\w)*\\.h\\b",
 
-      "enable_pre_annotation" : ["__Y_CLASS__"],
-      "require_annotation" : true,
+      "require_annotation" : ["rtti::class", "rtti::enum"],
 
       "include_source_header" : true,
       "inject_includes": ["inject.h"],

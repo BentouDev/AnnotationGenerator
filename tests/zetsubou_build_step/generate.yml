@@ -13,4 +13,6 @@ source:
     - '*.hpp'
 
 source_exclude:
-  paths: '{root}/build'
+  paths:
+  - '{root}/build'
+  - '{root}/config'

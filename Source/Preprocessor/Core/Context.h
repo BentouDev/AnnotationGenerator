@@ -6,7 +6,7 @@
 #define ANNOTATIONGENERATOR_OPTIONS_H
 
 #include "SourcePattern.h"
-#include "ReflectionInfo.h"
+#include "Core/TypeData/ReflectionInfo.h"
 #include "Core/Parsing/ParseContext.h"
 
 #include <vector>

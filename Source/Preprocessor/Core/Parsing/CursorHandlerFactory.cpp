@@ -120,7 +120,7 @@ namespace Handlers
             enumz->Annotations.insert(enumz->Annotations.end(), visitor.PreAnnotations.begin(), visitor.PreAnnotations.end());
             visitor.PreAnnotations.clear();
 
-            enumz->HasAnnotation |= visitor.HasPreAnnotation;
+            enumz->HasAnyAnnotation |= visitor.HasPreAnnotation;
             visitor.HasPreAnnotation = false;
 
             context.Enums.insert(std::make_pair(canon_name, enumz));
@@ -176,7 +176,7 @@ namespace Handlers
             clazz->Annotations.insert (clazz->Annotations.end(), visitor.PreAnnotations.begin(), visitor.PreAnnotations.end());
             visitor.PreAnnotations.clear();
 
-            clazz->HasAnnotation |= visitor.HasPreAnnotation;
+            clazz->HasAnyAnnotation |= visitor.HasPreAnnotation;
             visitor.HasPreAnnotation = false;
 
             context.Classes.insert(std::make_pair(canon_name, clazz));
@@ -262,7 +262,7 @@ namespace Handlers
 
                 std::string_view attribute_view{ &file_buff[from_offset], to_offset - from_offset };
 
-                type->HasAnnotation |= true;
+                type->HasAnyAnnotation |= true;
                 type->Annotations.push_back(std::string(attribute_view));
             }
         };
@@ -389,7 +389,7 @@ namespace Handlers
             clazz->Annotations.insert (clazz->Annotations.end(), visitor.PreAnnotations.begin(), visitor.PreAnnotations.end());
             visitor.PreAnnotations.clear();
             
-            clazz->HasAnnotation |= visitor.HasPreAnnotation;
+            clazz->HasAnyAnnotation |= visitor.HasPreAnnotation;
             visitor.HasPreAnnotation = false;
 
             context.Classes.insert(std::make_pair(canon_name, clazz));
@@ -451,7 +451,7 @@ namespace Handlers
 
         std::shared_ptr<TypeInfo> clazz = visitor.GetScope().top()->asType();
         clazz->Annotations.emplace_back(std::move(name));
-        clazz->HasAnnotation = true;
+        clazz->HasAnyAnnotation = true;
 
         return { false, nullptr };
     }

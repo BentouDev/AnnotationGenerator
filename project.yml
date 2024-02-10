@@ -21,5 +21,4 @@ targets:
   app:
    - 'Source/Preprocessor/project.yml'
   lib:
-   - 'Source/Reflection/project.yml'
    - 'Source/LibClang/project.yml'

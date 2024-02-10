@@ -180,9 +180,12 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
             }
         }
 
-        if (auto itr = element.find("require_annotation"); itr != element.end() && itr->is_boolean())
+        if (auto itr = element.find("require_annotation"); itr != element.end())
         {
-            pattern->RequireAnnotation = itr->get<bool>();
+            for (auto& annot : (*itr))
+            {
+                pattern->RequireAnnotation.push_back(annot.get<std::string>());
+            }
         }
 
         // variables of this type placed before class definition or field

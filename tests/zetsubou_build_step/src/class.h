@@ -1,11 +1,11 @@
 #include <string>
 
-class [[ first, second(x[y[0]]()), foo([](){}), third(Dupa) ]] Dupa
+class [[ rtti::class, first, second(x[y[0]]()), foo([](){}), third(Dupa) ]] Dupa
 {
 
 };
 
-enum class MyEnum
+enum class [[rtti::enum]] MyEnum
 {
     Once,
     Twice,
@@ -14,7 +14,7 @@ enum class MyEnum
 
 namespace EOldEnum
 {
-    enum TYPE
+    enum [[rtti::enum]] TYPE
     {
         None,
         Default = 0,
@@ -44,4 +44,11 @@ class
  Third
 {
 
+};
+
+class [[rtti::class]] WithData
+{
+    float f;
+    std::string s;
+    int i;
 };

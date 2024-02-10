@@ -66,14 +66,17 @@ class TypeInfo : public MetaInfo
 {
 public:
     TypeInfo(CompileString name)
-        : MetaInfo(name), HasAnnotation(false)
+        : MetaInfo(name), HasAnyAnnotation(false)
     { }
 
     std::string CanonName;
     std::string FromInclude;
 
     std::vector<std::string> Annotations;
-    bool HasAnnotation;
+    bool HasAnyAnnotation;
+
+    bool HasAnnotation(const std::vector<std::string>& names) const;
+    bool HasAnnotation(std::string_view name) const;
 
     TypeId Id;
 };

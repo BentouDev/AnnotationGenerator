@@ -6,7 +6,6 @@ config:
 dependencies:
   private:
     - libclang
-    - reflection
     - kainjow_mustache
     - nlohmann_json
 

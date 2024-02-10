@@ -10,7 +10,7 @@
 
 #include <clang-c/Index.h>
 
-#include <ReflectionInfo.h>
+#include "Core/TypeData/ReflectionInfo.h"
 
 using TClassMap = std::map<std::string, std::shared_ptr<ClassInfo>>;
 using TEnumMap = std::map<std::string, std::shared_ptr<EnumInfo>>;

@@ -34,7 +34,7 @@ private:
 
 public:
     SourcePattern()
-        : IncludeSourceHeader(false), RequireAnnotation(false)
+        : IncludeSourceHeader(false)
     { }
 
     SourcePattern(const SourcePattern&) = delete;
@@ -54,7 +54,7 @@ public:
     std::string ClassOutName;
     std::string EnumOutName;
     bool        IncludeSourceHeader;
-    bool        RequireAnnotation;
+    std::vector<std::string> RequireAnnotation;
 
     void LoadTemplates();
 };

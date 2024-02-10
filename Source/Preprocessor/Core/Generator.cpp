@@ -23,7 +23,7 @@ TMustacheData Generator::BuildAllClassData()
     {
         UNUSED(_);
 
-        if (type->HasAnnotation || !Context.Generator.CurrentPattern->RequireAnnotation)
+        if (Context.Generator.CurrentPattern->RequireAnnotation.empty() || type->HasAnnotation(Context.Generator.CurrentPattern->RequireAnnotation))
         {
             TMustacheData data = BuildClazzData(type);
 
@@ -44,7 +44,7 @@ TMustacheData Generator::BuildAllEnumData()
     {
         UNUSED(_);
 
-        if (type->HasAnnotation || !Context.Generator.CurrentPattern->RequireAnnotation)
+        if (Context.Generator.CurrentPattern->RequireAnnotation.empty() || type->HasAnnotation(Context.Generator.CurrentPattern->RequireAnnotation))
         {
             TMustacheData data = BuildEnumData(type);
 
