@@ -62,6 +62,7 @@ jobs:
 
   deploy_conan:
     name: 'Deploy'
+    needs: bump_version
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
