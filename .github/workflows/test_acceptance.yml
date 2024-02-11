@@ -14,8 +14,8 @@ jobs:
       uses: turtlebrowser/get-conan@v1.2
     - name: Add Conan remote
       run: conan remote add DEPS_REMOTE ${{ secrets.CONAN_REMOTE_URL }}
-    - name: Detect profile
-      run: conan profile detect
+    - name: Initialize conan
+      run: conan config install profiles/windows_msvc -tf profiles
 
     - name: Cache Conan packages
       id: cache-conan
@@ -40,7 +40,7 @@ jobs:
       uses: bentoudev/zet-cpp-build@main
 
     - name: Create conan package
-      run: conan create . --user=bentou --channel=stable
+      run: conan create . --user=bentou --channel=stable -pr:b=windows_msvc -pr:h=windows_msvc
 
     - name: Regen test
       run: ./test_regen.bat
