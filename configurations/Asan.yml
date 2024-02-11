@@ -1,6 +1,0 @@
-rule: Asan
-filters:
-  - filter:
-      config_string: "*mscv*"
-      kind: dynamic_library
-    # flawor: Engine

@@ -10,12 +10,11 @@ config:
     - 'config/retail.yml'
   cli_tools:
     - 'config/agnes_preprocessor.yml'
-  config_string: '{platform}-{configuration}-{toolchain}'
 
 conan:
   build_tools: build_tools.ini
 
 targets:
-  - 'target.yml'
-  - 'generate.yml'
-  - 'rtti.yml'
+  - 'src/app/target.yml'
+  - 'src/generate/generate.yml'
+  - 'src/rtti/rtti.yml'

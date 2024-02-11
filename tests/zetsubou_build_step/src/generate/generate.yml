@@ -6,7 +6,7 @@ config:
   compiler: agnes_preprocessor
 
 source:
-  paths: '{root}/'
+  paths: '{root}/src/app/src'
   patterns:
     - '*.h'
     - '*.hxx'

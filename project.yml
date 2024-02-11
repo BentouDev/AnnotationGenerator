@@ -2,16 +2,15 @@ project: AnnotationGenerator
 
 config:
   verbose_build: false
-  dev_profile: 'configurations/dev_profile.yml'
+  dev_profile: 'config/dev_profile.yml'
   platforms:
-    - 'platform/windows.yml'
+    - 'config/plat_windows.yml'
   rules:
-    - 'configurations/Rules.yml'
+    - 'config/msvc_rules.yml'
   configurations:
-    - 'configurations/Debug.yml'
-    - 'configurations/Develop.yml'
-    - 'configurations/Retail.yml'
-  config_string: '{platform}-{configuration}-{toolchain}'
+    - 'config/cfg_debug.yml'
+    - 'config/cfg_develop.yml'
+    - 'config/cfg_retail.yml'
 
 conan:
   build_tools: build_tools.ini

@@ -1,1 +1,1 @@
-zetsubou build tests/zetsubou_build_step/project.yml --ide --verbose
+cd tests/zetsubou_build_step && zetsubou build project.yml --ide --verbose

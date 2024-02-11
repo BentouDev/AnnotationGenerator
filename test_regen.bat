@@ -1,1 +1,1 @@
-zetsubou regen tests/zetsubou_build_step/project.yml --ide --verbose
+cd tests/zetsubou_build_step && zetsubou regen project.yml --ide --verbose
