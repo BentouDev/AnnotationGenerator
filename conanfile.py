@@ -24,8 +24,7 @@ class AgnesConan(ConanFile):
     python_requires_extend = "zetsubougen.ZetsubouBase"
 
     exports_sources = [
-        "configurations/*",
-        "platform/*",
+        "config/*",
         "Source/*",
         "build_tools.ini",
         "dependencies.ini",
