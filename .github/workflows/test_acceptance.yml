@@ -39,6 +39,9 @@ jobs:
       id: build
       uses: bentoudev/zet-cpp-build@main
 
+    - name: Create conan package
+      run: conan create . --user=bentou --channel=stable
+
     - name: Regen test
       run: ./test_regen.bat
     - name: Build test
