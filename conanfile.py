@@ -8,7 +8,7 @@ class AgnesConan(ConanFile):
     name = "agnes"
     license = "MIT"
     url = "https://github.com/BentouDev/AnnotationGenerator"
-    version = '0.4.6'
+    version = '0.5.0'
 
     description = "AnnotationGenerator conan package"
     settings = "os", "compiler", "build_type", "arch"
