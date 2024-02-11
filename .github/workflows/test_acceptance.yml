@@ -14,7 +14,10 @@ jobs:
       uses: turtlebrowser/get-conan@v1.2
     - name: Add Conan remote
       run: conan remote add DEPS_REMOTE ${{ secrets.CONAN_REMOTE_URL }}
-    - name: Initialize conan
+
+    - name: Detect profile
+      run: conan profile detect
+    - name: Add dedicated profile
       run: conan config install profiles/windows_msvc -tf profiles
 
     - name: Cache Conan packages
