@@ -18,10 +18,12 @@ includes:
   public:
     - '{root}/build/codegen/{config_variant}'
 
-compiler_flags:
-  public:
-    # attribute is not recognized
-    - /wd5222
-    - /wd5030
-    # unscoped attribute is reserved
-    - /wd5222
+filters:
+  - filter:
+      config_string: '*msvc*'
+    compiler_flags:
+      public:
+        # attribute is not recognized
+        - /wd5030
+        # unscoped attribute is reserved
+        - /wd5222
