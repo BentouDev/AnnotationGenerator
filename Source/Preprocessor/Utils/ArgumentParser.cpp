@@ -227,7 +227,16 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
             }
         }
 
-        pattern->ClassOutName = element["class_file_name"].get<std::string>();
+        pattern->UnitOutName = try_get_str("unit_file_name");
+        if (auto itr = element.find("unit_template"); itr != element.end())
+        {
+            for (auto& tmpl : itr.value())
+            {
+                pattern->UnitTemplates.emplace_back(CreateTemplate(directory, tmpl.get<std::string>()));
+            }
+        }
+
+        pattern->ClassOutName = try_get_str("class_file_name");
         if (auto itr = element.find("class_template"); itr != element.end())
         {
             for (auto& tmpl : itr.value())
@@ -237,7 +246,7 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
             }
         }
 
-        pattern->EnumOutName = element["enum_file_name"].get<std::string>();
+        pattern->EnumOutName = try_get_str("enum_file_name");
 
         if (auto itr = element.find("enum_template"); itr != element.end())
         {

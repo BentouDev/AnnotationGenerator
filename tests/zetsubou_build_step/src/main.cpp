@@ -1,10 +1,13 @@
 #include "class.h"
 #include "class.gen.h"
 
-#include <iostream>>
+namespace Meta
+{
+    void RegisterReflection();
+}
 
 int main()
 {
-    std::cout << meta::type<MyClass>::value.name << std::endl;
+    Meta::RegisterReflection();
     return 0;
 }

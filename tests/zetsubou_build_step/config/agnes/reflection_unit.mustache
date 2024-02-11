@@ -1,1 +1,49 @@
-#include "{{output_file_name}}.h"
+#include "{{header_path}}"
+#include <iostream>
+
+// Classes
+namespace Meta
+{
+    {{#classes}}
+    template<>
+    void RegisterClassRtti<typename {{{canonical_name}}}>()
+    {
+        std::cout << "Class: " << "{{{canonical_name}}}" << std::endl;
+
+        std::cout << "    attributes:" << std::endl;
+        {{#attributes}}
+            std::cout << "        val: " << "{{value}}" << std::endl;
+        {{/attributes}}
+
+        std::cout << "    fields:" << std::endl;
+        {{#fields}}
+            std::cout << "        name: " << "{{name}}"  << " type: " << "{{{type}}}" << std::endl;
+        {{/fields}}
+
+        std::cout << std::endl;
+    }
+    {{/classes}}
+}
+
+// Enums
+namespace Meta
+{
+    {{#enums}}
+    template<>
+    void RegisterEnumRtti<typename {{{canonical_name}}}>()
+    {
+        std::cout << "Enum: " << "{{{canonical_name}}}" << std::endl;
+
+        std::cout << "    attributes:" << std::endl;
+        {{#attributes}}
+            std::cout << "        val: " << "{{value}}" << std::endl;
+        {{/attributes}}
+
+        std::cout << "    values:" << std::endl;
+        {{#values}}
+            std::cout << "        name: " << "{{name}}" << " val: " << "{{value}}" << std::endl;
+        {{/values}}
+        std::cout << std::endl;
+    }
+    {{/enums}}
+}

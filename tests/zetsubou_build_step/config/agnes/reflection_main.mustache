@@ -1,13 +1,19 @@
 {{#includes}}
-#include "{{path}}.h"
+#include "{{path}}"
 {{/includes}}
 
 namespace Meta
 {
     void RegisterReflection()
     {
+        // Classes
         {{#classes}}
-        Meta::GetType<typename {{{canonical_name}}}>();
+        RegisterClassRtti<typename {{{canonical_name}}}>();
         {{/classes}}
+
+        // Enums
+        {{#enums}}
+        RegisterEnumRtti<typename {{{canonical_name}}}>();
+        {{/enums}}
     }
 }

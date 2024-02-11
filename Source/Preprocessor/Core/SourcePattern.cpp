@@ -24,6 +24,11 @@ void SourcePattern::LoadTemplates()
         LoadTemplate(templ);
     }
 
+    for (auto& templ : UnitTemplates)
+    {
+        LoadTemplate(templ);
+    }
+
     LoadTemplate(MainTemplate);
 }
 

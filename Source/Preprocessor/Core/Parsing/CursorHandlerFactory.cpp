@@ -299,7 +299,7 @@ namespace Handlers
                     continue;
                 }
                 // Comma separated attributes
-                else if (parthensis_depth == 0 && isCurrent(idx, ','))
+                else if (attribute_brackets_depth != 0 && parthensis_depth == 0 && isCurrent(idx, ','))
                 {
                     addAtrribute(current_attribute_begin, idx);
 

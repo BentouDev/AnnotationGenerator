@@ -27,6 +27,7 @@ class Generator
     TMustacheData BuildMethodData      (std::shared_ptr<ClassInfo>& type);
 
     fs::path      BuildHeaderOutputPath(const std::string& include_name);
+    fs::path      BuildUnitOutputPath(const std::string& include);
     fs::path      BuildClassOutputPath (std::shared_ptr<ClassInfo> type);
     fs::path      BuildEnumOutputPath  (std::shared_ptr<EnumInfo> type);
 

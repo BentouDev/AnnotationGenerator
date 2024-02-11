@@ -9,10 +9,19 @@ dependencies:
     - generate_rtti
 
 source:
-  paths: '{root}/build/codegen'
+  paths: '{root}/build/codegen/{config_variant}'
   patterns:
-    - '*.h'
-    - '*.hxx'
-    - '*.hpp'
     - '*.cxx'
     - '*.cpp'
+
+includes:
+  public:
+    - '{root}/build/codegen/{config_variant}'
+
+compiler_flags:
+  public:
+    # attribute is not recognized
+    - /wd5222
+    - /wd5030
+    # unscoped attribute is reserved
+    - /wd5222

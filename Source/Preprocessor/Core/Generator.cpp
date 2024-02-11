@@ -196,6 +196,17 @@ fs::path Generator::BuildHeaderOutputPath(const std::string& include)
     return path;
 }
 
+fs::path Generator::BuildUnitOutputPath(const std::string& include)
+{
+    TMustacheView out_name_view(Context.Generator.CurrentPattern->UnitOutName);
+
+    fs::path path = Context.Generator.CurrentPattern->OutputDir;
+    std::string filename = out_name_view.render({ "header_name", include });
+    path.append(filename);
+
+    return path;
+}
+
 fs::path Generator::BuildClassOutputPath(std::shared_ptr<ClassInfo> type)
 {
     TMustacheView out_name_view(Context.Generator.CurrentPattern->ClassOutName);
@@ -260,8 +271,7 @@ void Generator::GenerateFiles()
         include_map[type->FromInclude].enums.push_back(type);
     }
 
-    for (auto& templ : Context.Generator.CurrentPattern->HeaderTemplates)
-    {
+    auto emit_per_file = [&]<typename TFunc>(const std::unique_ptr<MustacheTemplate>& templ, TFunc&& func) {
         if (templ->View)
         {
             for (auto& [include, data] : include_map)
@@ -286,18 +296,29 @@ void Generator::GenerateFiles()
                     }
                 }
 
+                mapped_data.set("header_path", include);
                 mapped_data.set("classes", classes);
                 mapped_data.set("enums", enums);
 
                 fs::path inc_path = include;
 
-                fs::path     path = BuildHeaderOutputPath(inc_path.filename().string());
+                fs::path path = func(inc_path.stem().string());
                 std::fstream file(path, std::ios_base::out);
 
                 file << templ->View->render(mapped_data);
                 file.close();
             }
         }
+    };
+
+    for (auto& templ : Context.Generator.CurrentPattern->HeaderTemplates)
+    {
+        emit_per_file(templ, [&](const std::string& include) { return BuildHeaderOutputPath(include); });
+    }
+
+    for (auto& templ : Context.Generator.CurrentPattern->UnitTemplates)
+    {
+        emit_per_file(templ, [&](const std::string& include) { return BuildUnitOutputPath(include); });
     }
 
     // Class templates

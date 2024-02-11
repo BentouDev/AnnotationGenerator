@@ -41,6 +41,7 @@ public:
 
     std::unique_ptr<MustacheTemplate>              MainTemplate;
     std::vector<std::unique_ptr<MustacheTemplate>> HeaderTemplates;
+    std::vector<std::unique_ptr<MustacheTemplate>> UnitTemplates;
     std::vector<std::unique_ptr<MustacheTemplate>> ClassTemplates;
     std::vector<std::unique_ptr<MustacheTemplate>> EnumTemplates;
     std::vector<std::unique_ptr<SourceFile>>       Sources;
@@ -51,6 +52,7 @@ public:
     fs::path    OutputDir;
     std::string MainOutName;
     std::string HeaderOutName;
+    std::string UnitOutName;
     std::string ClassOutName;
     std::string EnumOutName;
     bool        IncludeSourceHeader;

@@ -5,13 +5,10 @@
       "main_file_name" : "reflection_main.cpp",
 
       "header_template" : ["reflection_header.mustache"],
-      "header_file_name" : "{{header_name}}.gen.cpp",
+      "header_file_name" : "{{header_name}}.gen.h",
 
-      "class_template" : ["reflection_class.mustache"],
-      "class_file_name" : "{{class_name}}.gen.cpp",
-
-      "enum_template" : ["reflection_enum.mustache"],
-      "enum_file_name" : "{{enum_name}}.gen.cpp",
+      "unit_template" : ["reflection_unit.mustache"],
+      "unit_file_name" : "{{header_name}}.gen.cpp",
 
       "output_dir" : "Generated",
 

@@ -1,4 +1,14 @@
+#pragma once
 #include <string>
+
+namespace Meta
+{
+    template <typename T>
+    void RegisterClassRtti();
+
+    template <typename T>
+    void RegisterEnumRtti();
+}
 
 class [[ rtti::class, first, second(x[y[0]]()), foo([](){}), third(Dupa) ]] Dupa
 {
@@ -22,7 +32,7 @@ namespace EOldEnum
     };
 };
 
-$YClass()
+// $YClass()
 class MyData
 {
     std::string name;
