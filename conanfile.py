@@ -19,8 +19,8 @@ class AgnesConan(ConanFile):
         "kainjow_mustache/4.1@bentou/stable",
     ]
 
-    tool_requires = ["zetsubougen/[>=0.7.0]@bentou/stable", "fastbuild_installer/1.09@bentou/stable"]
-    python_requires = ["zetsubougen/[>=0.7.0]@bentou/stable"]
+    tool_requires = ["zetsubougen/[>=0.8.0]@bentou/stable", "fastbuild_installer/1.09@bentou/stable"]
+    python_requires = ["zetsubougen/[>=0.8.0]@bentou/stable"]
     python_requires_extend = "zetsubougen.ZetsubouBase"
 
     exports_sources = [
