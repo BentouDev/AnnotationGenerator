@@ -59,7 +59,10 @@ jobs:
     needs: [ bump_version, test_acceptance ]
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ needs.bump_version.outputs.new_sha }}
+        fetch-depth: 0
 
     - name: Get Conan
       id: conan
