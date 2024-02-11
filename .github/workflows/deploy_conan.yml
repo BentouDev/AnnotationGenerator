@@ -55,15 +55,22 @@ jobs:
         commit_user_email: ${{ github.event.inputs.commit_user_email }}
 
   deploy_conan:
+    if: ${{ always() }}
     name: 'Deploy'
     needs: [ bump_version, test_acceptance ]
     runs-on: windows-latest
     steps:
+
+    # Bumped ver checkout
     - uses: actions/checkout@v4
       if: ${{ github.event.inputs.version_upgrade != 'none' }}
       with:
         ref: ${{ needs.bump_version.outputs.new_sha }}
         fetch-depth: 0
+
+    # Normal checkout
+    - uses: actions/checkout@v4
+      if: ${{ github.event.inputs.version_upgrade == 'none' }}
 
     - name: Get Conan
       id: conan
