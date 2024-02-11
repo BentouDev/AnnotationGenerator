@@ -60,6 +60,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
+      if: ${{ github.event.inputs.version_upgrade != 'none' }}
       with:
         ref: ${{ needs.bump_version.outputs.new_sha }}
         fetch-depth: 0
