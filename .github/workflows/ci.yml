@@ -41,3 +41,8 @@ jobs:
       - name: Build
         id: build
         uses: bentoudev/zet-cpp-build@main
+
+      - name: Regen test
+        run: ./test_regen.bat
+      - name: Build test
+        run: ./test_build.bat
