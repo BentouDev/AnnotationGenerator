@@ -243,6 +243,20 @@ TMustacheData Generator::BuildIncludesData()
     return data;
 }
 
+static TMustacheData BuildGenIncludesData(const std::vector<std::string>& includes)
+{
+    TMustacheData data{ TMustacheData::type::list };
+
+    for (const std::string& str : includes)
+    {
+        TMustacheData inc_data;
+        inc_data.set("path", str);
+        data << inc_data;
+    }
+
+    return data;
+}
+
 void Generator::GenerateFiles()
 {
     TMustacheData all_data;
@@ -271,7 +285,12 @@ void Generator::GenerateFiles()
         include_map[type->FromInclude].enums.push_back(type);
     }
 
-    auto emit_per_file = [&]<typename TFunc>(const std::unique_ptr<MustacheTemplate>& templ, TFunc&& func) {
+    auto emit_per_file = [&]<typename TFunc>
+    (
+        std::vector<std::string>* out_gen_paths,
+        const std::unique_ptr<MustacheTemplate>& templ, TFunc&& func
+    )
+    {
         if (templ->View)
         {
             for (auto& [include, data] : include_map)
@@ -303,6 +322,12 @@ void Generator::GenerateFiles()
                 fs::path inc_path = include;
 
                 fs::path path = func(inc_path.stem().string());
+
+                if (out_gen_paths)
+                {
+                    out_gen_paths->push_back(path.string());
+                }
+
                 std::fstream file(path, std::ios_base::out);
 
                 file << templ->View->render(mapped_data);
@@ -311,15 +336,19 @@ void Generator::GenerateFiles()
         }
     };
 
+    std::vector<std::string> gen_includes;
+
     for (auto& templ : Context.Generator.CurrentPattern->HeaderTemplates)
     {
-        emit_per_file(templ, [&](const std::string& include) { return BuildHeaderOutputPath(include); });
+        emit_per_file(&gen_includes, templ, [&](const std::string& include) { return BuildHeaderOutputPath(include); });
     }
 
     for (auto& templ : Context.Generator.CurrentPattern->UnitTemplates)
     {
-        emit_per_file(templ, [&](const std::string& include) { return BuildUnitOutputPath(include); });
+        emit_per_file(nullptr, templ, [&](const std::string& include) { return BuildUnitOutputPath(include); });
     }
+
+    all_data.set("gen_includes", BuildGenIncludesData(gen_includes));
 
     // Class templates
     for (auto& templ : Context.Generator.CurrentPattern->ClassTemplates)
