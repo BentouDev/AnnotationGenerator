@@ -3,6 +3,7 @@ from conan.errors import ConanInvalidConfiguration
 from conan.tools.files import copy
 import os
 
+required_conan_version = ">=2.0"
 
 class AgnesConan(ConanFile):
     name = "agnes"
