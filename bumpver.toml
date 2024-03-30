@@ -1,6 +1,6 @@
 # bumpver.toml
 [bumpver]
-current_version = "0.5.2"
+current_version = "0.5.3"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "[bot] Bump version {old_version} -> {new_version}"
 commit = false
