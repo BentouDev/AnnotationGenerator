@@ -127,6 +127,7 @@ TMustacheData Generator::BuildClazzData(std::shared_ptr<ClassInfo>& type)
 {
     TMustacheData data;
 
+    data.set("base_classes", BuildBaseClassesData(type));
     data.set("fields",     BuildFieldData (type));
     data.set("methods",    BuildMethodData(type));
     data.set("attributes", BuildAttributeData(type));
@@ -168,6 +169,22 @@ TMustacheData Generator::BuildMethodData(std::shared_ptr<ClassInfo>& type)
     }
 
     return methods;
+}
+
+TMustacheData Generator::BuildBaseClassesData(std::shared_ptr<ClassInfo>& type)
+{
+    TMustacheData base_classes{ TMustacheData::type::list };
+
+    for (const auto& base_class : type->BaseClasses)
+    {
+        TMustacheData base_class_data;
+        base_class_data.set("base_class_name", base_class->Name);
+        base_class_data.set("base_canonical_name", base_class->CanonName);
+
+        base_classes << base_class_data;
+    }
+
+    return base_classes;
 }
 
 TMustacheData Generator::BuildAttributeData(std::shared_ptr<TypeInfo> type)

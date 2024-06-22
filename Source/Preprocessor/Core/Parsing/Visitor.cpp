@@ -111,6 +111,8 @@ CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */) 
 {
     fs::path source = GetCursorSourcePath(cursor);
 
+    // if (clang_Location_isFromMainFile(clang_getCursorLocation(cursor)) == 0)
+
     std::error_code err;
     if (!fs::equivalent(source, Context.Parser.CurrentSource->Path, err)
     &&  source.string() != Context.Parser.CurrentUnitName)
@@ -120,12 +122,13 @@ CXChildVisitResult Visitor::RoutineStep(CXCursor cursor, CXCursor /* parent */) 
 
     CXCursorKind cursorKind = clang_getCursorKind(cursor);
     std::string  cursorName = GetCursorSpelling(cursor);
-    // auto         current_level = (unsigned int) Scope.size();
 
-    // std::cout << std::string(current_level, '\t')
-    //           << " " << GetCursorKindName(cursorKind)
-    //           << " (" << cursorName
-    //           << ")" << std::endl;
+     auto         current_level = (unsigned int) Scope.size();
+
+     std::cout << std::string(current_level, '\t')
+               << " " << GetCursorKindName(cursorKind)
+               << " (" << cursorName
+               << ")" << std::endl;
 
     auto [is_scope, info] = ResolveCursor(cursor, cursorKind);
     if (is_scope)

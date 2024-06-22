@@ -25,12 +25,19 @@ Entities available in mustache files.
 ## Class
 | type | name |
 |-|-|
+| [BaseClass\[\]](#BaseClass) | base_classes |
 | [Field\[\]](#Field) | fields |
 | [Method\[\]](#Method) | methods |
 | [Attribute\[\]](#Attribute) | attributes |
 | string | class_name |
 | string | canonical_name |
 | string | include |
+
+## BaseClass
+| type | name |
+|-|-|
+| string | class_name |
+| string | canonical_name |
 
 ## Field
 | type | name |

@@ -46,6 +46,7 @@ public:
     void PopFactory (std::unique_ptr<CursorHandlerFactory>& factory);
 
     std::shared_ptr<TypeInfo> GetTypeInfo(const std::string& type_name);
+    std::shared_ptr<ClassInfo> GetClassInfo(const std::string& type_name);
 };
 
 #endif //ANNOTATIONGENERATOR_PARSECONTEXT_H

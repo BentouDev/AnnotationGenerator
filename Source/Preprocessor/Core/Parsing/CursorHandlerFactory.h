@@ -39,6 +39,7 @@ namespace Handlers
     auto HandleField     (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
     auto HandleMethod    (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
     auto HandleAnnotation(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
+    auto HandleBaseClass (ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult;
 }
 
 #endif //ANNOTATIONGENERATOR_CURSORHANDLERFACTORY_H

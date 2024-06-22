@@ -24,7 +24,7 @@
 namespace Utils
 {
     template <typename T>
-    bool MatchesAny(const std::string& text, const T& collection)
+    bool MatchesAny(std::string_view text, const T& collection)
     {
         return std::any_of(std::begin(collection), std::end(collection), [&](const auto& first){
             return text == first;
@@ -35,6 +35,26 @@ namespace Utils
     {
         str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
         return str;
+    }
+
+    inline void SplitBySpace(std::string_view input, std::vector<std::string_view>& out)
+    {
+        bool inside_quotes = false;
+        unsigned section_start = 0;
+
+        for (unsigned i = 0; i < unsigned(input.size()); i++)
+        {
+            char c = input[i];
+            if (c == ' ' && !inside_quotes)
+            {
+                out.push_back(std::string_view(input.data() + section_start, i - section_start));
+                section_start = i + 1;
+            }
+            else if (c == '"')
+            {
+                inside_quotes = !inside_quotes;
+            }
+        }
     }
 
     template<typename T, typename Container = std::deque<T>>

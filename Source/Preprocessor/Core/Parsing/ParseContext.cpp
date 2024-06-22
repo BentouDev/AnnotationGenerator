@@ -17,6 +17,16 @@ void ParseContext::PopFactory (std::unique_ptr<CursorHandlerFactory>& factory)
         ForcedFactory = nullptr;
 }
 
+std::shared_ptr<ClassInfo> ParseContext::GetClassInfo(const std::string& type_name)
+{
+    if (auto itr = Classes.find(type_name); itr != Classes.end())
+    {
+        return itr->second;
+    }
+
+    return std::make_shared<ClassInfo>(type_name);
+}
+
 std::shared_ptr<TypeInfo> ParseContext::GetTypeInfo(const std::string& type_name)
 {
     if (auto itr = Classes.find(type_name); itr != Classes.end())

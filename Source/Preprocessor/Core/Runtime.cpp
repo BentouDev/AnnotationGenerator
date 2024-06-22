@@ -43,6 +43,7 @@ Runtime::Runtime(Data::Context& context)
         { CXCursor_FunctionDecl,     Handlers::HandleMethod },
         { CXCursor_CXXMethod,        Handlers::HandleMethod },
         { CXCursor_AnnotateAttr,     Handlers::HandleAnnotation },
+        { CXCursor_CXXBaseSpecifier, Handlers::HandleBaseClass },
     });
 
     Context.Parser.AnnotFactory->RegisterHandlers({

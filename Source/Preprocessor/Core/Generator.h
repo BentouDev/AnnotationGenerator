@@ -25,6 +25,7 @@ class Generator
     TMustacheData BuildClazzData       (std::shared_ptr<ClassInfo>& type);
     TMustacheData BuildFieldData       (std::shared_ptr<ClassInfo>& type);
     TMustacheData BuildMethodData      (std::shared_ptr<ClassInfo>& type);
+    TMustacheData BuildBaseClassesData (std::shared_ptr<ClassInfo>& type);
 
     fs::path      BuildHeaderOutputPath(const std::string& include_name);
     fs::path      BuildUnitOutputPath(const std::string& include);

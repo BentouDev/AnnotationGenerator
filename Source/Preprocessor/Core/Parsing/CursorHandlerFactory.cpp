@@ -100,6 +100,11 @@ namespace Handlers
         auto        canon_ref = clang_getTypeSpelling(canon);
         std::string canon_name = clang_getCString(canon_ref);
 
+        DISPOSE
+        {
+            clang_disposeString(canon_ref);
+        };
+
         if (canon_name.empty())
         {
             std::stringstream ss;
@@ -157,6 +162,11 @@ namespace Handlers
         auto        canon      = clang_getCanonicalType(type);
         auto        canon_ref  = clang_getTypeSpelling(canon);
         std::string canon_name = clang_getCString(canon_ref);
+
+        DISPOSE
+        {
+            clang_disposeString(canon_ref);
+        };
 
         if (canon_name.empty())
         {
@@ -369,6 +379,11 @@ namespace Handlers
         auto        canon_ref  = clang_getTypeSpelling(type);
         std::string canon_name = clang_getCString(canon_ref);
 
+        DISPOSE
+        {
+            clang_disposeString(canon_ref);
+        };
+        
         if (canon_name.empty())
         {
             std::stringstream ss;
@@ -467,6 +482,32 @@ namespace Handlers
         visitor.HasPreAnnotation = true;
 
         context.PopFactory(context.AnnotFactory);
+
+        return { false, nullptr };
+    }
+
+    auto HandleBaseClass(ParseContext& context, CXCursor cursor, Visitor& visitor) -> TCursorResolveResult
+    {
+        std::string base_name = visitor.GetCursorSpelling(cursor);
+
+        auto find_clazz = [&](const std::string& name) {
+            std::shared_ptr<ClassInfo> result = context.GetClassInfo(name);
+
+            if (result->CanonName.empty())
+            {
+                auto        type = clang_getCursorType(cursor);
+                auto        canon_ref = clang_getTypeSpelling(type);
+
+                result->CanonName = clang_getCString(canon_ref);
+
+                clang_disposeString(canon_ref);
+            }
+
+            return result;
+        };
+
+        std::shared_ptr<ClassInfo> clazz = visitor.GetScope().top()->asClazz();
+        clazz->BaseClasses.push_back(find_clazz(base_name));
 
         return { false, nullptr };
     }

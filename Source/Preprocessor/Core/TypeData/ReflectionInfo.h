@@ -176,9 +176,7 @@ public:
         : TypeInfo(name)
     { }
 
-    ClassInfo*  Super;
-
-    TReflectionVector<ClassInfo>   Interfaces;
+    TReflectionVector<ClassInfo>   BaseClasses;
     TReflectionVector<FieldInfo>   Fields;
     TReflectionVector<MethodInfo>  Methods;
 };

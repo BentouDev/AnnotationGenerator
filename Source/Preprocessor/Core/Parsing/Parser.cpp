@@ -20,9 +20,10 @@ std::vector<cstring> Parser::BuildArguments()
 {
     std::vector<cstring> result =
     {
-        "-std=c++17",
+        "-std=c++23",
         "-Wmicrosoft",
-        "-Wunknown-pragmas",
+        "-Wno-unknown-pragmas",
+        "-Wno-unknown-attributes",
         "-D_DEBUG=1",
         "-DANNOTATION_GENERATOR"
     };
@@ -81,6 +82,35 @@ CXUnsavedFile Parser::BuildWorkerFile(const std::string& content)
     return worker_file;
 }
 
+static std::string_view ClangErrorToString(CXErrorCode err)
+{
+    switch (err)
+    {
+        case (CXErrorCode::CXError_Success):
+        {
+            return "Success";
+        }
+        case (CXErrorCode::CXError_ASTReadError):
+        {
+            return "ASTReadError";
+        }
+        case (CXErrorCode::CXError_InvalidArguments):
+        {
+            return "InvalidArguments";
+        }
+        case (CXErrorCode::CXError_Failure):
+        {
+            return "Failure";
+        }
+        case (CXErrorCode::CXError_Crashed):
+        {
+            return "Crashed";
+        }
+    }
+
+    return "Unknown";
+}
+
 void Parser::ProcessFile()
 {
     if (!fs::exists(Context.Parser.CurrentSource->Path))
@@ -94,7 +124,7 @@ void Parser::ProcessFile()
     Context.Parser.CurrentUnitName = "__temp.hpp";
 
     int excludeDeclarationsFromPCH = (int)false;
-    int displayDiagnostics         = (int)false;
+    int displayDiagnostics         = (int)true;
 
     fs::path             directory   = Context.Parser.CurrentSource->Path.parent_path();
     std::string          path_arg    = "-I" + directory.string();
@@ -102,14 +132,16 @@ void Parser::ProcessFile()
     std::string          fileContent = BuildWorkerFileContent(Context.Parser.CurrentSource->Path);
     CXUnsavedFile        worker_file = BuildWorkerFile(fileContent);
     CXIndex              main_index  = clang_createIndex(excludeDeclarationsFromPCH, displayDiagnostics);
-    CXTranslationUnit    worker_unit = clang_parseTranslationUnit
+    CXTranslationUnit    worker_unit = nullptr;
+    CXErrorCode err = clang_parseTranslationUnit2
     (
         main_index,
         worker_file.Filename,
         arguments.data(),
         (int) arguments.size(),
         &worker_file,
-        1, CXTranslationUnit_None
+        1, CXTranslationUnit_IgnoreNonErrorsFromIncludedFiles | CXTranslationUnit_SkipFunctionBodies, //CXTranslationUnit_Incomplete | CXTranslationUnit_SkipFunctionBodies | CXTranslationUnit_KeepGoing,
+        &worker_unit
     );
 
     CXFile file_handle = clang_getFile(worker_unit, worker_file.Filename);
@@ -122,8 +154,11 @@ void Parser::ProcessFile()
 
     if (!worker_unit)
     {
+        std::string_view reason = ClangErrorToString(err);
+
         std::cerr << "Unable to create translation unit from file "
-                  << Context.Parser.CurrentSource->Path << "."
+                  << Context.Parser.CurrentSource->Path << ". Reason: "
+                  << reason
                   << std::endl;
         return;
     }

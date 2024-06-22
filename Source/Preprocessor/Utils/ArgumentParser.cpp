@@ -14,12 +14,81 @@
 #include <fstream>
 #include <chrono>
 #include <format>
+#include <functional>
+
+class IParamReader
+{
+public:
+    virtual ~IParamReader() = default;
+
+    virtual std::string_view next() = 0;
+    virtual bool has_next() = 0;
+};
+
+class ArgParamReader : public IParamReader
+{
+public:
+    ArgParamReader(int argc, const char** argv)
+        : args(argv, size_t(argc))
+    { }
+
+    std::string_view next() override
+    {
+        return args[idx++];
+    }
+
+    bool has_next() override
+    {
+        return idx < args.size();
+    }
+
+    std::span<const char*> args;
+    unsigned idx = 0;
+};
+
+class FileParamReader : public IParamReader
+{
+public:
+    FileParamReader(std::ifstream& stream)
+        : file(stream)
+    { }
+
+    std::string_view next() override
+    {
+        if (buffer_idx >= buffer.size())
+        {
+            // fill buffer
+            if (std::getline(file, line))
+            {
+                Utils::SplitBySpace(line, buffer);
+                buffer_idx = 0;
+            }
+        }
+
+        if (buffer_idx >= buffer.size())
+        {
+            throw new std::exception("Code error! Read past file buffer!");
+        }
+
+        return buffer[buffer_idx];
+    }
+
+    bool has_next() override
+    {
+        return buffer_idx < buffer.size() || !file.eof();
+    }
+
+    std::ifstream& file;
+    std::string line;
+    std::vector<std::string_view> buffer;
+    unsigned buffer_idx = 0;
+};
 
 ArgumentParser::ArgumentParser(Data::Context& context)
 : Context(context)
 { }
 
-bool ArgumentParser::Parse(int argc, char** argv)
+bool ArgumentParser::Parse(int argc, const char** argv)
 {
     auto help_args = {
         "-h",
@@ -36,18 +105,34 @@ bool ArgumentParser::Parse(int argc, char** argv)
         "--directory"
     };
 
-    auto input_args = {
-        "-i",
-        "--input"
+    auto list_headers = {
+        "-f",
+        "--files"
     };
+
+    auto list_include_dirs = {
+        "-i",
+        "--include_dirs"
+    };
+
+    enum class EArgumentListMode
+    {
+        Headers,
+        IncludeDirectories
+    };
+
+    EArgumentListMode mode = EArgumentListMode::Headers;
 
     if (argc == 2 && Utils::MatchesAny(argv[1], help_args))
     {
         std::cout << "Clang based C++ preprocessor adding annotation based code generation" << std::endl;
         std::cout << "Usage: AnnotationGenerator [TEMPLATE] [FILES]..." << std::endl;
-        std::cout << "       AnnotationGenerator [TEMPLATE] -i [INPUT_LIST_FILE]" << std::endl;
-        std::cout << "\t [h]elp      - prints this info" << std::endl;
-        std::cout << "\t [d]irectory - overrides output directory" << std::endl;
+        std::cout << "       AnnotationGenerator @[RESPONSE_FILE]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "\t [f]iles         - (default) following arguments treated as input headers" << std::endl;
+        std::cout << "\t [i]include_dirs - following arguments treated as include directories" << std::endl;
+        std::cout << "\t [h]elp          - prints this info" << std::endl;
+        std::cout << "\t [d]irectory     - overrides output directory" << std::endl;
         return false;
     }
 
@@ -63,18 +148,23 @@ bool ArgumentParser::Parse(int argc, char** argv)
         return false;
     }
 
-    std::vector<std::string> parameters;
-    fs::path                 input_list_file;
-    for (int i = 1; i < argc; i++)
-    {
-        std::string param = argv[i];
-        Utils::Trim(param);
+    std::optional<std::string> template_file;
+    std::vector<std::string> headers;
+    std::vector<std::string> include_dirs;
+
+    auto parse_argument = [&](IParamReader& reader) -> bool {
+        std::string_view param = reader.next();
+        if (!template_file.has_value())
+        {
+            template_file = param;
+            return true;
+        }
+
         if (Utils::MatchesAny(param, dir_args))
         {
-            if (i + 1 < argc)
+            if (reader.has_next())
             {
-                i++;
-                auto output = std::string(argv[i]);
+                std::string_view output = reader.next();
                 Context.Generator.OutputDirectory += output;
                 std::cout << "Current output directory: " << output << std::endl;
             }
@@ -84,47 +174,127 @@ bool ArgumentParser::Parse(int argc, char** argv)
                 return false;
             }
         }
-        else if (Utils::MatchesAny(param, input_args))
+        else if (Utils::MatchesAny(param, list_headers))
         {
-            if (i + 1 < argc)
+            if (reader.has_next())
             {
-                i++;
-                auto input = std::string(argv[i]);
-                input_list_file += input;
-                std::cout << "Using input file: " << input << std::endl;
+                mode = EArgumentListMode::Headers;
             }
             else
             {
-                std::cerr << "--input parameter was used but no file was specified!" << std::endl;
+                std::cerr << "--files parameter was used but no files were provided!" << std::endl;
+                return false;
+            }
+        }
+        else if (Utils::MatchesAny(param, list_include_dirs))
+        {
+            if (reader.has_next())
+            {
+                mode = EArgumentListMode::IncludeDirectories;
+            }
+            else
+            {
+                std::cerr << "--include_dirs parameter was used but no dirs were provided!" << std::endl;
                 return false;
             }
         }
         else
         {
-            parameters.emplace_back(argv[i]);
+            switch (mode)
+            {
+                case EArgumentListMode::Headers:
+                {
+                    headers.emplace_back(param);
+                    break;
+                }
+                case EArgumentListMode::IncludeDirectories:
+                {
+                    include_dirs.emplace_back(param);
+                    break;
+                }
+            }
         }
+
+        return true;
+    };
+
+    
+    std::string_view assumed_response_file = std::string_view{ argv[2] };
+    if (assumed_response_file.starts_with("@"))
+    {
+        // Response file
+        fs::path input_list_file = assumed_response_file.substr(1);
+        std::ifstream if_handle(input_list_file, std::ios_base::in);
+        if (if_handle)
+        {
+            FileParamReader file_reader{ if_handle };
+            while (file_reader.has_next())
+            {
+                if (!parse_argument(file_reader))
+                {
+                    return false;
+                }
+            }
+
+            //for (std::string line; std::getline(if_handle, line);)
+            //{
+            //    std::vector<std::string_view> fragments;
+            //    Utils::SplitBySpace(line, fragments);
+
+            //    int fragment_idx = 0;
+            //    auto get_arg = [&]() {
+            //        return fragments[fragment_idx++];
+            //    };
+
+            //    auto has_next = []() {
+            //        return fragment_idx
+            //    };
+
+            //    if (!parse_argument(line, !if_handle.eof()))
+            //    {
+            //        return false;
+            //    }
+            //}
+        }
+        else
+        {
+            std::cerr << "Unable to open response file '" << input_list_file.string() << "'!" << std::endl;
+            return false;
+        }
+
+        std::cerr << "Response files are not yet implemented!" << std::endl;
+        return false;
+    }
+    else
+    {
+        // Commandline args
+        ArgParamReader arg_reader{ argc - 1, argv + 1 };
+
+        while (arg_reader.has_next())
+        {
+            if (!parse_argument(arg_reader))
+            {
+                return false;
+            }
+        }
+
+        //for (int i = 1; i < argc; i++)
+        //{
+        //    std::string param = argv[i];
+        //    Utils::Trim(param);
+
+        //    if (!parse_argument([&]() -> std::string_view { return param; }, [&]() -> bool { return i + 1 < argc; }))
+        //    {
+        //        return false;
+        //    }
+        //}
     }
 
     std::cout << "Current working directory: " << fs::current_path() << std::endl;
 
-    fs::path template_path;
-    template_path += parameters[0];
+    fs::path template_path = template_file.value();
 
-    if (!input_list_file.empty())
-    {
-        std::ifstream if_handle(input_list_file, std::ios_base::in);
-        if (if_handle)
-        {
-            for (std::string line; std::getline(if_handle, line);)
-            {
-                parameters.emplace_back(std::move(line));
-            }
-        }
-    }
-
-    parameters.erase(parameters.begin());
-
-    BuildContext(template_path, parameters);
+    BuildContext(template_path, headers, include_dirs);
 
     return true;
 }
@@ -137,7 +307,7 @@ std::unique_ptr<MustacheTemplate> ArgumentParser::CreateTemplate(const fs::path&
     return std::make_unique<MustacheTemplate>(path);
 }
 
-void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path& directory, const std::vector<std::string>& files)
+void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path& directory, const std::vector<std::string>& files, const std::vector<std::string>& include_directories)
 {
     for (auto& element : parser["patterns"])
     {
@@ -158,7 +328,7 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
         // instead of copying it's lines into it
         if (auto itr = element.find("include_source_header"); itr != element.end())
         {
-            pattern->IncludeSourceHeader = true;
+            pattern->IncludeSourceHeader = itr.value().get<bool>();
         }
 
         // includes to be injected into worker file
@@ -178,6 +348,11 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
             {
                 pattern->IncludeDirectories.push_back(inject.get<std::string>());
             }
+        }
+
+        for (const std::string& inc_dir : include_directories)
+        {
+            pattern->IncludeDirectories.push_back(inc_dir);
         }
 
         if (auto itr = element.find("require_annotation"); itr != element.end())
@@ -269,7 +444,7 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
     }
 }
 
-void ArgumentParser::BuildContext(const fs::path& template_file, const std::vector<std::string>& files)
+void ArgumentParser::BuildContext(const fs::path& template_file, const std::vector<std::string>& files, const std::vector<std::string>& include_dirs)
 {
     using namespace nlohmann;
 
@@ -284,7 +459,7 @@ void ArgumentParser::BuildContext(const fs::path& template_file, const std::vect
         std::ifstream file(template_file);
         json          parser = json::parse(file);
 
-        ParseTemplates(parser, template_file.parent_path(), files);
+        ParseTemplates(parser, template_file.parent_path(), files, include_dirs);
     }
     catch (std::exception& e)
     {
