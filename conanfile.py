@@ -20,7 +20,7 @@ class AgnesConan(ConanFile):
         "kainjow_mustache/4.1@bentou/stable",
     ]
 
-    tool_requires = ["zetsubougen/[>=0.8.0]@bentou/stable", "fastbuild_installer/1.09@bentou/stable"]
+    tool_requires = ["fastbuild_installer/1.09@bentou/stable"] # "zetsubougen/[>=0.8.0]@bentou/stable", 
     python_requires = ["zetsubougen/[>=0.8.0]@bentou/stable"]
     python_requires_extend = "zetsubougen.ZetsubouBase"
 
@@ -59,7 +59,7 @@ class AgnesConan(ConanFile):
         self.folders.source = "."
         self.folders.build = "build"
         self.folders.generators = "build/conan"
-        self.cpp.build.bindirs = ["bin"]
+        self.cpp.build.bindirs = ["bin", "build/bin/Windows__Retail__MSVC_x64_vs2022_v14_39_33519_v143"]
 
     def generate(self):
         self.zetsubou.init(self, project_file=self.project_file)
@@ -78,10 +78,11 @@ class AgnesConan(ConanFile):
             copy(self, "*/agnes", dst=bin, src=self.build_folder, keep_path=False, ignore_case=True)
 
     def package_info(self):
-        bin = os.path.join(self.package_folder, 'bin')
-        self.buildenv_info.append_path('PATH', bin)
+        for path in self.cpp.build.bindirs:
+            bin = os.path.join(self.package_folder, path)
+            self.buildenv_info.append_path('PATH', bin)
 
-        if self.settings.os == "Windows":
-            self.buildenv_info.AGNES_EXE = os.path.join(bin, "Agnes.exe")
-        if self.settings.os == "Linux":
-            self.buildenv_info.AGNES_EXE = os.path.join(bin, "Agnes")
+            if self.settings.os == "Windows":
+                self.buildenv_info.append('AGNES_EXE', os.path.join(bin, "Agnes.exe"))
+            if self.settings.os == "Linux":
+                self.buildenv_info.append('AGNES_EXE', os.path.join(bin, "Agnes"))
