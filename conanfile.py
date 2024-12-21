@@ -59,7 +59,7 @@ class AgnesConan(ConanFile):
         self.folders.source = "."
         self.folders.build = "build"
         self.folders.generators = "build/conan"
-        self.cpp.build.bindirs = ["bin", "build/bin/Windows__Retail__MSVC_x64_vs2022_v14_39_33519_v143"]
+        self.cpp.build.bindirs = ["bin", "build/out"]
 
     def generate(self):
         self.zetsubou.init(self, project_file=self.project_file)
