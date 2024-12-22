@@ -460,19 +460,22 @@ bool ArgumentParser::BuildContext(const fs::path& template_file, const std::vect
     try
     {
         std::ifstream file(template_file);
-        json          parser = json::parse(file);
+        json          parser = json::parse(file,
+            nullptr, // callback
+            true, // allow exceptions
+            true); // ignore comments
 
         ParseTemplates(parser, template_file.parent_path(), files, include_dirs);
     }
     catch (std::exception& e)
     {
-        std::cerr << "Unable to parse template file, cause :" << std::endl
+        std::cerr << "Unable to parse template file " << fs::absolute(template_file) << ", cause :" << std::endl
                   << "\t" << e.what() << std::endl;
         return false;
     }
     catch (...)
     {
-        std::cerr << "Unable to parse template file due to uncaught exception." << std::endl;
+        std::cerr << "Unable to parse template file " << fs::absolute(template_file) << " due to uncaught exception." << std::endl;
         return false;
     }
 
