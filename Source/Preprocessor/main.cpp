@@ -10,8 +10,9 @@ int main(int argc, char** argv)
     Data::Context  context;
     ArgumentParser arg_parser(context);
 
+
     if (!arg_parser.Parse(argc, const_cast<const char**>(argv)))
-        return 0;
+        return -1;
 
     Runtime runtime(context);
     return runtime.Run();

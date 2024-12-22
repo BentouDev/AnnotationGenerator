@@ -17,7 +17,7 @@ class ArgumentParser
 
     auto CreateTemplate(const fs::path& directory, const std::string& name) const -> std::unique_ptr<MustacheTemplate>;
     void ParseTemplates(const nlohmann::json& parser, const fs::path& directory, const std::vector<std::string>& files, const std::vector<std::string>& include_directories);
-    void BuildContext(const fs::path& template_file, const std::vector<std::string>& files, const std::vector<std::string>& include_dirs);
+    bool BuildContext(const fs::path& template_file, const std::vector<std::string>& files, const std::vector<std::string>& include_dirs);
 
 public:
     bool Parse(int argc, const char** argv);

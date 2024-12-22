@@ -294,7 +294,10 @@ bool ArgumentParser::Parse(int argc, const char** argv)
 
     fs::path template_path = template_file.value();
 
-    BuildContext(template_path, headers, include_dirs);
+    if (!BuildContext(template_path, headers, include_dirs))
+    {
+        return false;
+    }
 
     return true;
 }
@@ -444,14 +447,14 @@ void ArgumentParser::ParseTemplates(const nlohmann::json& parser, const fs::path
     }
 }
 
-void ArgumentParser::BuildContext(const fs::path& template_file, const std::vector<std::string>& files, const std::vector<std::string>& include_dirs)
+bool ArgumentParser::BuildContext(const fs::path& template_file, const std::vector<std::string>& files, const std::vector<std::string>& include_dirs)
 {
     using namespace nlohmann;
 
     if (!fs::exists(template_file))
     {
         std::cerr << "Unable to open template file " << template_file << "." << std::endl;
-        return;
+        return false;
     }
 
     try
@@ -465,9 +468,13 @@ void ArgumentParser::BuildContext(const fs::path& template_file, const std::vect
     {
         std::cerr << "Unable to parse template file, cause :" << std::endl
                   << "\t" << e.what() << std::endl;
+        return false;
     }
     catch (...)
     {
         std::cerr << "Unable to parse template file due to uncaught exception." << std::endl;
+        return false;
     }
+
+    return true;
 }
